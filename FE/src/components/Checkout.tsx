@@ -1,9 +1,9 @@
 "use client";
 import Image from "next/image";
-import { FC, SetStateAction, useState } from "react";
+import { FC, SetStateAction, useState, forwardRef } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
-
+import GuestRoomSelector from "./GuestRoomSelector";
 interface OptionType {
   value: string;
   label: string;
@@ -29,33 +29,31 @@ const roomVariationOption: OptionType[] = [
   { value: "04", label: "1 Room, 5 Adult, 3 child" },
 ];
 
+const CustomDateInput = forwardRef<
+  HTMLDivElement,
+  { value?: string; onClick?: () => void; placeholder?: string }
+>(({ value, onClick, placeholder }, ref) => (
+  <div
+    ref={ref}
+    className='custom-date-input tw-flex tw-items-center tw-justify-between tw-p-2 tw-border tw-border-gray-300 tw-rounded-lg tw-cursor-pointer tw-bg-white tw-w-full'
+    onClick={onClick}
+  >
+    <div className='d-flex gap-2 tw-items-center justify-content-center align-items-center'>
+      <i className='ph ph-check'></i>
+      <span className={`${value ? "tw-text-gray-800" : "tw-text-gray-400"}`}>
+        {value || placeholder || "Select date"}
+      </span>
+    </div>
+  </div>
+));
+CustomDateInput.displayName = 'CustomDateInput';
+
 const Checkout: FC = () => {
   const [selectedRoom, setSelectedRoom] = useState(roomOptions[0]);
   const [roomVariation, setRoomVariation] = useState(roomVariationOption[0]);
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
 
-  const CustomDateInput = ({
-    value,
-    onClick,
-    placeholder,
-  }: {
-    value?: string;
-    onClick?: () => void;
-    placeholder?: string;
-  }) => (
-    <div
-      className='custom-date-input tw-flex tw-items-center tw-justify-between tw-p-2 tw-border tw-border-gray-300 tw-rounded-lg tw-cursor-pointer tw-bg-white tw-w-full'
-      onClick={onClick}
-    >
-      <div className='d-flex gap-2 tw-items-center justify-content-center align-items-center'>
-        <i className='ph ph-check'></i>
-        <span className={`${value ? "tw-text-gray-800" : "tw-text-gray-400"}`}>
-          {value || placeholder || "Select date"}
-        </span>
-      </div>
-    </div>
-  );
   return (
     <div
       className='checkout-area position-relative z-3 tw_fade_anim'
@@ -159,17 +157,9 @@ const Checkout: FC = () => {
                         alt='icon'
                       />
                     </span>{" "}
-                    1 room, 1 adult, 0 child
+                    Khách & Phòng
                   </label>
-                  <Select
-                    instanceId='checkout-select-instance_1'
-                    inputId='checkout-select_1'
-                    options={roomVariationOption}
-                    value={roomVariation}
-                    onChange={(option) => option && setRoomVariation(option)}
-                    className='custom-select-container'
-                    classNamePrefix='custom-select'
-                  />
+                  <GuestRoomSelector />
                 </div>
                 <div className='checkout-wrapper z-0'>
                   <div className='checkout-button common-hover-yellow'>

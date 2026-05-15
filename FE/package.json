@@ -1,9 +1,9 @@
 {
-  "name": "elitestay-nextjs-hotel-booking-template",
+  "name": "booking-hotel",
   "version": "1.0.0",
-  "private": false,
-  "description": "EliteStay – Next.js Hotel Booking Template built with TypeScript and Bootstrap",
-  "author": "Your Author Name",
+  "private": true,
+  "description": "Booking Hotel App",
+  "author": "Xuan Loc",
   "license": "Envato Market License",
   "scripts": {
     "dev": "next dev",

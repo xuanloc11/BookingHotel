@@ -16,10 +16,10 @@ const marcellus = Marcellus({
 export async function generateMetadata() {
   return {
     title: {
-      default: "EliteStay - Template",
-      template: "%s | EliteStay",
+      default: "Booking Hotel App",
+      template: "%s | Booking Hotel",
     },
-    description: "EliteStay - Hotel Booking Multi-Purpose Next Js Template.",
+    description: "Nền tảng đặt phòng khách sạn tiện lợi và nhanh chóng.",
     robots: {
       index: true,
       follow: true,
