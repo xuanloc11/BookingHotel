@@ -1,9 +1,17 @@
 "use client";
 import Image from "next/image";
-import { FC, SetStateAction, useState, forwardRef, useEffect } from "react";
+import {
+  FC,
+  SetStateAction,
+  useState,
+  forwardRef,
+  useEffect,
+} from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import GuestRoomSelector from "./GuestRoomSelector";
+import { fetchProvinces } from "@/lib/api/locationApi";
+
 interface OptionType {
   value: string;
   label: string;
@@ -20,13 +28,6 @@ const roomOptions: OptionType[] = [
   { value: "07", label: "07" },
   { value: "08", label: "08" },
   { value: "09", label: "09" },
-];
-const roomVariationOption: OptionType[] = [
-  { value: "00", label: "Select Option" },
-  { value: "01", label: "1 Room, 1 Adult, 0 child" },
-  { value: "02", label: "2 Room, 2 Adult, 1 child" },
-  { value: "03", label: "3 Room, 3 Adult, 2 child" },
-  { value: "04", label: "1 Room, 5 Adult, 3 child" },
 ];
 
 const CustomDateInput = forwardRef<
@@ -50,25 +51,19 @@ CustomDateInput.displayName = 'CustomDateInput';
 
 const Checkout: FC = () => {
   const [selectedRoom, setSelectedRoom] = useState(roomOptions[0]);
-  const [roomVariation, setRoomVariation] = useState(roomVariationOption[0]);
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
-  const [locations, setLocations] = useState<any[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<any>(null);
+  const [locations, setLocations] = useState<OptionType[]>([]);
+  const [selectedLocation, setSelectedLocation] =
+    useState<OptionType | null>(null);
 
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        console.log("Fetching locations from API...");
-        const response = await fetch("https://provinces.open-api.vn/api/v2/?depth=1");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log("Fetched data v2:", data);
-        const formattedLocations = data.map((province: any) => ({
-          label: province.name,
-          value: province.code.toString(),
+        const provinces = await fetchProvinces();
+        const formattedLocations = provinces.map((province) => ({
+          label: `${province.name} (${province.hotel_count})`,
+          value: province.name,
         }));
         setLocations(formattedLocations);
       } catch (error) {
@@ -80,9 +75,8 @@ const Checkout: FC = () => {
 
   return (
     <div
-      className='checkout-area position-relative z-3 tw_fade_anim'
+      className='checkout-area position-relative z-3 tw_fade_anim tw-mt-[-150px]'
       data-delay='.3'
-      style={{ marginTop: '-150px' }}
     >
       <div className='container'>
         <div className='checkout-bg bg-white tw-pt-11 tw-px-14 tw-pb-11 tw-rounded-md'>
