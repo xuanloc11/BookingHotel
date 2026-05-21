@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { FC, SetStateAction, useState, forwardRef } from "react";
+import { FC, SetStateAction, useState, forwardRef, useEffect } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import GuestRoomSelector from "./GuestRoomSelector";
@@ -53,17 +53,67 @@ const Checkout: FC = () => {
   const [roomVariation, setRoomVariation] = useState(roomVariationOption[0]);
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
+  const [locations, setLocations] = useState<any[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        console.log("Fetching locations from API...");
+        const response = await fetch("https://provinces.open-api.vn/api/v2/?depth=1");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Fetched data v2:", data);
+        const formattedLocations = data.map((province: any) => ({
+          label: province.name,
+          value: province.code.toString(),
+        }));
+        setLocations(formattedLocations);
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+      }
+    };
+    fetchLocations();
+  }, []);
 
   return (
     <div
       className='checkout-area position-relative z-3 tw_fade_anim'
       data-delay='.3'
+      style={{ marginTop: '-150px' }}
     >
       <div className='container'>
         <div className='checkout-bg bg-white tw-pt-11 tw-px-14 tw-pb-11 tw-rounded-md'>
           <div className='row'>
             <div className='col-xl-12'>
               <div className='checkout-main-wrapper'>
+                {/* Location Selector */}
+                <div className='checkout-wrapper d-flex flex-column'>
+                  <label className='tw-text-sm fw-normal font-body d-flex align-content-center tw-gap-4 tw-mb-2'>
+                    <span>
+                      <Image
+                        width={21}
+                        height={22}
+                        src='/assets/images/icons/checkout-icon1.svg'
+                        alt='icon'
+                      />
+                    </span>
+                    Vị trí
+                  </label>
+                  <Select
+                    instanceId='location-select-instance'
+                    inputId='location-select'
+                    options={locations}
+                    value={selectedLocation}
+                    onChange={(option) => setSelectedLocation(option)}
+                    className='custom-select-container'
+                    classNamePrefix='custom-select'
+                    placeholder="Chọn địa điểm..."
+                  />
+                </div>
+
                 <div className='checkout-wrapper d-flex flex-column'>
                   <label className='tw-text-sm fw-normal font-body d-flex align-content-center tw-gap-4 tw-mb-2'>
                     <span>
