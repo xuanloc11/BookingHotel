@@ -21,13 +21,6 @@ const roomOptions: OptionType[] = [
   { value: "08", label: "08" },
   { value: "09", label: "09" },
 ];
-const roomVariationOption: OptionType[] = [
-  { value: "00", label: "Select Option" },
-  { value: "01", label: "1 Room, 1 Adult, 0 child" },
-  { value: "02", label: "2 Room, 2 Adult, 1 child" },
-  { value: "03", label: "3 Room, 3 Adult, 2 child" },
-  { value: "04", label: "1 Room, 5 Adult, 3 child" },
-];
 
 const CustomDateInput = forwardRef<
   HTMLDivElement,
@@ -50,7 +43,6 @@ CustomDateInput.displayName = 'CustomDateInput';
 
 const BannerThree: FC = () => {
   const [selectedRoom, setSelectedRoom] = useState(roomOptions[0]);
-  const [roomVariation, setRoomVariation] = useState(roomVariationOption[0]);
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
 

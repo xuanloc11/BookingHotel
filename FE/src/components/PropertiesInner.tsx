@@ -59,7 +59,7 @@ const PropertiesInner: FC = () => {
             <div className='service-top-button tw_fade_anim' data-delay='.5'>
               <Link
                 className='tw-btn-hover-black bg-main-600 tw-py-5 tw-px-12 text-uppercase text-heading font-heading d-inline-flex align-items-center tw-gap-2 tw-rounded-lg'
-                href='/room-details'
+                href='/room'
               >
                 Booking today{" "}
                 <span className='d-inline-block lh-1 tw-text-lg'>
@@ -112,7 +112,7 @@ const PropertiesInner: FC = () => {
                       <SwiperSlide key={hotel.id}>
                         <div className='service-wrapper bg-white tw-p-4 tw-rounded-xl tw-mb-8 swiper-slide'>
                           <div className='service-thumb tw-mb-5 position-relative z-1 overflow-hidden'>
-                            <Link href='/room-details'>
+                            <Link href={`/hotel/${hotel.id}`}>
                               <Image
                                 width={423}
                                 height={308}
@@ -134,7 +134,7 @@ const PropertiesInner: FC = () => {
                             <h4 className='service-title tw-text-8 fw-normal text-capitalize tw-mb-2'>
                               <Link
                                 className='hover-text-secondary'
-                                href='/room-details'
+                                href={`/hotel/${hotel.id}`}
                               >
                                 {hotel.name}
                               </Link>
@@ -161,7 +161,7 @@ const PropertiesInner: FC = () => {
                                 <div>
                                   <Link
                                     className='font-heading tw-text-sm text-uppercase text-heading fw-normal hover-text-main-600'
-                                    href='/room-details'
+                                    href={`/hotel/${hotel.id}`}
                                   >
                                     EXPLORE MORE{" "}
                                     <i className='tw-text-base ph ph-arrow-up-right' />

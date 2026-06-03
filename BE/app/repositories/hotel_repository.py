@@ -10,3 +10,10 @@ class HotelRepository:
     def list_all(self) -> list[dict]:
         with self.data_file.open('r', encoding='utf-8') as file_handle:
             return json.load(file_handle)
+
+    def get_by_id(self, hotel_id: int) -> dict | None:
+        for hotel in self.list_all():
+            if hotel.get('id') == hotel_id:
+                return hotel
+
+        return None

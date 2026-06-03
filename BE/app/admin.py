@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from app.models import AuthToken, Booking, Profile
+
+
+admin.site.register(Profile)
+admin.site.register(AuthToken)
+admin.site.register(Booking)

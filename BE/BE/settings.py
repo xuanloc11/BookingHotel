@@ -77,7 +77,14 @@ SECRET_KEY = _env('SECRET_KEY', 'django-insecure-y6f^=ox=nibjz&loq3y7)rr8m(ozm%n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = _env_bool('DEBUG', True)
 
-ALLOWED_HOSTS = [host.strip() for host in _env('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if host.strip()]
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in _env('ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',')
+    if host.strip()
+]
+
+if 'testserver' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('testserver')
 
 
 # Application definition
