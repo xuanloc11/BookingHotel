@@ -75,7 +75,7 @@ const Checkout: FC = () => {
 
   return (
     <div
-      className='checkout-area position-relative z-3 tw_fade_anim tw-mt-[-150px]'
+      className='checkout-area position-relative z-3 tw_fade_anim tw-mt-[-200px]'
       data-delay='.3'
     >
       <div className='container'>

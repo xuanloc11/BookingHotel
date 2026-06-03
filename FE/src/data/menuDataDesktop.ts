@@ -23,65 +23,38 @@ export const desktopMenuData: DesktopMenuItem[] = [
     type: "mega",
     megaItems: [
       {
-        title: "Home One",
+        title: "Main Home",
         link: "/",
         image: "/assets/images/thumbs/home-img1.png",
       },
-      {
-        title: "Home Two",
-        link: "/index-2",
-        image: "/assets/images/thumbs/home-img2.png",
-      },
-      {
-        title: "Home Three",
-        link: "/index-3",
-        image: "/assets/images/thumbs/home-img3.png",
-      },
-      {
-        title: "Home Four",
-        link: "/index-4",
-        image: "/assets/images/thumbs/home-img4.png",
-      },
     ],
   },
   {
-    label: "Pages",
+    label: "Rooms",
     type: "submenu",
     subMenu: [
-      { label: "About Us", link: "/about" },
-      { label: "Service", link: "/service" },
-      { label: "Service Details", link: "/service-details" },
-      { label: "Our Animations", link: "/animations" },
-      { label: "Offers", link: "/offers" },
-      { label: "Gallery", link: "/gallery" },
-      { label: "Pricing", link: "/pricing" },
-      { label: "Testimonial", link: "/testimonial" },
-      { label: "Book An Appointment", link: "/appointment" },
-    ],
-  },
-  {
-    label: "Room",
-    type: "submenu",
-    subMenu: [
-      { label: "Room", link: "/room" },
+      { label: "Search Rooms", link: "/room" },
       { label: "Room Details", link: "/room-details" },
+      { label: "Hotel Details", link: "/hotel/1" },
+      { label: "Gallery", link: "/gallery" },
     ],
   },
   {
-    label: "Destination",
+    label: "Reservations",
     type: "submenu",
     subMenu: [
-      { label: "Destination", link: "/destination" },
-      { label: "Destination Details", link: "/destination-details" },
+      { label: "Checkout", link: "/checkout" },
+      { label: "Booking Success", link: "/booking-success" },
+      { label: "My Bookings", link: "/my-bookings" },
     ],
   },
   {
-    label: "Blog",
+    label: "Account",
     type: "submenu",
     subMenu: [
-      { label: "Blog", link: "/blog" },
-      { label: "Blog Grid", link: "/blog-grid" },
-      { label: "Blog Details", link: "/blog-details" },
+      { label: "Login", link: "/login" },
+      { label: "Register", link: "/register" },
+      { label: "Forgot Password", link: "/forgot-password" },
     ],
   },
   {
