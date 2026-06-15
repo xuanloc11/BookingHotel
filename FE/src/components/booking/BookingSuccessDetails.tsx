@@ -25,11 +25,10 @@ export default function BookingSuccessDetails({
                 <i className='ph ph-check' />
               </span>
               <h1 className='tw-text-12 fw-normal tw-mb-4'>
-                Booking request received
+                Đã nhận được yêu cầu đặt chỗ
               </h1>
               <p className='tw-text-lg tw-mb-8'>
-                Your confirmation details have been recorded. Keep the booking
-                ID for check-in and support.
+                Thông tin xác nhận đã được ghi nhận. Giữ mã đặt phòng để làm thủ tục nhận phòng và hỗ trợ.
               </p>
 
               <div className='border tw-rounded-lg tw-p-6 text-start tw-mb-8'>
@@ -38,7 +37,7 @@ export default function BookingSuccessDetails({
                   <strong>{bookingId ?? "Pending"}</strong>
                 </div>
                 <div className='d-flex justify-content-between tw-mb-3'>
-                  <span>Status</span>
+                  <span>Trạng thái</span>
                   <strong className='text-capitalize'>{status ?? "pending"}</strong>
                 </div>
                 {hotelName ? (
@@ -49,7 +48,7 @@ export default function BookingSuccessDetails({
                 ) : null}
                 {checkIn && checkOut ? (
                   <div className='d-flex justify-content-between'>
-                    <span>Dates</span>
+                    <span>Ngày</span>
                     <strong>
                       {checkIn} to {checkOut}
                     </strong>
@@ -62,10 +61,10 @@ export default function BookingSuccessDetails({
                   className='tw-btn-hover-black bg-main-600 tw-py-4 tw-px-8 text-heading font-heading tw-rounded-lg'
                   href='/my-bookings'
                 >
-                  View my bookings
+                  Xem các đơn đặt phòng
                 </Link>
                 <Link className='btn btn-outline-secondary tw-py-4 tw-px-8' href='/room'>
-                  Search more hotels
+                  Tìm kiếm thêm khách sạn
                 </Link>
               </div>
             </div>

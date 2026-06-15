@@ -46,12 +46,12 @@ export default function MyBookingsDashboard({
 
         {bookings.length === 0 ? (
           <div className='bg-white tw-rounded-lg tw-p-10 text-center'>
-            <h2 className='tw-text-8 fw-normal tw-mb-3'>No bookings yet</h2>
+            <h2 className='tw-text-8 fw-normal tw-mb-3'>Chưa có đơn đặt phòng</h2>
             <p className='tw-mb-6'>
-              Confirmed and pending stays will appear here after checkout.
+              Các đơn đặt phòng đã xác nhận và chờ xử lý sẽ xuất hiện ở đây sau khi thanh toán.
             </p>
             <Link className='text-main-600 fw-bold' href='/room'>
-              Browse hotels
+              Duyệt khách sạn
             </Link>
           </div>
         ) : (

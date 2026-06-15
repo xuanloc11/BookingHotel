@@ -18,28 +18,7 @@ import MarqueeOne from "@/components/MarqueeOne";
 import BlogOne from "@/components/BlogOne";
 import FooterOne from "@/components/FooterOne";
 
-export const generateMetadata = async (): Promise<Metadata> => {
-  return {
-    title: "Home | EliteStay - Hotel Booking Multi-Purpose Next Js Template",
-    description:
-      "EliteStay is a professional Next JS Template for Hotel Booking Multi-Purpose services. Clean design, responsive layout, and modern UI components included.",
-    openGraph: {
-      title: "Home | EliteStay",
-      description:
-        "EliteStay is a professional Next JS Template for Hotel Booking Multi-Purpose services. Clean design, responsive layout, and modern UI components included.",
-      url: "https://nextjs.elitestay.wowtheme7.com",
-      type: "website",
-      images: [
-        {
-          url: "https://nextjs.elitestay.wowtheme7.com/images/meta.png",
-          width: 1200,
-          height: 630,
-          alt: "elitestay",
-        },
-      ],
-    },
-  };
-};
+
 
 export default function Home() {
   return (

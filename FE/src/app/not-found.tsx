@@ -29,7 +29,7 @@ export default function NotFound() {
             <div className='col-lg-6 col-md-8'>
               <h1 className='display-1 mb-4 text-warning'>404!</h1>
               <p className='lead mb-4'>
-                Oops! The page you are looking for doesn’t exist.
+                Rất tiếc! Trang bạn đang tìm kiếm không tồn tại.
               </p>
               <Link
                 href='/'

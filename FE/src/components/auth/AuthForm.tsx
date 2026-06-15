@@ -117,8 +117,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                         : "Reset Password"}
                   </h2>
                   <p className='fw-medium tw-text-lg'>
-                    Manage reservations, profile details, and trip history from
-                    one secure account.
+                    Quản lý đơn đặt phòng, chi tiết hồ sơ và lịch sử chuyến đi từ một tài khoản an toàn.
                   </p>
                 </div>
               </div>
@@ -209,10 +208,10 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                         <div className='col-xl-12 tw-mb-8 d-flex justify-content-between align-items-center flex-wrap row-gap-2'>
                           <label className='form-check-label d-flex align-items-center tw-gap-2'>
                             <input className='form-check-input' type='checkbox' />
-                            Remember me
+                            Ghi nhớ đăng nhập
                           </label>
                           <Link className='text-main-600 fw-bold' href='/forgot-password'>
-                            Forgot password?
+                            Quên mật khẩu?
                           </Link>
                         </div>
                       ) : null}
@@ -239,16 +238,16 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                       <div className='col-xl-12 tw-mt-6'>
                         {isLogin ? (
                           <p className='mb-0'>
-                            No account?{" "}
+                            Chưa có tài khoản?{" "}
                             <Link className='text-main-600 fw-bold' href='/register'>
-                              Register
+                              Đăng ký
                             </Link>
                           </p>
                         ) : (
                           <p className='mb-0'>
-                            Already have an account?{" "}
+                            Đã có tài khoản?{" "}
                             <Link className='text-main-600 fw-bold' href='/login'>
-                              Login
+                              Đăng nhập
                             </Link>
                           </p>
                         )}

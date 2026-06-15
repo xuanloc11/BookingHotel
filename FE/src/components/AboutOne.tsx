@@ -42,9 +42,7 @@ const AboutOne: FC = () => {
                   Luxury, Location &amp; Love Reasons To Stay With Us
                 </h2>
                 <p className='tw-text-lg'>
-                  Welcome to Marcus Medical, your pathway to natural-looking
-                  results from <br /> industry-leading injectors
-                  and&nbsp;plastic surgeons in South Bay.
+                  Chào mừng bạn đến với Marcus Medical, nơi mang đến cho bạn kết quả tự nhiên từ các chuyên gia hàng đầu trong ngành.
                 </p>
               </div>
               <div>

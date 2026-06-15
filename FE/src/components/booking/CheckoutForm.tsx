@@ -117,7 +117,7 @@ export default function CheckoutForm({
           <div className='col-xl-7'>
             <div className='bg-white tw-rounded-lg tw-p-10'>
               <h2 className='tw-text-10 fw-normal tw-mb-7'>
-                Customer Information
+                Thông tin khách hàng
               </h2>
 
               {error ? (
@@ -130,7 +130,7 @@ export default function CheckoutForm({
                 <div className='row row-gap-4'>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                      First name
+                      Họ
                     </label>
                     <input
                       className='form-control tw-h-14'
@@ -142,7 +142,7 @@ export default function CheckoutForm({
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                      Last name
+                      Tên
                     </label>
                     <input
                       className='form-control tw-h-14'
@@ -165,7 +165,7 @@ export default function CheckoutForm({
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                      Phone
+                      Số điện thoại
                     </label>
                     <input
                       className='form-control tw-h-14'
@@ -177,7 +177,7 @@ export default function CheckoutForm({
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                      Country
+                      Quốc gia
                     </label>
                     <input
                       className='form-control tw-h-14'
@@ -188,21 +188,21 @@ export default function CheckoutForm({
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                      Payment method
+                      Phương thức thanh toán
                     </label>
                     <select
                       className='form-select tw-h-14'
                       defaultValue='pay_at_hotel'
                       name='payment_method'
                     >
-                      <option value='pay_at_hotel'>Pay at hotel</option>
-                      <option value='bank_transfer'>Bank transfer</option>
-                      <option value='card'>Card</option>
+                      <option value='pay_at_hotel'>Thanh toán tại khách sạn</option>
+                      <option value='bank_transfer'>Chuyển khoản ngân hàng</option>
+                      <option value='card'>Thẻ</option>
                     </select>
                   </div>
                   <div className='col-12'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                      Special requests
+                      Yêu cầu đặc biệt
                     </label>
                     <textarea
                       className='form-control'
@@ -215,8 +215,7 @@ export default function CheckoutForm({
                     <label className='form-check-label d-flex align-items-start tw-gap-3'>
                       <input className='form-check-input mt-1' required type='checkbox' />
                       <span>
-                        I confirm the guest details are accurate and understand
-                        that the final charge is calculated by the hotel backend.
+                        Tôi xác nhận chi tiết thông tin khách hàng là chính xác và hiểu rằng tổng số tiền cuối cùng sẽ được tính bởi hệ thống của khách sạn.
                       </span>
                     </label>
                   </div>
@@ -259,10 +258,10 @@ export default function CheckoutForm({
                   <strong>{selection.check_out}</strong>
                 </div>
                 <div className='d-flex justify-content-between'>
-                  <span>Guests</span>
+                  <span>Số lượng</span>
                   <strong>
-                    {selection.guests.adults} adults, {selection.guests.children}{" "}
-                    children, {selection.guests.rooms} rooms
+                    {selection.guests.adults} người lớn, {selection.guests.children}{" "}
+                    trẻ em, {selection.guests.rooms} phòng
                   </strong>
                 </div>
               </div>
@@ -275,11 +274,11 @@ export default function CheckoutForm({
                 <strong>{moneyFormatter.format(price.subtotal)}</strong>
               </div>
               <div className='d-flex justify-content-between tw-mb-4'>
-                <span>Taxes and fees</span>
+                <span>Thuế và phí</span>
                 <strong>{moneyFormatter.format(price.taxes_and_fees)}</strong>
               </div>
               <div className='d-flex justify-content-between tw-text-6 text-heading'>
-                <span>Total</span>
+                <span>Tổng tiền</span>
                 <strong>{moneyFormatter.format(price.total)}</strong>
               </div>
             </aside>

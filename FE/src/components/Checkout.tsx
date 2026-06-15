@@ -179,7 +179,7 @@ const Checkout: FC = () => {
                         alt='icon'
                       />
                     </span>
-                    Select room
+                    Chọn phòng
                   </label>
                   <Select
                     instanceId='checkout-select-instance'
