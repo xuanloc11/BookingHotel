@@ -2,12 +2,12 @@ import React from "react";
 import type { Metadata } from "next";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
-import HeaderTwo from "@/components/HeaderTwo";
-import Breadcrumb from "@/components/Breadcrumb";
-import FooterOne from "@/components/FooterOne";
-import ReservationOne from "@/components/ReservationOne";
-import ContactInner from "@/components/ContactInner";
-import Checkout from "@/components/Checkout";
+import HeaderTwo from "@/components/layout/HeaderTwo";
+import Breadcrumb from "@/components/layout/Breadcrumb";
+import FooterOne from "@/components/layout/FooterOne";
+import ReservationOne from "@/components/home/ReservationOne";
+import ContactInner from "@/components/contact/ContactInner";
+import Checkout from "@/components/booking/Checkout";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {

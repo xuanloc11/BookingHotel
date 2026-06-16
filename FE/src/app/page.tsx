@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
 import Preloader from "@/helper/Preloader";
 import AOSWrap from "@/helper/AOSWrap";
-import HeaderOne from "@/components/HeaderOne";
-import BannerOne from "@/components/BannerOne";
-import Checkout from "@/components/Checkout";
-import AdvanceArea from "@/components/AdvanceArea";
-import OfferOne from "@/components/OfferOne";
-import FeatureOne from "@/components/FeatureOne";
-import PackageOne from "@/components/PackageOne";
-import ClientOne from "@/components/ClientOne";
-import AboutOne from "@/components/AboutOne";
-import CtaOne from "@/components/CtaOne";
+import HeaderOne from "@/components/layout/HeaderOne";
+import BannerOne from "@/components/home/BannerOne";
+import Checkout from "@/components/booking/Checkout";
+import AdvanceArea from "@/components/home/AdvanceArea";
+import OfferOne from "@/components/home/OfferOne";
+import FeatureOne from "@/components/home/FeatureOne";
+import PackageOne from "@/components/home/PackageOne";
+import ClientOne from "@/components/home/ClientOne";
+import AboutOne from "@/components/about/AboutOne";
+import CtaOne from "@/components/home/CtaOne";
 import PropertiesInner from "@/components/PropertiesInner";
-import PricingOne from "@/components/PricingOne";
+import PricingOne from "@/components/pricing/PricingOne";
 import TestimonialOne from "@/components/TestimonialOne";
-import MarqueeOne from "@/components/MarqueeOne";
-import BlogOne from "@/components/BlogOne";
-import FooterOne from "@/components/FooterOne";
+import MarqueeOne from "@/components/home/MarqueeOne";
+import BlogOne from "@/components/blog/BlogOne";
+import FooterOne from "@/components/layout/FooterOne";
 
 
 

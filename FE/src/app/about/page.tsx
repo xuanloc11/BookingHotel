@@ -2,19 +2,19 @@ import React from "react";
 import type { Metadata } from "next";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
-import HeaderTwo from "@/components/HeaderTwo";
-import Breadcrumb from "@/components/Breadcrumb";
-import AboutTwo from "@/components/AboutTwo";
-import FeatureOne from "@/components/FeatureOne";
-import AboutOne from "@/components/AboutOne";
-import MarqueeOne from "@/components/MarqueeOne";
-import ClientOne from "@/components/ClientOne";
-import NewsletterOne from "@/components/NewsletterOne";
-import PricingTwo from "@/components/PricingTwo";
-import ContactTwo from "@/components/ContactTwo";
-import ClientTwo from "@/components/ClientTwo";
-import FooterOne from "@/components/FooterOne";
-import Checkout from "@/components/Checkout";
+import HeaderTwo from "@/components/layout/HeaderTwo";
+import Breadcrumb from "@/components/layout/Breadcrumb";
+import AboutTwo from "@/components/about/AboutTwo";
+import FeatureOne from "@/components/home/FeatureOne";
+import AboutOne from "@/components/about/AboutOne";
+import MarqueeOne from "@/components/home/MarqueeOne";
+import ClientOne from "@/components/home/ClientOne";
+import NewsletterOne from "@/components/home/NewsletterOne";
+import PricingTwo from "@/components/pricing/PricingTwo";
+import ContactTwo from "@/components/contact/ContactTwo";
+import ClientTwo from "@/components/home/ClientTwo";
+import FooterOne from "@/components/layout/FooterOne";
+import Checkout from "@/components/booking/Checkout";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {

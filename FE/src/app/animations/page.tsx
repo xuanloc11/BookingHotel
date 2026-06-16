@@ -2,14 +2,14 @@ import React from "react";
 import type { Metadata } from "next";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
-import HeaderTwo from "@/components/HeaderTwo";
-import Breadcrumb from "@/components/Breadcrumb";
-import FooterOne from "@/components/FooterOne";
-import Checkout from "@/components/Checkout";
-import FeatureTwo from "@/components/FeatureTwo";
-import AdvanceAreaThree from "@/components/AdvanceAreaThree";
-import FeatureOne from "@/components/FeatureOne";
-import MarqueeFour from "@/components/MarqueeFour";
+import HeaderTwo from "@/components/layout/HeaderTwo";
+import Breadcrumb from "@/components/layout/Breadcrumb";
+import FooterOne from "@/components/layout/FooterOne";
+import Checkout from "@/components/booking/Checkout";
+import FeatureTwo from "@/components/home/FeatureTwo";
+import AdvanceAreaThree from "@/components/home/AdvanceAreaThree";
+import FeatureOne from "@/components/home/FeatureOne";
+import MarqueeFour from "@/components/home/MarqueeFour";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {

@@ -20,33 +20,29 @@ export interface DesktopMenuItem {
 export const desktopMenuData: DesktopMenuItem[] = [
   {
     label: "Trang chủ",
-    type: "mega",
-    megaItems: [
-      {
-        title: "Trang chủ chính",
-        link: "/",
-        image: "/assets/images/thumbs/home-img1.png",
-      },
-    ],
+    type: "link",
+    link: "/",
   },
   {
     label: "Phòng nghỉ",
     type: "submenu",
     subMenu: [
-      { label: "Tìm phòng", link: "/room" },
-      { label: "Chi tiết phòng", link: "/room-details" },
-      { label: "Chi tiết khách sạn", link: "/hotel/1" },
-      { label: "Bộ sưu tập", link: "/gallery" },
+      { label: "Danh sách phòng", link: "/room" },
+      { label: "Thư viện ảnh", link: "/gallery" },
     ],
   },
   {
-    label: "Đặt phòng",
+    label: "Giới thiệu",
     type: "submenu",
     subMenu: [
-      { label: "Thanh toán", link: "/checkout" },
-      { label: "Đặt phòng thành công", link: "/booking-success" },
-      { label: "Đơn đặt của tôi", link: "/my-bookings" },
+      { label: "Giới thiệu chung", link: "/about" },
+      { label: "Chi tiết khách sạn", link: "/hotel/1" },
     ],
+  },
+  {
+    label: "Liên hệ",
+    type: "link",
+    link: "/contact",
   },
   {
     label: "Tài khoản",
@@ -54,12 +50,6 @@ export const desktopMenuData: DesktopMenuItem[] = [
     subMenu: [
       { label: "Đăng nhập", link: "/login" },
       { label: "Đăng ký", link: "/register" },
-      { label: "Quên mật khẩu", link: "/forgot-password" },
     ],
-  },
-  {
-    label: "Liên hệ",
-    type: "link",
-    link: "/contact",
   },
 ];

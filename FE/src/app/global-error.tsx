@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import HeaderTwo from "@/components/HeaderTwo";
-import FooterOne from "@/components/FooterOne";
+import HeaderTwo from "@/components/layout/HeaderTwo";
+import FooterOne from "@/components/layout/FooterOne";
 
 interface ErrorProps {
   error: Error;

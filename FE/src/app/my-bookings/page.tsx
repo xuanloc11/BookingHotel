@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import Breadcrumb from "@/components/Breadcrumb";
+import Breadcrumb from "@/components/layout/Breadcrumb";
 import MyBookingsDashboard from "@/components/booking/MyBookingsDashboard";
-import FooterOne from "@/components/FooterOne";
-import HeaderTwo from "@/components/HeaderTwo";
+import FooterOne from "@/components/layout/FooterOne";
+import HeaderTwo from "@/components/layout/HeaderTwo";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
 import { AUTH_ACCESS_TOKEN_COOKIE } from "@/lib/api/authApi";

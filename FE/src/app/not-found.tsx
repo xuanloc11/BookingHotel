@@ -1,5 +1,5 @@
-import HeaderTwo from "@/components/HeaderTwo";
-import FooterOne from "@/components/FooterOne";
+import HeaderTwo from "@/components/layout/HeaderTwo";
+import FooterOne from "@/components/layout/FooterOne";
 import Image from "next/image";
 import Link from "next/link";
 

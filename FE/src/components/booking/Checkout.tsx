@@ -9,7 +9,7 @@ import {
 } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
-import GuestRoomSelector from "./GuestRoomSelector";
+import GuestRoomSelector from "@/components/room/GuestRoomSelector";
 import { fetchProvinces } from "@/lib/api/locationApi";
 
 interface OptionType {

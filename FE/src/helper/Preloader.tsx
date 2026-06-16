@@ -34,32 +34,14 @@ const Preloader: FC = () => {
               </div>
             </div>
             <div className='txt-loading tw-mt-10'>
-              <span data-text-preloader='E' className='letters-loading'>
-                E
+              <span data-text-preloader='V' className='letters-loading'>
+                V
               </span>
-              <span data-text-preloader='l' className='letters-loading'>
-                l
+              <span data-text-preloader='P' className='letters-loading'>
+                P
               </span>
-              <span data-text-preloader='i' className='letters-loading'>
-                i
-              </span>
-              <span data-text-preloader='t' className='letters-loading'>
-                t
-              </span>
-              <span data-text-preloader='e' className='letters-loading'>
-                e
-              </span>
-              <span data-text-preloader='S' className='letters-loading'>
-                S
-              </span>
-              <span data-text-preloader='t' className='letters-loading'>
-                t
-              </span>
-              <span data-text-preloader='a' className='letters-loading'>
-                a
-              </span>
-              <span data-text-preloader='y' className='letters-loading'>
-                y
+              <span data-text-preloader='L' className='letters-loading'>
+                L
               </span>
             </div>
           </div>

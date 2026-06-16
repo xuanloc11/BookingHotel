@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
-import Breadcrumb from "@/components/Breadcrumb";
+import Breadcrumb from "@/components/layout/Breadcrumb";
 import BookingSuccessDetails from "@/components/booking/BookingSuccessDetails";
-import FooterOne from "@/components/FooterOne";
-import HeaderTwo from "@/components/HeaderTwo";
+import FooterOne from "@/components/layout/FooterOne";
+import HeaderTwo from "@/components/layout/HeaderTwo";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
 import type { PageSearchParams } from "@/lib/hotelSearchParams";

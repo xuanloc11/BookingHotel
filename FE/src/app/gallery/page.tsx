@@ -2,13 +2,13 @@ import React from "react";
 import type { Metadata } from "next";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
-import HeaderTwo from "@/components/HeaderTwo";
-import Breadcrumb from "@/components/Breadcrumb";
-import FooterOne from "@/components/FooterOne";
-import Checkout from "@/components/Checkout";
-import MarqueeFour from "@/components/MarqueeFour";
-import GalleryInner from "@/components/GalleryInner";
-import DiscoverOne from "@/components/DiscoverOne";
+import HeaderTwo from "@/components/layout/HeaderTwo";
+import Breadcrumb from "@/components/layout/Breadcrumb";
+import FooterOne from "@/components/layout/FooterOne";
+import Checkout from "@/components/booking/Checkout";
+import MarqueeFour from "@/components/home/MarqueeFour";
+import GalleryInner from "@/components/gallery/GalleryInner";
+import DiscoverOne from "@/components/home/DiscoverOne";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {

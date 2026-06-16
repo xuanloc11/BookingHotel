@@ -2,10 +2,10 @@ import React from "react";
 import type { Metadata } from "next";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
-import HeaderTwo from "@/components/HeaderTwo";
-import Breadcrumb from "@/components/Breadcrumb";
-import FooterOne from "@/components/FooterOne";
-import ClientTwo from "@/components/ClientTwo";
+import HeaderTwo from "@/components/layout/HeaderTwo";
+import Breadcrumb from "@/components/layout/Breadcrumb";
+import FooterOne from "@/components/layout/FooterOne";
+import ClientTwo from "@/components/home/ClientTwo";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {

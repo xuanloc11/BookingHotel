@@ -7,7 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthContext";
 
-const HeaderTwo: FC = () => {
+const HeaderOne: FC = () => {
   const pathname = usePathname();
   const { user, loading: authLoading, handleLogout } = useAuth();
   const [searchActive, setSearchActive] = useState(false);
@@ -17,6 +17,54 @@ const HeaderTwo: FC = () => {
   const [scroll, setScroll] = useState<boolean>(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  const dynamicDesktopMenu = desktopMenuData.map(item => {
+    if (item.label === "Tài khoản") {
+      if (user) {
+        return {
+          ...item,
+          subMenu: [
+            { label: "Hồ sơ cá nhân", link: "#" },
+            { label: "Đơn đặt của tôi", link: "/my-bookings" },
+            { label: "Đăng xuất", link: "/logout" }
+          ]
+        };
+      } else {
+        return {
+          ...item,
+          subMenu: [
+            { label: "Đăng nhập", link: "/login" },
+            { label: "Đăng ký", link: "/register" }
+          ]
+        };
+      }
+    }
+    return item;
+  });
+
+  const dynamicMobileMenu = menuData.map(item => {
+    if (item.label === "Tài khoản") {
+      if (user) {
+        return {
+          ...item,
+          subMenu: [
+            { label: "Hồ sơ cá nhân", link: "#" },
+            { label: "Đơn đặt của tôi", link: "/my-bookings" },
+            { label: "Đăng xuất", link: "/logout" }
+          ]
+        };
+      } else {
+        return {
+          ...item,
+          subMenu: [
+            { label: "Đăng nhập", link: "/login" },
+            { label: "Đăng ký", link: "/register" }
+          ]
+        };
+      }
+    }
+    return item;
+  });
 
   /* Close user dropdown when clicking outside */
   useEffect(() => {
@@ -87,19 +135,14 @@ const HeaderTwo: FC = () => {
             <div className='header-menu d-lg-block d-none'>
               {/* Nav menu Start */}
               <ul className='nav-menu d-lg-flex align-items-center tw-gap-8'>
-                {desktopMenuData.map((item, index) => {
+                {dynamicDesktopMenu.map((item, index) => {
                   // ================= LINK ONLY =================
                   if (item.type === "link") {
                     return (
-                      <li
-                        key={index}
-                        className={`nav-menu__item ${
-                          pathname === item.link ? "activePage" : ""
-                        } `}
-                      >
+                      <li key={index} className='nav-menu__item'>
                         <Link
                           href={item.link || "#"}
-                          className='nav-menu__link tw-pe-5 text-white font-heading tw-py-11 fw-normal w-100'
+                          className='nav-menu__link text-white font-heading tw-py-11 fw-normal w-100'
                         >
                           {item.label}
                         </Link>
@@ -110,7 +153,7 @@ const HeaderTwo: FC = () => {
                   // ================= MEGA MENU =================
                   if (item.type === "mega") {
                     return (
-                      <li key={index} className='nav-menu__item has-submenu '>
+                      <li key={index} className='nav-menu__item has-submenu'>
                         <Link
                           href='#'
                           className='nav-menu__link tw-pe-5 text-white font-heading tw-py-11 fw-normal w-100'
@@ -188,12 +231,25 @@ const HeaderTwo: FC = () => {
                               pathname === sub.link ? "activePage" : ""
                             }`}
                           >
-                            <Link
-                              href={sub.link}
-                              className='nav-submenu__link hover-bg-neutral-200 text-heading font-heading fw-normal w-100 d-block tw-py-2 tw-px-305 tw-rounded'
-                            >
-                              {sub.label}
-                            </Link>
+                            {sub.link === "/logout" ? (
+                              <button
+                                type="button"
+                                onClick={async (e) => {
+                                  e.preventDefault();
+                                  await handleLogout();
+                                }}
+                                className='nav-submenu__link hover-bg-neutral-200 text-danger font-heading fw-normal w-100 d-block text-start tw-py-2 tw-px-305 tw-rounded border-0 bg-transparent'
+                              >
+                                {sub.label}
+                              </button>
+                            ) : (
+                              <Link
+                                href={sub.link}
+                                className='nav-submenu__link hover-bg-neutral-200 text-heading font-heading fw-normal w-100 d-block tw-py-2 tw-px-305 tw-rounded'
+                              >
+                                {sub.label}
+                              </Link>
+                            )}
                           </li>
                         ))}
                       </ul>
@@ -222,7 +278,17 @@ const HeaderTwo: FC = () => {
               </div>
 
               {/* Auth Section */}
-              <div className='header-button header-two-button d-flex align-items-center tw-gap-4'>
+              <div className='header-button d-flex align-items-center tw-gap-4'>
+                <Link
+                  className='tw-btn-hover-yellow bg-white tw-py-5 tw-px-7 text-uppercase text-heading font-heading d-lg-inline-flex d-none align-items-center tw-gap-2 tw-rounded-lg'
+                  href='/room'
+                >
+                  ĐẶT PHÒNG NGAY
+                  <span className='d-inline-block lh-1 tw-text-lg'>
+                    <i className='ph ph-calendar-plus' />
+                  </span>
+                </Link>
+
                 {authLoading ? (
                   <span className='text-white tw-text-sm'>...</span>
                 ) : user ? (
@@ -291,27 +357,7 @@ const HeaderTwo: FC = () => {
                       </ul>
                     )}
                   </div>
-                ) : (
-                  /* ---- Logged-out: login + register ---- */
-                  <>
-                    <Link
-                      className='text-white font-heading fw-medium d-none d-lg-inline-flex align-items-center tw-gap-2 hover-text-main-600'
-                      href='/login'
-                    >
-                      <i className='ph ph-sign-in tw-text-xl' />
-                      Đăng nhập
-                    </Link>
-                    <Link
-                      className='tw-btn-hover-white bg-main-600 tw-py-5 tw-px-7 text-capitalize text-heading font-heading d-inline-flex align-items-center tw-gap-2 tw-rounded-lg'
-                      href='/register'
-                    >
-                      Đăng ký
-                      <span className='d-inline-block lh-1 tw-text-lg'>
-                        <i className='ph ph-user-plus' />
-                      </span>
-                    </Link>
-                  </>
-                )}
+                ) : null}
               </div>
 
               <button
@@ -322,7 +368,6 @@ const HeaderTwo: FC = () => {
                 <i className='ph ph-list' />
               </button>
             </div>
-
             {/* Header Right End  */}
           </nav>
         </div>
@@ -354,7 +399,7 @@ const HeaderTwo: FC = () => {
 
           <div className='mobile-menu__menu'>
             <ul className='nav-menu d-lg-flex align-items-center nav-menu--mobile d-block tw-mt-8'>
-              {menuData.map((item, index) => (
+              {dynamicMobileMenu.map((item, index) => (
                 <li
                   key={index}
                   className={`nav-menu__item ${
@@ -382,12 +427,27 @@ const HeaderTwo: FC = () => {
                           key={subIndex}
                           className='nav-submenu__item d-block tw-rounded tw-duration-200 position-relative'
                         >
-                          <Link
-                            href={sub.link}
-                            className='nav-submenu__link hover-bg-neutral-200 text-heading font-heading fw-normal w-100 d-block tw-py-2 tw-px-305 tw-rounded'
-                          >
-                            {sub.label}
-                          </Link>
+                          {sub.link === "/logout" ? (
+                            <button
+                              type='button'
+                              onClick={async (e) => {
+                                e.preventDefault();
+                                setActive(false);
+                                await handleLogout();
+                              }}
+                              className='nav-submenu__link hover-bg-neutral-200 text-danger font-heading fw-normal w-100 d-block text-start tw-py-2 tw-px-305 tw-rounded border-0 bg-transparent'
+                            >
+                              {sub.label}
+                            </button>
+                          ) : (
+                            <Link
+                              href={sub.link}
+                              onClick={() => setActive(false)}
+                              className='nav-submenu__link hover-bg-neutral-200 text-heading font-heading fw-normal w-100 d-block tw-py-2 tw-px-305 tw-rounded'
+                            >
+                              {sub.label}
+                            </Link>
+                          )}
                         </li>
                       ))}
                     </ul>
@@ -561,4 +621,4 @@ const HeaderTwo: FC = () => {
   );
 };
 
-export default HeaderTwo;
+export default HeaderOne;

@@ -12,37 +12,31 @@ export interface MenuItem {
 export const menuData: MenuItem[] = [
   {
     label: "Trang chủ",
-    subMenu: [
-      { label: "Trang chủ chính", link: "/" },
-    ],
+    link: "/",
   },
   {
     label: "Phòng nghỉ",
     subMenu: [
-      { label: "Tìm phòng", link: "/room" },
-      { label: "Chi tiết phòng", link: "/room-details" },
-      { label: "Chi tiết khách sạn", link: "/hotel/1" },
-      { label: "Bộ sưu tập", link: "/gallery" },
+      { label: "Danh sách phòng", link: "/room" },
+      { label: "Thư viện ảnh", link: "/gallery" },
     ],
   },
   {
-    label: "Đặt phòng",
+    label: "Giới thiệu",
     subMenu: [
-      { label: "Thanh toán", link: "/checkout" },
-      { label: "Đặt phòng thành công", link: "/booking-success" },
-      { label: "Đơn đặt của tôi", link: "/my-bookings" },
+      { label: "Giới thiệu chung", link: "/about" },
+      { label: "Chi tiết khách sạn", link: "/hotel/1" },
     ],
+  },
+  {
+    label: "Liên hệ",
+    link: "/contact",
   },
   {
     label: "Tài khoản",
     subMenu: [
       { label: "Đăng nhập", link: "/login" },
       { label: "Đăng ký", link: "/register" },
-      { label: "Quên mật khẩu", link: "/forgot-password" },
     ],
-  },
-  {
-    label: "Liên hệ",
-    link: "/contact",
   },
 ];

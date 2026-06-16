@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 import AuthForm from "@/components/auth/AuthForm";
-import Breadcrumb from "@/components/Breadcrumb";
-import FooterOne from "@/components/FooterOne";
-import HeaderTwo from "@/components/HeaderTwo";
+import Breadcrumb from "@/components/layout/Breadcrumb";
+import FooterOne from "@/components/layout/FooterOne";
+import HeaderTwo from "@/components/layout/HeaderTwo";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
 

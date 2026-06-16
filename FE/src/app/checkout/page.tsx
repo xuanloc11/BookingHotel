@@ -1,10 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
-import Breadcrumb from "@/components/Breadcrumb";
+import Breadcrumb from "@/components/layout/Breadcrumb";
 import CheckoutForm from "@/components/booking/CheckoutForm";
-import FooterOne from "@/components/FooterOne";
-import HeaderTwo from "@/components/HeaderTwo";
+import FooterOne from "@/components/layout/FooterOne";
+import HeaderTwo from "@/components/layout/HeaderTwo";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
 import { fetchHotelById } from "@/lib/api/hotelApi";
