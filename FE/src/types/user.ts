@@ -3,6 +3,7 @@ export interface UserProfile {
   email: string;
   full_name: string;
   phone?: string;
+  role?: string;
   avatar_url?: string;
   date_joined?: string;
 }

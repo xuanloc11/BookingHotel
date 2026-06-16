@@ -309,7 +309,7 @@ const HeaderTwo: FC = () => {
                         className='d-inline-flex align-items-center justify-content-center bg-main-600 rounded-circle text-heading fw-bold'
                         style={{ width: 36, height: 36, fontSize: 14 }}
                       >
-                        {(user.full_name?.[0] || user.email[0]).toUpperCase()}
+                        {(user.full_name?.[0] || user.email?.[0] || "U").toUpperCase()}
                       </span>
                       <span className='d-none d-lg-inline fw-medium' style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {user.full_name || user.email}
@@ -472,7 +472,7 @@ const HeaderTwo: FC = () => {
                     className='d-inline-flex align-items-center justify-content-center bg-main-600 rounded-circle text-heading fw-bold'
                     style={{ width: 36, height: 36, fontSize: 14 }}
                   >
-                    {(user.full_name?.[0] || user.email[0]).toUpperCase()}
+                    {(user.full_name?.[0] || user.email?.[0] || "U").toUpperCase()}
                   </span>
                   <div>
                     <span className='fw-semibold text-heading d-block'>{user.full_name || user.email}</span>
