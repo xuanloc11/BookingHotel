@@ -11,38 +11,38 @@ export interface MenuItem {
 
 export const menuData: MenuItem[] = [
   {
-    label: "Home",
+    label: "Trang chủ",
     subMenu: [
-      { label: "Main Home", link: "/" },
+      { label: "Trang chủ chính", link: "/" },
     ],
   },
   {
-    label: "Rooms",
+    label: "Phòng nghỉ",
     subMenu: [
-      { label: "Search Rooms", link: "/room" },
-      { label: "Room Details", link: "/room-details" },
-      { label: "Hotel Details", link: "/hotel/1" },
-      { label: "Gallery", link: "/gallery" },
+      { label: "Tìm phòng", link: "/room" },
+      { label: "Chi tiết phòng", link: "/room-details" },
+      { label: "Chi tiết khách sạn", link: "/hotel/1" },
+      { label: "Bộ sưu tập", link: "/gallery" },
     ],
   },
   {
-    label: "Reservations",
+    label: "Đặt phòng",
     subMenu: [
-      { label: "Checkout", link: "/checkout" },
-      { label: "Booking Success", link: "/booking-success" },
-      { label: "My Bookings", link: "/my-bookings" },
+      { label: "Thanh toán", link: "/checkout" },
+      { label: "Đặt phòng thành công", link: "/booking-success" },
+      { label: "Đơn đặt của tôi", link: "/my-bookings" },
     ],
   },
   {
-    label: "Account",
+    label: "Tài khoản",
     subMenu: [
-      { label: "Login", link: "/login" },
-      { label: "Register", link: "/register" },
-      { label: "Forgot Password", link: "/forgot-password" },
+      { label: "Đăng nhập", link: "/login" },
+      { label: "Đăng ký", link: "/register" },
+      { label: "Quên mật khẩu", link: "/forgot-password" },
     ],
   },
   {
-    label: "Contact",
+    label: "Liên hệ",
     link: "/contact",
   },
 ];

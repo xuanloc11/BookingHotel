@@ -10,6 +10,7 @@ import {
   persistAuthSession,
   register,
 } from "@/lib/api/authApi";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { sanitizeTextInput } from "@/lib/validation/sanitize";
 
 type AuthMode = "login" | "register" | "forgot-password";
@@ -25,6 +26,7 @@ function formValue(formData: FormData, key: string): string {
 
 export default function AuthForm({ mode, nextPath }: AuthFormProps) {
   const router = useRouter();
+  const { setUser } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -46,7 +48,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
         const response = await forgotPassword({
           email: formValue(formData, "email").toLowerCase(),
         });
-        setMessage(response.detail || "Password reset instructions have been sent.");
+        setMessage(response.detail || "Đã gửi hướng dẫn đặt lại mật khẩu.");
         return;
       }
 
@@ -55,39 +57,41 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
         const passwordConfirm = String(formData.get("password_confirm") ?? "");
 
         if (password.length < 8) {
-          setError("Password must be at least 8 characters.");
+          setError("Mật khẩu phải có ít nhất 8 ký tự.");
           return;
         }
 
         if (password !== passwordConfirm) {
-          setError("Password confirmation does not match.");
+          setError("Xác nhận mật khẩu không khớp.");
           return;
         }
 
-        const response = await register({
+        const regResponse = await register({
           full_name: formValue(formData, "full_name"),
           email: formValue(formData, "email").toLowerCase(),
           password,
           password_confirm: passwordConfirm,
         });
-        persistAuthSession(response);
+        persistAuthSession(regResponse);
+        setUser(regResponse.user);
         router.push(nextPath || "/my-bookings");
         router.refresh();
         return;
       }
 
-      const response = await login({
+      const loginResponse = await login({
         email: formValue(formData, "email").toLowerCase(),
         password: String(formData.get("password") ?? ""),
       });
-      persistAuthSession(response);
+      persistAuthSession(loginResponse);
+      setUser(loginResponse.user);
       router.push(nextPath || "/my-bookings");
       router.refresh();
     } catch (requestError) {
       setError(
         requestError instanceof Error
           ? requestError.message
-          : "Authentication request failed.",
+          : "Yêu cầu xác thực thất bại.",
       );
     } finally {
       setSubmitting(false);
@@ -104,17 +108,17 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                 <div className='section-two-wrapper tw-mb-14'>
                   <h6 className='section-two-subtitle tw-text-xl text-uppercase text-main-three-800 tw-mb-4'>
                     {isLogin
-                      ? "Welcome Back"
+                      ? "Chào mừng trở lại"
                       : isRegister
-                        ? "Create Account"
-                        : "Account Recovery"}
+                        ? "Tạo tài khoản"
+                        : "Khôi phục tài khoản"}
                   </h6>
                   <h2 className='section-two-title tw-text-16 fw-normal tw-mb-6 tw-char-animation'>
                     {isLogin
-                      ? "Sign In"
+                      ? "Đăng nhập"
                       : isRegister
-                        ? "Register"
-                        : "Reset Password"}
+                        ? "Đăng ký"
+                        : "Đặt lại mật khẩu"}
                   </h2>
                   <p className='fw-medium tw-text-lg'>
                     Quản lý đơn đặt phòng, chi tiết hồ sơ và lịch sử chuyến đi từ một tài khoản an toàn.
@@ -147,7 +151,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                             <input
                               className='form-control rounded-0 bg-white shadow-none border-none border-bottom border-bottom-neutral text-heading tw-ps-8 tw-pe-13 focus-border-main-600 tw-h-14'
                               name='full_name'
-                              placeholder='Full name'
+                              placeholder='Họ và tên'
                               required
                               type='text'
                             />
@@ -163,7 +167,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                           <input
                             className='form-control rounded-0 bg-white shadow-none border-none border-bottom border-bottom-neutral text-heading tw-ps-8 tw-pe-13 focus-border-main-600 tw-h-14'
                             name='email'
-                            placeholder='Email address'
+                            placeholder='Địa chỉ email'
                             required
                             type='email'
                           />
@@ -179,7 +183,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                             <input
                               className='form-control rounded-0 bg-white shadow-none border-none border-bottom border-bottom-neutral text-heading tw-ps-8 tw-pe-13 focus-border-main-600 tw-h-14'
                               name='password'
-                              placeholder='Password'
+                              placeholder='Mật khẩu'
                               required
                               type='password'
                             />
@@ -196,7 +200,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                             <input
                               className='form-control rounded-0 bg-white shadow-none border-none border-bottom border-bottom-neutral text-heading tw-ps-8 tw-pe-13 focus-border-main-600 tw-h-14'
                               name='password_confirm'
-                              placeholder='Confirm password'
+                              placeholder='Xác nhận mật khẩu'
                               required
                               type='password'
                             />
@@ -223,12 +227,12 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                           type='submit'
                         >
                           {submitting
-                            ? "Please wait..."
+                            ? "Vui lòng chờ..."
                             : isLogin
-                              ? "Login"
+                              ? "Đăng nhập"
                               : isRegister
-                                ? "Register"
-                                : "Send reset link"}
+                                ? "Đăng ký"
+                                : "Gửi liên kết đặt lại"}
                           <span className='d-inline-block lh-1 tw-text-lg'>
                             <i className='ph ph-arrow-right' />
                           </span>

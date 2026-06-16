@@ -1,18 +1,33 @@
 "use client";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { menuData } from "@/data/menuData";
 import { desktopMenuData } from "@/data/menuDataDesktop";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 const HeaderTwo: FC = () => {
   const pathname = usePathname();
+  const { user, loading: authLoading, handleLogout } = useAuth();
   const [searchActive, setSearchActive] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [active, setActive] = useState<boolean>(false);
   const [scroll, setScroll] = useState<boolean>(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  /* Close user dropdown when clicking outside */
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const checkScreen = () => {
@@ -126,7 +141,7 @@ const HeaderTwo: FC = () => {
                                           className='tw-btn-hover-white bg-main-600 tw-py-4 tw-px-8 text-capitalize text-heading font-heading d-inline-flex align-items-center tw-gap-2 tw-rounded-lg'
                                           href={home.link}
                                         >
-                                          Live Preview
+                                          Xem ngay
                                           <span className='d-inline-block lh-1 tw-text-lg'>
                                             <i className='ph ph-arrow-up-right' />
                                           </span>
@@ -191,40 +206,114 @@ const HeaderTwo: FC = () => {
             {/* Menu End  */}
             {/* Header Right start */}
             <div className='header-right d-flex tw-gap-28'>
-              <div className='header-call d-flex align-items-center tw-gap-5 tw-me-6'>
+              <div className='header-btn-wrap d-flex align-items-center tw-gap-5'>
                 <div>
-                  <span>
-                    <Image
-                      width={24}
-                      height={24}
-                      src='/assets/images/icons/cellphone.svg'
-                      alt='cellphone'
-                    />
-                  </span>
-                </div>
-                <div>
-                  <h6 className='text-white fw-normal tw-text-sm font-body tw-mb-2'>
-                    Need any Help! call Us today
-                  </h6>
-                  <Link
-                    className='text-white font-heading hover-text-main-600'
-                    href='tell:+2871382023'
+                  <button
+                    onClick={() => setSearchActive(true)}
+                    className='open-search text-white'
+                    aria-label='Tìm kiếm'
+                    title='Mở tìm kiếm'
                   >
-                    +(2) 871 382 023
-                  </Link>
+                    <span className='tw-text-3xl'>
+                      <i className='ph ph-magnifying-glass' />
+                    </span>
+                  </button>
                 </div>
               </div>
-              <div className='header-button header-two-button'>
-                <Link
-                  className='tw-btn-hover-white bg-main-600 tw-py-5 tw-px-14 text-capitalize text-heading font-heading d-inline-flex align-items-center tw-gap-2 tw-rounded-lg'
-                  href='/contact'
-                >
-                  Booking today{" "}
-                  <span className='d-inline-block lh-1 tw-text-lg'>
-                    <i className='ph ph-arrow-up-right' />
-                  </span>
-                </Link>
+
+              {/* Auth Section */}
+              <div className='header-button header-two-button d-flex align-items-center tw-gap-4'>
+                {authLoading ? (
+                  <span className='text-white tw-text-sm'>...</span>
+                ) : user ? (
+                  /* ---- Logged-in: avatar + dropdown ---- */
+                  <div ref={userMenuRef} className='position-relative'>
+                    <button
+                      type='button'
+                      onClick={() => setUserMenuOpen((prev) => !prev)}
+                      className='d-flex align-items-center tw-gap-2 bg-transparent border-0 text-white'
+                      aria-label='Menu người dùng'
+                    >
+                      <span
+                        className='d-inline-flex align-items-center justify-content-center bg-main-600 rounded-circle text-heading fw-bold'
+                        style={{ width: 36, height: 36, fontSize: 14 }}
+                      >
+                        {(user.full_name?.[0] || user.email[0]).toUpperCase()}
+                      </span>
+                      <span className='d-none d-lg-inline fw-medium' style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {user.full_name || user.email}
+                      </span>
+                      <i className='ph ph-caret-down tw-text-sm' />
+                    </button>
+
+                    {userMenuOpen && (
+                      <ul
+                        className='position-absolute bg-white tw-rounded-md tw-p-2 tw-z-999'
+                        style={{ top: '100%', right: 0, minWidth: 200, boxShadow: '0 4px 24px rgba(0,0,0,.12)' }}
+                      >
+                        <li className='tw-px-4 tw-py-2 border-bottom border-neutral-200'>
+                          <span className='fw-semibold text-heading d-block text-truncate'>{user.full_name || user.email}</span>
+                          <span className='tw-text-xs text-neutral-500 d-block text-truncate'>{user.email}</span>
+                        </li>
+                        <li>
+                          <Link
+                            href='/my-bookings'
+                            onClick={() => setUserMenuOpen(false)}
+                            className='d-flex align-items-center tw-gap-2 tw-px-4 tw-py-2 text-heading hover-bg-neutral-200 tw-rounded'
+                          >
+                            <i className='ph ph-calendar-check' />
+                            Đơn đặt của tôi
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            href='/room'
+                            onClick={() => setUserMenuOpen(false)}
+                            className='d-flex align-items-center tw-gap-2 tw-px-4 tw-py-2 text-heading hover-bg-neutral-200 tw-rounded'
+                          >
+                            <i className='ph ph-buildings' />
+                            Tìm phòng
+                          </Link>
+                        </li>
+                        <li className='border-top border-neutral-200'>
+                          <button
+                            type='button'
+                            onClick={async () => {
+                              setUserMenuOpen(false);
+                              await handleLogout();
+                            }}
+                            className='d-flex align-items-center tw-gap-2 tw-px-4 tw-py-2 text-danger hover-bg-neutral-200 tw-rounded w-100 border-0 bg-transparent'
+                          >
+                            <i className='ph ph-sign-out' />
+                            Đăng xuất
+                          </button>
+                        </li>
+                      </ul>
+                    )}
+                  </div>
+                ) : (
+                  /* ---- Logged-out: login + register ---- */
+                  <>
+                    <Link
+                      className='text-white font-heading fw-medium d-none d-lg-inline-flex align-items-center tw-gap-2 hover-text-main-600'
+                      href='/login'
+                    >
+                      <i className='ph ph-sign-in tw-text-xl' />
+                      Đăng nhập
+                    </Link>
+                    <Link
+                      className='tw-btn-hover-white bg-main-600 tw-py-5 tw-px-7 text-capitalize text-heading font-heading d-inline-flex align-items-center tw-gap-2 tw-rounded-lg'
+                      href='/register'
+                    >
+                      Đăng ký
+                      <span className='d-inline-block lh-1 tw-text-lg'>
+                        <i className='ph ph-user-plus' />
+                      </span>
+                    </Link>
+                  </>
+                )}
               </div>
+
               <button
                 onClick={() => setActive(true)}
                 type='button'
@@ -307,6 +396,64 @@ const HeaderTwo: FC = () => {
               ))}
             </ul>
           </div>
+
+          {/* Mobile Auth */}
+          <div className='tw-mt-8 tw-border-t tw-border-neutral-200 tw-pt-6'>
+            {authLoading ? null : user ? (
+              <>
+                <div className='d-flex align-items-center tw-gap-3 tw-mb-4'>
+                  <span
+                    className='d-inline-flex align-items-center justify-content-center bg-main-600 rounded-circle text-heading fw-bold'
+                    style={{ width: 36, height: 36, fontSize: 14 }}
+                  >
+                    {(user.full_name?.[0] || user.email[0]).toUpperCase()}
+                  </span>
+                  <div>
+                    <span className='fw-semibold text-heading d-block'>{user.full_name || user.email}</span>
+                    <span className='tw-text-xs text-neutral-500'>{user.email}</span>
+                  </div>
+                </div>
+                <Link
+                  href='/my-bookings'
+                  onClick={() => setActive(false)}
+                  className='d-flex align-items-center tw-gap-2 tw-py-2 text-heading hover-text-main-600'
+                >
+                  <i className='ph ph-calendar-check' />
+                  Đơn đặt của tôi
+                </Link>
+                <button
+                  type='button'
+                  onClick={async () => {
+                    setActive(false);
+                    await handleLogout();
+                  }}
+                  className='d-flex align-items-center tw-gap-2 tw-py-2 text-danger border-0 bg-transparent w-100 tw-mt-2'
+                >
+                  <i className='ph ph-sign-out' />
+                  Đăng xuất
+                </button>
+              </>
+            ) : (
+              <div className='d-flex flex-column tw-gap-3'>
+                <Link
+                  href='/login'
+                  onClick={() => setActive(false)}
+                  className='d-flex align-items-center tw-gap-2 tw-py-2 text-heading hover-text-main-600'
+                >
+                  <i className='ph ph-sign-in' />
+                  Đăng nhập
+                </Link>
+                <Link
+                  href='/register'
+                  onClick={() => setActive(false)}
+                  className='d-flex align-items-center tw-gap-2 tw-py-2 text-heading hover-text-main-600'
+                >
+                  <i className='ph ph-user-plus' />
+                  Đăng ký
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -367,7 +514,7 @@ const HeaderTwo: FC = () => {
                         <input
                           className='search-input-field'
                           type='text'
-                          placeholder='Type here to search...'
+                          placeholder='Nhập nội dung tìm kiếm...'
                         />
                         <span className='search-focus-border' />
                         <button type='submit'>

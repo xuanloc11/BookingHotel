@@ -2,6 +2,7 @@ import BootstrapInit from "@/helper/BootstrapInit";
 import RouteScrollToTop from "@/helper/RouteScrollToTop";
 import ErrorBoundary from "@/helper/ErrorBoundary";
 import CustomGSAP from "@/helper/CustomGsap";
+import { AuthProvider } from "@/lib/auth/AuthContext";
 import { Marcellus } from "next/font/google";
 import "./globals.css";
 
@@ -33,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en' className={`${marcellus.variable}`}>
+    <html lang='vi' className={`${marcellus.variable}`}>
       <body>
         <ErrorBoundary>
           <BootstrapInit />
@@ -41,8 +42,9 @@ export default function RootLayout({
           <CustomGSAP />
         </ErrorBoundary>
 
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
 }
+
