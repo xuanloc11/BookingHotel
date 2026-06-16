@@ -1,18 +1,5 @@
-import BootstrapInit from "@/helper/BootstrapInit";
-import RouteScrollToTop from "@/helper/RouteScrollToTop";
-import ErrorBoundary from "@/helper/ErrorBoundary";
-import CustomGSAP from "@/helper/CustomGsap";
 import { AuthProvider } from "@/lib/auth/AuthContext";
-import { Marcellus } from "next/font/google";
-import "./globals.css";
-
-/* Marcellus – Google Font */
-const marcellus = Marcellus({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-marcellus",
-  display: "swap",
-});
+import { Toaster } from "react-hot-toast";
 
 export async function generateMetadata() {
   return {
@@ -34,17 +21,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='vi' className={`${marcellus.variable}`}>
+    <html lang='vi'>
       <body>
-        <ErrorBoundary>
-          <BootstrapInit />
-          <RouteScrollToTop />
-          <CustomGSAP />
-        </ErrorBoundary>
-
         <AuthProvider>{children}</AuthProvider>
+        <Toaster position="top-right" />
       </body>
     </html>
   );
 }
-

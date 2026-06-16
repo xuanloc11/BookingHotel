@@ -13,6 +13,8 @@ from app.views import _get_authenticated_user, _json_error, _parse_json_body
 def _is_vendor(user) -> bool:
     if not user:
         return False
+    if user.is_superuser:
+        return True
     profile = Profile.objects.filter(user=user).first()
     return profile and profile.role in [Profile.ROLE_VENDOR, Profile.ROLE_ADMIN]
 

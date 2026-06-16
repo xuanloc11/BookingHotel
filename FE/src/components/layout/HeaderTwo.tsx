@@ -346,6 +346,18 @@ const HeaderTwo: FC = () => {
                             Tìm phòng
                           </Link>
                         </li>
+                        {(user.role === 'admin' || user.role === 'vendor') && (
+                          <li>
+                            <Link
+                              href='/vendor/dashboard'
+                              onClick={() => setUserMenuOpen(false)}
+                              className='d-flex align-items-center tw-gap-2 tw-px-4 tw-py-2 text-primary fw-medium hover-bg-neutral-200 tw-rounded'
+                            >
+                              <i className='ph ph-shield-check' />
+                              Trang Quản lý (Vendor)
+                            </Link>
+                          </li>
+                        )}
                         <li className='border-top border-neutral-200'>
                           <button
                             type='button'

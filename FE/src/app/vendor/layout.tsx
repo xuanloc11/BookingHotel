@@ -4,6 +4,7 @@ import { ReactNode, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthContext";
+import Script from "next/script";
 
 export default function VendorLayout({ children }: { children: ReactNode }) {
   const { user, loading, handleLogout } = useAuth();
@@ -31,61 +32,144 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
   }
 
   const navLinks = [
-    { label: "Dashboard", href: "/vendor/dashboard", icon: "ph-squares-four" },
-    { label: "Quản lý khách sạn", href: "/vendor/hotels", icon: "ph-buildings" },
-    { label: "Quản lý đơn đặt", href: "/vendor/bookings", icon: "ph-calendar-check" },
+    { label: "Tổng quan", href: "/vendor/dashboard", icon: "ri-dashboard-2-line" },
+    { label: "Quản lý khách sạn", href: "/vendor/hotels", icon: "ri-building-line" },
+    { label: "Quản lý đơn đặt", href: "/vendor/bookings", icon: "ri-calendar-check-line" },
   ];
 
   return (
-    <div className="d-flex vh-100 bg-light overflow-hidden">
-      {/* Sidebar */}
-      <div className="bg-dark text-white d-flex flex-column" style={{ width: "260px" }}>
-        <div className="p-4 border-bottom border-secondary text-center">
-          <h4 className="m-0 font-heading fw-bold text-white">Vendor Portal</h4>
-        </div>
-        <ul className="nav nav-pills flex-column mb-auto p-3 tw-gap-2">
-          {navLinks.map((link) => {
-            const isActive = pathname.startsWith(link.href);
-            return (
-              <li className="nav-item" key={link.href}>
-                <Link
-                  href={link.href}
-                  className={`nav-link text-white d-flex align-items-center tw-gap-3 ${isActive ? "bg-main-600 fw-bold" : ""}`}
-                >
-                  <i className={`ph ${link.icon} tw-text-xl`} />
-                  {link.label}
+    <>
+      <head>
+        {/* Template CSS */}
+        <link href="/admin-assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <link href="/admin-assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <Script src="/admin-assets/js/config.js" strategy="beforeInteractive" />
+      </head>
+      {/* Wrapper */}
+      <div className="wrapper">
+        {/* Topbar */}
+        <div className="navbar-custom">
+          <div className="topbar container-fluid">
+            <div className="d-flex align-items-center gap-1">
+              <div className="logo-topbar">
+                <Link href="/vendor/dashboard" className="logo-light">
+                  <span className="logo-lg">
+                    <h3 className="text-white mt-3">Booking Vendor</h3>
+                  </span>
+                  <span className="logo-sm">
+                    <h3 className="text-white mt-3">BV</h3>
+                  </span>
                 </Link>
+                <Link href="/vendor/dashboard" className="logo-dark">
+                  <span className="logo-lg">
+                    <h3 className="mt-3">Booking Vendor</h3>
+                  </span>
+                  <span className="logo-sm">
+                    <h3 className="mt-3">BV</h3>
+                  </span>
+                </Link>
+              </div>
+
+              <button className="button-toggle-menu">
+                <i className="mdi mdi-menu"></i>
+              </button>
+
+              <h4 className="page-title d-none d-sm-block">Cổng Đối Tác</h4>
+            </div>
+
+            <ul className="topbar-menu d-flex align-items-center gap-3">
+              <li className="dropdown">
+                <a className="nav-link dropdown-toggle arrow-none nav-user" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                  <span className="account-user-avatar">
+                    <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style={{ width: 32, height: 32 }}>
+                      {(user.full_name?.[0] || "U").toUpperCase()}
+                    </div>
+                  </span>
+                  <span className="d-lg-block d-none">
+                    <h5 className="my-0 fw-normal">{user.full_name} <i className="ri-arrow-down-s-line fs-22 d-none d-sm-inline-block align-middle"></i></h5>
+                  </span>
+                </a>
+                <div className="dropdown-menu dropdown-menu-end dropdown-menu-animated profile-dropdown">
+                  <div className="dropdown-header noti-title">
+                    <h6 className="text-overflow m-0">Xin chào!</h6>
+                  </div>
+                  <Link href="/" className="dropdown-item">
+                    <i className="ri-home-4-line fs-16 align-middle me-1"></i>
+                    <span>Về trang chủ khách</span>
+                  </Link>
+                  <button onClick={handleLogout} className="dropdown-item">
+                    <i className="ri-logout-circle-r-line align-middle me-1"></i>
+                    <span>Đăng xuất</span>
+                  </button>
+                </div>
               </li>
-            );
-          })}
-        </ul>
-        <div className="p-4 border-top border-secondary">
-          <Link href="/" className="btn btn-outline-light w-100 mb-2 d-flex align-items-center justify-content-center tw-gap-2">
-            <i className="ph ph-house" /> Về trang chủ
-          </Link>
-          <button onClick={handleLogout} className="btn btn-danger w-100 d-flex align-items-center justify-content-center tw-gap-2">
-            <i className="ph ph-sign-out" /> Đăng xuất
-          </button>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-grow-1 overflow-y-auto">
-        {/* Top Header */}
-        <header className="bg-white shadow-sm p-3 d-flex justify-content-between align-items-center sticky-top">
-          <h5 className="m-0 font-heading fw-bold">Xin chào, {user.full_name}</h5>
-          <div className="d-flex align-items-center tw-gap-2">
-            <span className="bg-main-600 text-heading fw-bold rounded-circle d-flex align-items-center justify-content-center" style={{ width: 40, height: 40 }}>
-              {(user.full_name?.[0] || "U").toUpperCase()}
-            </span>
+            </ul>
           </div>
-        </header>
+        </div>
+        {/* End Topbar */}
 
-        {/* Page Content */}
-        <main className="p-4">
-          {children}
-        </main>
-      </div>
-    </div>
+        {/* Left Sidebar */}
+        <div className="leftside-menu">
+          <Link href="/vendor/dashboard" className="logo logo-light">
+            <span className="logo-lg">
+              <h3 className="text-white mt-3 text-center">Booking</h3>
+            </span>
+            <span className="logo-sm">
+              <h3 className="text-white mt-3 text-center">B</h3>
+            </span>
+          </Link>
+          <Link href="/vendor/dashboard" className="logo logo-dark">
+            <span className="logo-lg">
+              <h3 className="mt-3 text-center">Booking</h3>
+            </span>
+            <span className="logo-sm">
+              <h3 className="mt-3 text-center">B</h3>
+            </span>
+          </Link>
+
+          <div data-simplebar>
+            <ul className="side-nav">
+              <li className="side-nav-title">Menu Chính</li>
+              {navLinks.map((link) => {
+                const isActive = pathname.startsWith(link.href);
+                return (
+                  <li className="side-nav-item" key={link.href}>
+                    <Link href={link.href} className={`side-nav-link ${isActive ? "active" : ""}`}>
+                      <i className={link.icon}></i>
+                      <span> {link.label} </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+        {/* End Left Sidebar */}
+
+        {/* Content Page */}
+        <div className="content-page">
+          <div className="content">
+            <div className="container-fluid">
+              {children}
+            </div>
+          </div>
+          {/* Footer */}
+          <footer className="footer">
+            <div className="container-fluid">
+              <div className="row">
+                <div className="col-12 text-center">
+                  <script>document.write(new Date().getFullYear())</script> © BookingHotel - Vendor Portal
+                </div>
+              </div>
+            </div>
+          </footer>
+          </div>
+          {/* End Content Page */}
+        </div>
+
+        {/* Template Scripts */}
+        <Script src="/admin-assets/js/vendor.min.js" strategy="lazyOnload" />
+        <Script src="/admin-assets/js/app.min.js" strategy="lazyOnload" />
+    </>
   );
 }

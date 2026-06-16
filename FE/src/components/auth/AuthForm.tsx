@@ -12,6 +12,7 @@ import {
 } from "@/lib/api/authApi";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { sanitizeTextInput } from "@/lib/validation/sanitize";
+import toast from "react-hot-toast";
 
 type AuthMode = "login" | "register" | "forgot-password";
 
@@ -37,8 +38,6 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null);
-    setMessage(null);
     setSubmitting(true);
 
     const formData = new FormData(event.currentTarget);
@@ -48,7 +47,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
         const response = await forgotPassword({
           email: formValue(formData, "email").toLowerCase(),
         });
-        setMessage(response.detail || "Đã gửi hướng dẫn đặt lại mật khẩu.");
+        toast.success(response.detail || "Đã gửi hướng dẫn đặt lại mật khẩu.");
         return;
       }
 
@@ -57,12 +56,12 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
         const passwordConfirm = String(formData.get("password_confirm") ?? "");
 
         if (password.length < 8) {
-          setError("Mật khẩu phải có ít nhất 8 ký tự.");
+          toast.error("Mật khẩu phải có ít nhất 8 ký tự.");
           return;
         }
 
         if (password !== passwordConfirm) {
-          setError("Xác nhận mật khẩu không khớp.");
+          toast.error("Xác nhận mật khẩu không khớp.");
           return;
         }
 
@@ -74,6 +73,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
         });
         persistAuthSession(regResponse);
         setUser(regResponse.user);
+        toast.success("Đăng ký thành công!");
         router.push(nextPath || "/my-bookings");
         router.refresh();
         return;
@@ -85,10 +85,11 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
       });
       persistAuthSession(loginResponse);
       setUser(loginResponse.user);
+      toast.success("Đăng nhập thành công!");
       router.push(nextPath || "/my-bookings");
       router.refresh();
     } catch (requestError) {
-      setError(
+      toast.error(
         requestError instanceof Error
           ? requestError.message
           : "Yêu cầu xác thực thất bại.",
@@ -128,18 +129,6 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
 
               <div className='col-xl-7 col-lg-7'>
                 <div className='contact-two-form bg-white tw-py-16 tw-px-10 tw-mb-7'>
-                  {error ? (
-                    <div className='alert alert-danger' role='alert'>
-                      {error}
-                    </div>
-                  ) : null}
-
-                  {message ? (
-                    <div className='alert alert-success' role='status'>
-                      {message}
-                    </div>
-                  ) : null}
-
                   <form onSubmit={handleSubmit}>
                     <div className='row'>
                       {isRegister ? (
@@ -226,16 +215,23 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                           disabled={submitting}
                           type='submit'
                         >
-                          {submitting
-                            ? "Vui lòng chờ..."
-                            : isLogin
-                              ? "Đăng nhập"
-                              : isRegister
-                                ? "Đăng ký"
-                                : "Gửi liên kết đặt lại"}
-                          <span className='d-inline-block lh-1 tw-text-lg'>
-                            <i className='ph ph-arrow-right' />
-                          </span>
+                          {submitting ? (
+                            <>
+                              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                              Vui lòng chờ...
+                            </>
+                          ) : isLogin ? (
+                            "Đăng nhập"
+                          ) : isRegister ? (
+                            "Đăng ký"
+                          ) : (
+                            "Gửi liên kết đặt lại"
+                          )}
+                          {!submitting && (
+                            <span className='d-inline-block lh-1 tw-text-lg'>
+                              <i className='ph ph-arrow-right' />
+                            </span>
+                          )}
                         </button>
                       </div>
 

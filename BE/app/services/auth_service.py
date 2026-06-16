@@ -41,7 +41,14 @@ class AuthService:
 
     def login(self, email: str, password: str) -> AuthResult:
         normalized_email = email.strip().lower()
-        user = authenticate(username=normalized_email, password=password)
+        
+        try:
+            db_user = User.objects.filter(email=normalized_email).first()
+            username = db_user.username if db_user else normalized_email
+        except Exception:
+            username = normalized_email
+
+        user = authenticate(username=username, password=password)
 
         if not user:
             raise ValueError('Invalid email or password.')

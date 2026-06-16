@@ -2,14 +2,19 @@ from django.urls import path
 
 from app import views
 from app import views_vendor
+from app import views_admin
 
 
 urlpatterns = [
     path('health/', views.health_check, name='api-health'),
     path('hotels/', views.hotel_list, name='api-hotels'),
+    path('hotels', views.hotel_list),
     path('hotels/<int:hotel_id>/', views.hotel_detail, name='api-hotel-detail'),
+    path('hotels/<int:hotel_id>', views.hotel_detail),
     path('hotels/<int:hotel_id>/availability/', views.hotel_availability, name='api-hotel-availability'),
+    path('hotels/<int:hotel_id>/availability', views.hotel_availability),
     path('provinces/', views.province_list, name='api-provinces'),
+    path('provinces', views.province_list),
     path('auth/login/', views.login, name='api-auth-login'),
     path('auth/login', views.login),
     path('auth/register/', views.register, name='api-auth-register'),
@@ -26,9 +31,28 @@ urlpatterns = [
     path('bookings/my', views.my_bookings),
     path('bookings/<str:booking_id>/', views.booking_detail, name='api-booking-detail'),
     path('vendor/dashboard/', views_vendor.dashboard_stats, name='api-vendor-dashboard'),
+    path('vendor/dashboard', views_vendor.dashboard_stats),
     path('vendor/hotels/', views_vendor.manage_hotel, name='api-vendor-hotels'),
+    path('vendor/hotels', views_vendor.manage_hotel),
     path('vendor/hotels/rooms/', views_vendor.manage_rooms, name='api-vendor-rooms'),
+    path('vendor/hotels/rooms', views_vendor.manage_rooms),
     path('vendor/hotels/rooms/<int:room_id>/', views_vendor.manage_room_detail, name='api-vendor-room-detail'),
+    path('vendor/hotels/rooms/<int:room_id>', views_vendor.manage_room_detail),
     path('vendor/bookings/', views_vendor.list_bookings, name='api-vendor-bookings'),
+    path('vendor/bookings', views_vendor.list_bookings),
     path('vendor/bookings/<str:booking_id>/', views_vendor.update_booking_status, name='api-vendor-booking-status'),
+    path('vendor/bookings/<str:booking_id>', views_vendor.update_booking_status),
+    
+    path('system-admin/dashboard/', views_admin.dashboard_stats, name='api-admin-dashboard'),
+    path('system-admin/dashboard', views_admin.dashboard_stats),
+    path('system-admin/users/', views_admin.list_users, name='api-admin-users'),
+    path('system-admin/users', views_admin.list_users),
+    path('system-admin/users/<int:user_id>/', views_admin.manage_user, name='api-admin-user-detail'),
+    path('system-admin/users/<int:user_id>', views_admin.manage_user),
+    path('system-admin/hotels/', views_admin.list_hotels, name='api-admin-hotels'),
+    path('system-admin/hotels', views_admin.list_hotels),
+    path('system-admin/hotels/<int:hotel_id>/', views_admin.manage_hotel, name='api-admin-hotel-detail'),
+    path('system-admin/hotels/<int:hotel_id>', views_admin.manage_hotel),
+    path('system-admin/bookings/', views_admin.list_bookings, name='api-admin-bookings'),
+    path('system-admin/bookings', views_admin.list_bookings),
 ]

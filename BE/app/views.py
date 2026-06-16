@@ -66,7 +66,7 @@ def _serialize_user(user) -> dict:
         'email': user.email,
         'full_name': profile.full_name,
         'phone': profile.phone,
-        'role': profile.role,
+        'role': 'admin' if user.is_superuser else profile.role,
         'avatar_url': profile.avatar_url,
         'date_joined': user.date_joined.isoformat() if user.date_joined else None,
     }
