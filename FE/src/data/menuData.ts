@@ -9,34 +9,73 @@ export interface MenuItem {
   subMenu?: SubMenuItem[];
 }
 
-export const menuData: MenuItem[] = [
-  {
-    label: "Trang chủ",
-    link: "/",
-  },
-  {
-    label: "Phòng nghỉ",
-    subMenu: [
-      { label: "Danh sách phòng", link: "/room" },
-      { label: "Thư viện ảnh", link: "/gallery" },
-    ],
-  },
-  {
-    label: "Giới thiệu",
-    subMenu: [
-      { label: "Giới thiệu chung", link: "/about" },
-      { label: "Chi tiết khách sạn", link: "/hotel/1" },
-    ],
-  },
-  {
-    label: "Liên hệ",
-    link: "/contact",
-  },
-  {
-    label: "Tài khoản",
-    subMenu: [
-      { label: "Đăng nhập", link: "/login" },
-      { label: "Đăng ký", link: "/register" },
-    ],
-  },
-];
+export const getMenuData = (lang: string = 'vi'): MenuItem[] => {
+  if (lang === 'en') {
+    return [
+      {
+        label: "Home",
+        link: "/",
+      },
+      {
+        label: "Rooms",
+        subMenu: [
+          { label: "Room List", link: "/room" },
+          { label: "Gallery", link: "/gallery" },
+        ],
+      },
+      {
+        label: "About Us",
+        subMenu: [
+          { label: "General Info", link: "/about" },
+          { label: "Hotel Details", link: "/hotel/1" },
+        ],
+      },
+      {
+        label: "Contact",
+        link: "/contact",
+      },
+      {
+        label: "Account",
+        subMenu: [
+          { label: "Login", link: "/login" },
+          { label: "Register", link: "/register" },
+        ],
+      },
+    ];
+  }
+
+  // Default to VI
+  return [
+    {
+      label: "Trang chủ",
+      link: "/",
+    },
+    {
+      label: "Phòng nghỉ",
+      subMenu: [
+        { label: "Danh sách phòng", link: "/room" },
+        { label: "Thư viện ảnh", link: "/gallery" },
+      ],
+    },
+    {
+      label: "Giới thiệu",
+      subMenu: [
+        { label: "Giới thiệu chung", link: "/about" },
+        { label: "Chi tiết khách sạn", link: "/hotel/1" },
+      ],
+    },
+    {
+      label: "Liên hệ",
+      link: "/contact",
+    },
+    {
+      label: "Tài khoản",
+      subMenu: [
+        { label: "Đăng nhập", link: "/login" },
+        { label: "Đăng ký", link: "/register" },
+      ],
+    },
+  ];
+};
+
+export const menuData = getMenuData('vi');

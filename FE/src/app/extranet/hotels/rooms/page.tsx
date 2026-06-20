@@ -77,7 +77,7 @@ export default function VendorRoomsManage() {
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <Link href="/vendor/hotels" className="text-neutral-500 hover-text-main-600 mb-1 d-inline-block"><i className="ph ph-arrow-left" /> Quay lại khách sạn</Link>
+          <Link href="/extranet/hotels" className="text-neutral-500 hover-text-main-600 mb-1 d-inline-block"><i className="ph ph-arrow-left" /> Quay lại khách sạn</Link>
           <h3 className="fw-bold m-0">Quản lý Kho phòng</h3>
         </div>
         {!editingRoom && (

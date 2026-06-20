@@ -127,7 +127,7 @@ export default function VendorHotelManage() {
                   <h5 className="fw-bold m-0 text-primary mb-1">Quản lý kho phòng</h5>
                   <p className="m-0 text-muted">Thêm, sửa, xóa các loại phòng của khách sạn</p>
                 </div>
-                <Link href="/vendor/hotels/rooms" className="btn btn-primary px-4">Quản lý Phòng</Link>
+                <Link href="/extranet/hotels/rooms" className="btn btn-primary px-4">Quản lý Phòng</Link>
               </div>
             </div>
           </div>

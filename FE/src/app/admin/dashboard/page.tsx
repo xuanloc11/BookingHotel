@@ -3,6 +3,18 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getAdminDashboard } from "@/lib/api/adminApi";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  BarChart,
+  Bar,
+  Legend
+} from "recharts";
 
 export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
@@ -72,6 +84,58 @@ export default function AdminDashboard() {
               </div>
               <h5 className="text-muted fw-normal mt-0" title="Tổng doanh thu toàn sàn">Doanh thu sàn</h5>
               <h3 className="mt-3 mb-3">{data?.total_revenue?.toLocaleString('vi-VN') || 0} ₫</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="col-xl-6">
+          <div className="card shadow-sm border-0">
+            <div className="card-header bg-white border-bottom pt-4 pb-3">
+              <h5 className="fw-bold m-0">Doanh thu sàn 6 tháng gần nhất</h5>
+            </div>
+            <div className="card-body">
+              {data?.chart_data && data.chart_data.length > 0 ? (
+                <div style={{ width: '100%', height: 300 }}>
+                  <ResponsiveContainer>
+                    <AreaChart data={data.chart_data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="name" />
+                      <YAxis tickFormatter={(value) => new Intl.NumberFormat('vi-VN', { notation: "compact", compactDisplay: "short" }).format(value)} />
+                      <Tooltip formatter={(value: number) => value.toLocaleString('vi-VN') + ' ₫'} />
+                      <Area type="monotone" dataKey="revenue" name="Doanh thu" stroke="#0acf97" fill="#0acf97" fillOpacity={0.2} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="text-center py-5 text-muted">Chưa có dữ liệu doanh thu.</div>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        <div className="col-xl-6">
+          <div className="card shadow-sm border-0">
+            <div className="card-header bg-white border-bottom pt-4 pb-3">
+              <h5 className="fw-bold m-0">Đơn đặt phòng toàn hệ thống 6 tháng gần nhất</h5>
+            </div>
+            <div className="card-body">
+              {data?.chart_data && data.chart_data.length > 0 ? (
+                <div style={{ width: '100%', height: 300 }}>
+                  <ResponsiveContainer>
+                    <BarChart data={data.chart_data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="name" />
+                      <YAxis allowDecimals={false} />
+                      <Tooltip />
+                      <Bar dataKey="bookings" name="Đơn đặt phòng" fill="#727cf5" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="text-center py-5 text-muted">Chưa có dữ liệu đặt phòng.</div>
+              )}
             </div>
           </div>
         </div>

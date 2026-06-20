@@ -97,6 +97,13 @@ export async function fetchBackendJson<T>(
     headers.set("Content-Type", "application/json");
   }
 
+  if (typeof window !== "undefined") {
+    const currency = localStorage.getItem("app_currency") || "VND";
+    const language = localStorage.getItem("app_language") || "vi";
+    if (!headers.has("X-Currency")) headers.set("X-Currency", currency);
+    if (!headers.has("Accept-Language")) headers.set("Accept-Language", language);
+  }
+
   const response = await fetch(getBackendUrl(path), {
     cache: "no-store",
     credentials: "include",

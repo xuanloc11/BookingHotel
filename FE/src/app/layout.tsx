@@ -1,4 +1,5 @@
 import { AuthProvider } from "@/lib/auth/AuthContext";
+import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import { Toaster } from "react-hot-toast";
 
 export async function generateMetadata() {
@@ -23,8 +24,10 @@ export default function RootLayout({
   return (
     <html lang='vi'>
       <body>
-        <AuthProvider>{children}</AuthProvider>
-        <Toaster position="top-right" />
+        <LanguageProvider>
+          <AuthProvider>{children}</AuthProvider>
+          <Toaster position="top-right" />
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -1,11 +1,12 @@
 "use client";
 import { FC, useEffect, useRef, useState } from "react";
-import { menuData } from "@/data/menuData";
-import { desktopMenuData } from "@/data/menuDataDesktop";
+import { getMenuData } from "@/data/menuData";
+import { getDesktopMenuData } from "@/data/menuDataDesktop";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const HeaderTwo: FC = () => {
   const pathname = usePathname();
@@ -17,24 +18,39 @@ const HeaderTwo: FC = () => {
   const [scroll, setScroll] = useState<boolean>(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  
+  const [currency, setCurrency] = useState("VND");
+  const { language, toggleLanguage, t } = useLanguage();
 
-  const dynamicDesktopMenu = desktopMenuData.map(item => {
-    if (item.label === "Tài khoản") {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCurrency(localStorage.getItem("app_currency") || "VND");
+    }
+  }, []);
+
+  const toggleCurrency = () => {
+    const newCurr = currency === "VND" ? "USD" : "VND";
+    localStorage.setItem("app_currency", newCurr);
+    window.location.reload();
+  };
+
+  const dynamicDesktopMenu = getDesktopMenuData(language).map(item => {
+    if (item.label === "Tài khoản" || item.label === "Account") {
       if (user) {
         return {
           ...item,
           subMenu: [
-            { label: "Hồ sơ cá nhân", link: "#" },
-            { label: "Đơn đặt của tôi", link: "/my-bookings" },
-            { label: "Đăng xuất", link: "/logout" }
+            { label: t("header.profile"), link: "#" },
+            { label: t("header.myBookings"), link: "/my-bookings" },
+            { label: t("header.logout"), link: "/logout" }
           ]
         };
       } else {
         return {
           ...item,
           subMenu: [
-            { label: "Đăng nhập", link: "/login" },
-            { label: "Đăng ký", link: "/register" }
+            { label: t("header.login"), link: "/login" },
+            { label: t("header.register"), link: "/register" }
           ]
         };
       }
@@ -42,23 +58,23 @@ const HeaderTwo: FC = () => {
     return item;
   });
 
-  const dynamicMobileMenu = menuData.map(item => {
-    if (item.label === "Tài khoản") {
+  const dynamicMobileMenu = getMenuData(language).map(item => {
+    if (item.label === "Tài khoản" || item.label === "Account") {
       if (user) {
         return {
           ...item,
           subMenu: [
-            { label: "Hồ sơ cá nhân", link: "#" },
-            { label: "Đơn đặt của tôi", link: "/my-bookings" },
-            { label: "Đăng xuất", link: "/logout" }
+            { label: t("header.profile"), link: "#" },
+            { label: t("header.myBookings"), link: "/my-bookings" },
+            { label: t("header.logout"), link: "/logout" }
           ]
         };
       } else {
         return {
           ...item,
           subMenu: [
-            { label: "Đăng nhập", link: "/login" },
-            { label: "Đăng ký", link: "/register" }
+            { label: t("header.login"), link: "/login" },
+            { label: t("header.register"), link: "/register" }
           ]
         };
       }
@@ -268,6 +284,17 @@ const HeaderTwo: FC = () => {
             {/* Header Right start */}
             <div className='header-right d-flex tw-gap-28'>
               <div className='header-btn-wrap d-flex align-items-center tw-gap-5'>
+                {/* Currency & Language */}
+                <div className='d-none d-lg-flex align-items-center tw-gap-4 tw-me-2'>
+                  <button onClick={toggleCurrency} className='text-white fw-medium bg-transparent border-0 d-flex align-items-center tw-gap-1 hover-text-main-600' title="Chọn tiền tệ">
+                    <span className='tw-text-xl'><i className='ph ph-currency-circle-dollar' /></span>
+                    {currency}
+                  </button>
+                  <button onClick={toggleLanguage} className='text-white fw-medium bg-transparent border-0 d-flex align-items-center tw-gap-1 hover-text-main-600' title="Chọn ngôn ngữ">
+                    <img src={language === 'vi' ? "https://flagcdn.com/w40/vn.png" : "https://flagcdn.com/w40/us.png"} width="24" height="16" alt={language.toUpperCase()} className="tw-rounded-sm object-fit-cover" style={{ boxShadow: '0 0 2px rgba(0,0,0,0.3)' }} />
+                  </button>
+                </div>
+
                 <div>
                   <button
                     onClick={() => setSearchActive(true)}
@@ -288,7 +315,7 @@ const HeaderTwo: FC = () => {
                   className='tw-btn-hover-white bg-main-600 tw-py-5 tw-px-7 text-capitalize text-heading font-heading d-lg-inline-flex d-none align-items-center tw-gap-2 tw-rounded-lg'
                   href='/room'
                 >
-                  ĐẶT PHÒNG NGAY
+                  {t("header.bookNow")}
                   <span className='d-inline-block lh-1 tw-text-lg'>
                     <i className='ph ph-calendar-plus' />
                   </span>
@@ -333,7 +360,7 @@ const HeaderTwo: FC = () => {
                             className='d-flex align-items-center tw-gap-2 tw-px-4 tw-py-2 text-heading hover-bg-neutral-200 tw-rounded'
                           >
                             <i className='ph ph-calendar-check' />
-                            Đơn đặt của tôi
+                            {t("header.myBookings")}
                           </Link>
                         </li>
                         <li>
@@ -349,7 +376,7 @@ const HeaderTwo: FC = () => {
                         {(user.role === 'admin' || user.role === 'vendor') && (
                           <li>
                             <Link
-                              href='/vendor/dashboard'
+                              href='/extranet/dashboard'
                               onClick={() => setUserMenuOpen(false)}
                               className='d-flex align-items-center tw-gap-2 tw-px-4 tw-py-2 text-primary fw-medium hover-bg-neutral-200 tw-rounded'
                             >
@@ -368,7 +395,7 @@ const HeaderTwo: FC = () => {
                             className='d-flex align-items-center tw-gap-2 tw-px-4 tw-py-2 text-danger hover-bg-neutral-200 tw-rounded w-100 border-0 bg-transparent'
                           >
                             <i className='ph ph-sign-out' />
-                            Đăng xuất
+                            {t("header.logout")}
                           </button>
                         </li>
                       </ul>
@@ -497,7 +524,7 @@ const HeaderTwo: FC = () => {
                   className='d-flex align-items-center tw-gap-2 tw-py-2 text-heading hover-text-main-600'
                 >
                   <i className='ph ph-calendar-check' />
-                  Đơn đặt của tôi
+                  {t("header.myBookings")}
                 </Link>
                 <button
                   type='button'
@@ -508,7 +535,7 @@ const HeaderTwo: FC = () => {
                   className='d-flex align-items-center tw-gap-2 tw-py-2 text-danger border-0 bg-transparent w-100 tw-mt-2'
                 >
                   <i className='ph ph-sign-out' />
-                  Đăng xuất
+                  {t("header.logout")}
                 </button>
               </>
             ) : (
@@ -519,7 +546,7 @@ const HeaderTwo: FC = () => {
                   className='d-flex align-items-center tw-gap-2 tw-py-2 text-heading hover-text-main-600'
                 >
                   <i className='ph ph-sign-in' />
-                  Đăng nhập
+                  {t("header.login")}
                 </Link>
                 <Link
                   href='/register'
@@ -527,7 +554,7 @@ const HeaderTwo: FC = () => {
                   className='d-flex align-items-center tw-gap-2 tw-py-2 text-heading hover-text-main-600'
                 >
                   <i className='ph ph-user-plus' />
-                  Đăng ký
+                  {t("header.register")}
                 </Link>
               </div>
             )}

@@ -9,7 +9,7 @@ function getAuthOptions(options: any = {}) {
   };
 }
 
-export async function getVendorDashboard() {
+export async function getExtranetDashboard() {
   return fetchBackendJson<any>('/vendor/dashboard/', getAuthOptions());
 }
 

@@ -5,8 +5,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthContext";
 import Script from "next/script";
+import { Plus_Jakarta_Sans } from "next/font/google";
 
-export default function VendorLayout({ children }: { children: ReactNode }) {
+const font = Plus_Jakarta_Sans({ subsets: ["latin", "vietnamese"] });
+
+export default function ExtranetLayout({ children }: { children: ReactNode }) {
   const { user, loading, handleLogout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -32,9 +35,9 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
   }
 
   const navLinks = [
-    { label: "Tổng quan", href: "/vendor/dashboard", icon: "ri-dashboard-2-line" },
-    { label: "Quản lý khách sạn", href: "/vendor/hotels", icon: "ri-building-line" },
-    { label: "Quản lý đơn đặt", href: "/vendor/bookings", icon: "ri-calendar-check-line" },
+    { label: "Tổng quan", href: "/extranet/dashboard", icon: "ri-dashboard-2-line" },
+    { label: "Quản lý khách sạn", href: "/extranet/hotels", icon: "ri-building-line" },
+    { label: "Quản lý đơn đặt", href: "/extranet/bookings", icon: "ri-calendar-check-line" },
   ];
 
   return (
@@ -44,6 +47,11 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
         <link href="/admin-assets/css/app.min.css" rel="stylesheet" type="text/css" />
         <link href="/admin-assets/css/icons.min.css" rel="stylesheet" type="text/css" />
         <Script src="/admin-assets/js/config.js" strategy="beforeInteractive" />
+        <style dangerouslySetInnerHTML={{ __html: `
+          body, .wrapper, h1, h2, h3, h4, h5, h6, p, span, a, div, button, input, select, textarea {
+            font-family: ${font.style.fontFamily} !important;
+          }
+        `}} />
       </head>
       {/* Wrapper */}
       <div className="wrapper">
@@ -52,17 +60,17 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
           <div className="topbar container-fluid">
             <div className="d-flex align-items-center gap-1">
               <div className="logo-topbar">
-                <Link href="/vendor/dashboard" className="logo-light">
+                <Link href="/extranet/dashboard" className="logo-light">
                   <span className="logo-lg">
-                    <h3 className="text-white mt-3">Booking Vendor</h3>
+                    <h3 className="text-white mt-3">Booking Extranet</h3>
                   </span>
                   <span className="logo-sm">
                     <h3 className="text-white mt-3">BV</h3>
                   </span>
                 </Link>
-                <Link href="/vendor/dashboard" className="logo-dark">
+                <Link href="/extranet/dashboard" className="logo-dark">
                   <span className="logo-lg">
-                    <h3 className="mt-3">Booking Vendor</h3>
+                    <h3 className="mt-3">Booking Extranet</h3>
                   </span>
                   <span className="logo-sm">
                     <h3 className="mt-3">BV</h3>
@@ -74,7 +82,7 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
                 <i className="mdi mdi-menu"></i>
               </button>
 
-              <h4 className="page-title d-none d-sm-block">Cổng Đối Tác</h4>
+              <h4 className="page-title d-none d-sm-block">Extranet Đối Tác</h4>
             </div>
 
             <ul className="topbar-menu d-flex align-items-center gap-3">
@@ -110,7 +118,7 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
 
         {/* Left Sidebar */}
         <div className="leftside-menu">
-          <Link href="/vendor/dashboard" className="logo logo-light">
+          <Link href="/extranet/dashboard" className="logo logo-light">
             <span className="logo-lg">
               <h3 className="text-white mt-3 text-center">Booking</h3>
             </span>
@@ -118,7 +126,7 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
               <h3 className="text-white mt-3 text-center">B</h3>
             </span>
           </Link>
-          <Link href="/vendor/dashboard" className="logo logo-dark">
+          <Link href="/extranet/dashboard" className="logo logo-dark">
             <span className="logo-lg">
               <h3 className="mt-3 text-center">Booking</h3>
             </span>

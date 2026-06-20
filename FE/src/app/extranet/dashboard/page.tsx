@@ -2,14 +2,26 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getVendorDashboard } from "@/lib/api/vendorApi";
+import { getExtranetDashboard } from "@/lib/api/vendorApi";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  BarChart,
+  Bar,
+  Legend
+} from "recharts";
 
-export default function VendorDashboard() {
+export default function ExtranetDashboard() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getVendorDashboard()
+    getExtranetDashboard()
       .then((res) => setData(res))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
@@ -35,7 +47,7 @@ export default function VendorDashboard() {
               <div className="display-4 text-muted mb-3"><i className="ri-building-4-line" /></div>
               <h4 className="card-title fw-bold">Chưa có khách sạn nào</h4>
               <p className="card-text text-muted mb-4">Bạn cần thêm khách sạn của mình để bắt đầu quản lý và nhận đơn đặt phòng.</p>
-              <Link href="/vendor/hotels" className="btn btn-primary fw-medium px-4">
+              <Link href="/extranet/hotels" className="btn btn-primary fw-medium px-4">
                 Thêm khách sạn ngay
               </Link>
             </div>
@@ -94,6 +106,58 @@ export default function VendorDashboard() {
       </div>
 
       <div className="row">
+        <div className="col-xl-6">
+          <div className="card shadow-sm border-0">
+            <div className="card-header bg-white border-bottom pt-4 pb-3">
+              <h5 className="fw-bold m-0">Doanh thu 6 tháng gần nhất</h5>
+            </div>
+            <div className="card-body">
+              {data.chart_data && data.chart_data.length > 0 ? (
+                <div style={{ width: '100%', height: 300 }}>
+                  <ResponsiveContainer>
+                    <AreaChart data={data.chart_data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="name" />
+                      <YAxis tickFormatter={(value) => new Intl.NumberFormat('vi-VN', { notation: "compact", compactDisplay: "short" }).format(value)} />
+                      <Tooltip formatter={(value: number) => value.toLocaleString('vi-VN') + ' ₫'} />
+                      <Area type="monotone" dataKey="revenue" name="Doanh thu" stroke="#0acf97" fill="#0acf97" fillOpacity={0.2} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="text-center py-5 text-muted">Chưa có dữ liệu doanh thu.</div>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        <div className="col-xl-6">
+          <div className="card shadow-sm border-0">
+            <div className="card-header bg-white border-bottom pt-4 pb-3">
+              <h5 className="fw-bold m-0">Đơn đặt phòng 6 tháng gần nhất</h5>
+            </div>
+            <div className="card-body">
+              {data.chart_data && data.chart_data.length > 0 ? (
+                <div style={{ width: '100%', height: 300 }}>
+                  <ResponsiveContainer>
+                    <BarChart data={data.chart_data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="name" />
+                      <YAxis allowDecimals={false} />
+                      <Tooltip />
+                      <Bar dataKey="bookings" name="Đơn đặt phòng" fill="#39afd1" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="text-center py-5 text-muted">Chưa có dữ liệu đặt phòng.</div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="row">
         <div className="col-12">
           <div className="card border-0 shadow-sm">
             <div className="card-header bg-white border-bottom pt-4 pb-3">
@@ -142,7 +206,7 @@ export default function VendorDashboard() {
                 </div>
               )}
               <div className="text-center mt-3">
-                <Link href="/vendor/bookings" className="btn btn-outline-primary btn-sm">Xem tất cả đơn</Link>
+                <Link href="/extranet/bookings" className="btn btn-outline-primary btn-sm">Xem tất cả đơn</Link>
               </div>
             </div>
           </div>

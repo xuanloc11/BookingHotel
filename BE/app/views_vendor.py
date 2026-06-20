@@ -1,10 +1,12 @@
 import json
+from datetime import datetime, timedelta
 
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Q
+from django.db.models.functions import TruncMonth
 
 from app.models import Profile, Hotel, RoomType, Booking
 from app.views import _get_authenticated_user, _json_error, _parse_json_body
@@ -50,13 +52,33 @@ def dashboard_stats(request, user):
     
     recent_bookings = [b.to_summary() for b in bookings.order_by('-created_at')[:5]]
     
+    six_months_ago = datetime.now() - timedelta(days=180)
+    monthly_stats = bookings.filter(created_at__gte=six_months_ago)\
+        .annotate(month=TruncMonth('created_at'))\
+        .values('month')\
+        .annotate(
+            revenue=Sum('total', filter=Q(status=Booking.STATUS_COMPLETED)),
+            bookings_count=Count('id')
+        )\
+        .order_by('month')
+
+    chart_data = []
+    for stat in monthly_stats:
+        if stat['month']:
+            chart_data.append({
+                'name': stat['month'].strftime('%m/%Y'),
+                'revenue': stat['revenue'] or 0,
+                'bookings': stat['bookings_count']
+            })
+    
     return JsonResponse({
         'has_hotel': True,
         'hotel_name': hotel.name,
         'total_bookings': total_bookings,
         'total_revenue': total_revenue,
         'recent_bookings': recent_bookings,
-        'rooms_count': rooms_count
+        'rooms_count': rooms_count,
+        'chart_data': chart_data
     })
 
 

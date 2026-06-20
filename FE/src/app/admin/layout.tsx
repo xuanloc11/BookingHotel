@@ -5,6 +5,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthContext";
 import Script from "next/script";
+import { Plus_Jakarta_Sans } from "next/font/google";
+
+const font = Plus_Jakarta_Sans({ subsets: ["latin", "vietnamese"] });
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const { user, loading, handleLogout } = useAuth();
@@ -45,6 +48,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <link href="/admin-assets/css/app.min.css" rel="stylesheet" type="text/css" />
         <link href="/admin-assets/css/icons.min.css" rel="stylesheet" type="text/css" />
         <Script src="/admin-assets/js/config.js" strategy="beforeInteractive" />
+        <style dangerouslySetInnerHTML={{ __html: `
+          body, .wrapper, h1, h2, h3, h4, h5, h6, p, span, a, div, button, input, select, textarea {
+            font-family: ${font.style.fontFamily} !important;
+          }
+        `}} />
       </head>
       {/* Wrapper */}
       <div className="wrapper">
