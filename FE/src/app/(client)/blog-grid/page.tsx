@@ -2,10 +2,10 @@ import React from "react";
 import type { Metadata } from "next";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
-import HeaderTwo from "@/components/layout/HeaderTwo";
+import Header from "@/components/layout/Header";
 import Breadcrumb from "@/components/layout/Breadcrumb";
-import FooterOne from "@/components/layout/FooterOne";
-import ReservationOne from "@/components/home/ReservationOne";
+import Footer from "@/components/layout/Footer";
+import Reservation from "@/components/home/Reservation";
 import BlogGridInner from "@/components/blog/BlogGridInner";
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -39,7 +39,7 @@ const Page: React.FC = () => {
       <Preloader />
 
       {/* HeaderTwo */}
-      <HeaderTwo />
+      <Header />
 
       {/* Breadcrumb */}
       <Breadcrumb title='Blog Grid' sub_title='Experience the Story' />
@@ -48,10 +48,10 @@ const Page: React.FC = () => {
       <BlogGridInner />
 
       {/* MarqueeFour */}
-      <ReservationOne />
+      <Reservation />
 
       {/* FooterOne */}
-      <FooterOne />
+      <Footer />
     </AOSWrap>
   );
 };

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import BookingSuccessDetails from "@/components/booking/BookingSuccessDetails";
-import FooterOne from "@/components/layout/FooterOne";
-import HeaderTwo from "@/components/layout/HeaderTwo";
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
 import type { PageSearchParams } from "@/lib/hotelSearchParams";
@@ -33,7 +33,7 @@ export default async function BookingSuccessPage({
   return (
     <AOSWrap>
       <Preloader />
-      <HeaderTwo />
+      <Header />
       <Breadcrumb title='Booking Success' sub_title='Confirmation' />
       <BookingSuccessDetails
         bookingId={firstValue(params, "bookingId")}
@@ -42,7 +42,7 @@ export default async function BookingSuccessPage({
         hotelName={firstValue(params, "hotelName")}
         status={firstValue(params, "status")}
       />
-      <FooterOne />
+      <Footer />
     </AOSWrap>
   );
 }

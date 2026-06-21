@@ -2,12 +2,12 @@ import React from "react";
 import type { Metadata } from "next";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
-import HeaderTwo from "@/components/layout/HeaderTwo";
+import Header from "@/components/layout/Header";
 import Breadcrumb from "@/components/layout/Breadcrumb";
-import FooterOne from "@/components/layout/FooterOne";
+import Footer from "@/components/layout/Footer";
 import DestinationInner from "@/components/destination/DestinationInner";
 import Checkout from "@/components/booking/Checkout";
-import MarqueeFour from "@/components/home/MarqueeFour";
+import Marquee from "@/components/home/Marquee";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
@@ -40,7 +40,7 @@ const Page: React.FC = () => {
       <Preloader />
 
       {/* HeaderTwo */}
-      <HeaderTwo />
+      <Header />
 
       {/* Breadcrumb */}
       <Breadcrumb title='Destination' sub_title='Experience the Story' />
@@ -54,10 +54,10 @@ const Page: React.FC = () => {
       <DestinationInner />
 
       {/* MarqueeFour */}
-      <MarqueeFour />
+      <Marquee />
 
       {/* FooterOne */}
-      <FooterOne />
+      <Footer />
     </AOSWrap>
   );
 };

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 import AuthForm from "@/components/auth/AuthForm";
 import Breadcrumb from "@/components/layout/Breadcrumb";
-import FooterOne from "@/components/layout/FooterOne";
-import HeaderTwo from "@/components/layout/HeaderTwo";
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
 
@@ -16,10 +16,10 @@ export default function ForgotPasswordPage() {
   return (
     <AOSWrap>
       <Preloader />
-      <HeaderTwo />
+      <Header />
       <Breadcrumb title='Forgot Password' sub_title='Account' />
       <AuthForm mode='forgot-password' />
-      <FooterOne />
+      <Footer />
     </AOSWrap>
   );
 }

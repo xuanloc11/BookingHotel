@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
 import Preloader from "@/helper/Preloader";
 import AOSWrap from "@/helper/AOSWrap";
-import HeaderOne from "@/components/layout/HeaderOne";
-import BannerOne from "@/components/home/BannerOne";
+import Header from "@/components/layout/Header";
+import Banner from "@/components/home/Banner";
 import Checkout from "@/components/booking/Checkout";
 import AdvanceArea from "@/components/home/AdvanceArea";
-import OfferOne from "@/components/home/OfferOne";
-import FeatureOne from "@/components/home/FeatureOne";
-import PackageOne from "@/components/home/PackageOne";
-import ClientOne from "@/components/home/ClientOne";
-import AboutOne from "@/components/about/AboutOne";
-import CtaOne from "@/components/home/CtaOne";
+import Offer from "@/components/home/Offer";
+import Feature from "@/components/home/Feature";
+import Package from "@/components/home/Package";
+import Client from "@/components/home/Client";
+import About from "@/components/about/About";
+import Cta from "@/components/home/Cta";
 import PropertiesInner from "@/components/PropertiesInner";
-import PricingOne from "@/components/pricing/PricingOne";
-import TestimonialOne from "@/components/TestimonialOne";
-import MarqueeOne from "@/components/home/MarqueeOne";
-import BlogOne from "@/components/blog/BlogOne";
-import FooterOne from "@/components/layout/FooterOne";
+import Pricing from "@/components/pricing/Pricing";
+import Testimonial from "@/components/Testimonial";
+import Marquee from "@/components/home/Marquee";
+import Blog from "@/components/blog/Blog";
+import Footer from "@/components/layout/Footer";
 
 
 
@@ -27,10 +27,10 @@ export default function Home() {
       <Preloader />
 
       {/* HeaderOne */}
-      <HeaderOne />
+      <Header />
 
       {/* BannerOne */}
-      <BannerOne />
+      <Banner />
 
       {/* Checkout */}
       <Checkout />
@@ -39,40 +39,40 @@ export default function Home() {
       <AdvanceArea />
 
       {/* OfferOne */}
-      <OfferOne />
+      <Offer />
 
       {/* FeatureOne */}
-      <FeatureOne />
+      <Feature />
 
       {/* PackageOne */}
-      <PackageOne />
+      <Package />
 
       {/* ClientOne */}
-      <ClientOne />
+      <Client />
 
       {/* AboutOne */}
-      <AboutOne />
+      <About />
 
       {/* CtaOne */}
-      <CtaOne />
+      <Cta />
 
       {/* PropertiesInner */}
       <PropertiesInner />
 
       {/* PricingOne */}
-      <PricingOne />
+      <Pricing />
 
       {/* TestimonialOne */}
-      <TestimonialOne />
+      <Testimonial />
 
       {/* MarqueeOne */}
-      <MarqueeOne />
+      <Marquee />
 
       {/* BlogOne */}
-      <BlogOne />
+      <Blog />
 
       {/* FooterOne */}
-      <FooterOne />
+      <Footer />
     </AOSWrap>
   );
 }

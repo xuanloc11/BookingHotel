@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
-import HeaderTwo from "@/components/layout/HeaderTwo";
+import Header from "@/components/layout/Header";
 import Breadcrumb from "@/components/layout/Breadcrumb";
-import FooterOne from "@/components/layout/FooterOne";
+import Footer from "@/components/layout/Footer";
 import HotelResults from "@/components/hotel/HotelResults";
 import SearchFilters from "@/components/search/SearchFilters";
 import { fetchHotelSearchResults } from "@/lib/api/hotelApi";
@@ -64,7 +64,7 @@ export default async function Page({ searchParams }: RoomPageProps) {
       <Preloader />
 
       {/* HeaderTwo */}
-      <HeaderTwo />
+      <Header />
 
       {/* Breadcrumb */}
       <Breadcrumb title='Room' sub_title='Experience the Story' />
@@ -84,7 +84,7 @@ export default async function Page({ searchParams }: RoomPageProps) {
       <HotelResults hotels={hotels} />
 
       {/* FooterOne */}
-      <FooterOne />
+      <Footer />
     </AOSWrap>
   );
 }

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { FC } from "react";
 
-const AboutOne: FC = () => {
+const About: FC = () => {
   return (
     <section className='about-area'>
       <div className='container'>
@@ -129,4 +129,4 @@ const AboutOne: FC = () => {
   );
 };
 
-export default AboutOne;
+export default About;

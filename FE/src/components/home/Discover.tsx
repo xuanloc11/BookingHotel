@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FC, useEffect, useRef } from "react";
 import Swiper from "swiper";
-const DiscoverOne: FC = () => {
+const Discover: FC = () => {
   const swiperRef = useRef<Swiper | null>(null);
   useEffect(() => {
     swiperRef.current = new Swiper(".gallery-two-active", {
@@ -463,4 +463,4 @@ const DiscoverOne: FC = () => {
   );
 };
 
-export default DiscoverOne;
+export default Discover;

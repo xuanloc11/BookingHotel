@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Count, Q
 from django.db.models.functions import TruncMonth
 
-from app.models import Profile, Hotel, RoomType, Booking
+from app.models import Profile, Hotel, RoomType, Booking, Review, Promotion, Transaction, VendorSetting
 from app.views import _get_authenticated_user, _json_error, _parse_json_body
 
 
@@ -240,3 +240,164 @@ def update_booking_status(request, user, booking_id: str):
     booking.save()
     
     return JsonResponse({'message': 'Booking status updated.', 'status': booking.status})
+
+
+# --- EXTRANET FEATURES ---
+
+@csrf_exempt
+@require_http_methods(['GET'])
+@vendor_required
+def get_reviews(request, user):
+    hotel = getattr(user, 'owned_hotel', None)
+    if not hotel:
+        return JsonResponse({'reviews': []})
+        
+    reviews = Review.objects.filter(hotel=hotel).order_by('-created_at')
+    return JsonResponse({'reviews': [{
+        'id': r.id,
+        'customer_name': r.customer_name,
+        'rating': r.rating,
+        'content': r.content,
+        'reply': r.reply,
+        'status': r.status,
+        'created_at': r.created_at.isoformat()
+    } for r in reviews]})
+
+@csrf_exempt
+@require_http_methods(['POST'])
+@vendor_required
+def reply_review(request, user, review_id: int):
+    hotel = getattr(user, 'owned_hotel', None)
+    if not hotel:
+        return _json_error('Hotel not found.', status=404)
+        
+    review = get_object_or_404(Review, id=review_id, hotel=hotel)
+    
+    try:
+        payload = _parse_json_body(request)
+    except ValueError as e:
+        return _json_error(str(e))
+        
+    reply_content = payload.get('reply', '').strip()
+    if not reply_content:
+        return _json_error('Reply content cannot be empty.', status=400)
+        
+    review.reply = reply_content
+    review.status = Review.STATUS_REPLIED
+    review.save()
+    
+    return JsonResponse({'message': 'Reply submitted successfully.'})
+
+@csrf_exempt
+@require_http_methods(['GET', 'POST'])
+@vendor_required
+def manage_promotions(request, user):
+    hotel = getattr(user, 'owned_hotel', None)
+    if not hotel:
+        return _json_error('Hotel not found.', status=404)
+        
+    if request.method == 'GET':
+        promotions = Promotion.objects.filter(hotel=hotel).order_by('-created_at')
+        return JsonResponse({'promotions': [{
+            'id': p.id,
+            'code': p.code,
+            'name': p.name,
+            'discount_type': p.discount_type,
+            'discount_value': p.discount_value,
+            'start_date': p.start_date.isoformat() if p.start_date else None,
+            'end_date': p.end_date.isoformat() if p.end_date else None,
+            'usage_count': p.usage_count,
+            'is_active': p.is_active,
+        } for p in promotions]})
+        
+    try:
+        payload = _parse_json_body(request)
+    except ValueError as e:
+        return _json_error(str(e))
+        
+    promo = Promotion.objects.create(
+        hotel=hotel,
+        code=payload.get('code', ''),
+        name=payload.get('name', ''),
+        discount_type=payload.get('discount_type', Promotion.TYPE_PERCENTAGE),
+        discount_value=payload.get('discount_value', 0),
+        start_date=payload.get('start_date'),
+        end_date=payload.get('end_date'),
+        is_active=payload.get('is_active', True)
+    )
+    return JsonResponse({'message': 'Promotion created.', 'id': promo.id})
+
+@csrf_exempt
+@require_http_methods(['DELETE'])
+@vendor_required
+def delete_promotion(request, user, promo_id: int):
+    hotel = getattr(user, 'owned_hotel', None)
+    if not hotel:
+        return _json_error('Hotel not found.', status=404)
+        
+    promo = get_object_or_404(Promotion, id=promo_id, hotel=hotel)
+    promo.delete()
+    return JsonResponse({'message': 'Promotion deleted.'})
+
+@csrf_exempt
+@require_http_methods(['GET'])
+@vendor_required
+def get_finance(request, user):
+    hotel = getattr(user, 'owned_hotel', None)
+    if not hotel:
+        return JsonResponse({'balance': 0, 'total_revenue': 0, 'transactions': []})
+        
+    transactions = Transaction.objects.filter(hotel=hotel).order_by('-created_at')
+    
+    balance = transactions.filter(type=Transaction.TYPE_REVENUE, status=Transaction.STATUS_COMPLETED).aggregate(Sum('net_amount'))['net_amount__sum'] or 0
+    payouts = transactions.filter(type=Transaction.TYPE_PAYOUT).aggregate(Sum('amount'))['amount__sum'] or 0
+    available_balance = balance - payouts
+    
+    total_revenue = transactions.filter(type=Transaction.TYPE_REVENUE).aggregate(Sum('amount'))['amount__sum'] or 0
+    
+    return JsonResponse({
+        'available_balance': available_balance,
+        'total_revenue': total_revenue,
+        'transactions': [{
+            'id': t.id,
+            'transaction_id': t.transaction_id,
+            'type': t.type,
+            'amount': t.amount,
+            'commission_fee': t.commission_fee,
+            'net_amount': t.net_amount,
+            'description': t.description,
+            'status': t.status,
+            'created_at': t.created_at.isoformat()
+        } for t in transactions]
+    })
+
+@csrf_exempt
+@require_http_methods(['GET', 'PUT'])
+@vendor_required
+def manage_settings(request, user):
+    setting, created = VendorSetting.objects.get_or_create(user=user)
+    
+    if request.method == 'GET':
+        return JsonResponse({'settings': {
+            'company_name': setting.company_name,
+            'tax_id': setting.tax_id,
+            'bank_name': setting.bank_name,
+            'bank_branch': setting.bank_branch,
+            'account_name': setting.account_name,
+            'account_number': setting.account_number,
+        }})
+        
+    try:
+        payload = _parse_json_body(request)
+    except ValueError as e:
+        return _json_error(str(e))
+        
+    setting.company_name = payload.get('company_name', setting.company_name)
+    setting.tax_id = payload.get('tax_id', setting.tax_id)
+    setting.bank_name = payload.get('bank_name', setting.bank_name)
+    setting.bank_branch = payload.get('bank_branch', setting.bank_branch)
+    setting.account_name = payload.get('account_name', setting.account_name)
+    setting.account_number = payload.get('account_number', setting.account_number)
+    setting.save()
+    
+    return JsonResponse({'message': 'Settings updated successfully.'})

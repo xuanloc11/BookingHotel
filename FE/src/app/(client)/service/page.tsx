@@ -2,9 +2,9 @@ import React from "react";
 import type { Metadata } from "next";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
-import HeaderTwo from "@/components/layout/HeaderTwo";
+import Header from "@/components/layout/Header";
 import Breadcrumb from "@/components/layout/Breadcrumb";
-import FooterOne from "@/components/layout/FooterOne";
+import Footer from "@/components/layout/Footer";
 import ServiceInner from "@/components/service/ServiceInner";
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -37,7 +37,7 @@ const Page: React.FC = () => {
       <Preloader />
 
       {/* HeaderTwo */}
-      <HeaderTwo />
+      <Header />
 
       {/* Breadcrumb */}
       <Breadcrumb title='Service' sub_title='Service' />
@@ -46,7 +46,7 @@ const Page: React.FC = () => {
       <ServiceInner />
 
       {/* FooterOne */}
-      <FooterOne />
+      <Footer />
     </AOSWrap>
   );
 };

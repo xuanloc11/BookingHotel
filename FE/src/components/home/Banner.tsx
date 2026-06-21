@@ -5,7 +5,7 @@ import Link from "next/link";
 import { FC } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
-const BannerOne: FC = () => {
+const Banner: FC = () => {
   const { t } = useLanguage();
 
   return (
@@ -81,4 +81,4 @@ const BannerOne: FC = () => {
   );
 };
 
-export default BannerOne;
+export default Banner;

@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import CheckoutForm from "@/components/booking/CheckoutForm";
-import FooterOne from "@/components/layout/FooterOne";
-import HeaderTwo from "@/components/layout/HeaderTwo";
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
 import { fetchHotelById } from "@/lib/api/hotelApi";
@@ -51,10 +51,10 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
     return (
       <AOSWrap>
         <Preloader />
-        <HeaderTwo />
+        <Header />
         <Breadcrumb title='Checkout' sub_title='Booking' />
         <CheckoutMissingState />
-        <FooterOne />
+        <Footer />
       </AOSWrap>
     );
   }
@@ -70,10 +70,10 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
   return (
     <AOSWrap>
       <Preloader />
-      <HeaderTwo />
+      <Header />
       <Breadcrumb title='Checkout' sub_title='Booking' />
       <CheckoutForm hotel={hotel} price={price} selection={selection} />
-      <FooterOne />
+      <Footer />
     </AOSWrap>
   );
 }

@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-const ClientOne: FC = () => {
+const Client: FC = () => {
   return (
     <section className='pb-120'>
       <div className='container'>
@@ -103,4 +103,4 @@ const ClientOne: FC = () => {
   );
 };
 
-export default ClientOne;
+export default Client;

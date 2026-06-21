@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { FC } from "react";
 
-const FeatureOne: FC = () => {
+const Feature: FC = () => {
   return (
     <section className='feature-area pt-120 bg-main-300'>
       <div className='container tw-container-1630-px'>
@@ -121,4 +121,4 @@ const FeatureOne: FC = () => {
   );
 };
 
-export default FeatureOne;
+export default Feature;

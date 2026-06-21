@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import HeaderTwo from "@/components/layout/HeaderTwo";
-import FooterOne from "@/components/layout/FooterOne";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 interface ErrorProps {
   error: Error;
@@ -12,7 +12,7 @@ interface ErrorProps {
 export default function GlobalError({ error, reset }: ErrorProps) {
   return (
     <>
-      <HeaderTwo />
+      <Header />
 
       <main
         className='error-page d-flex align-items-center justify-content-center position-relative'
@@ -43,7 +43,7 @@ export default function GlobalError({ error, reset }: ErrorProps) {
         </div>
       </main>
 
-      <FooterOne />
+      <Footer />
     </>
   );
 }

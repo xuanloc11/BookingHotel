@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FC } from "react";
 
-const ReservationOne: FC = () => {
+const Reservation: FC = () => {
   return (
     <section
       className='background-img position-relative z-1 tw-pt-25 tw-pb-23'
@@ -40,4 +40,4 @@ const ReservationOne: FC = () => {
   );
 };
 
-export default ReservationOne;
+export default Reservation;

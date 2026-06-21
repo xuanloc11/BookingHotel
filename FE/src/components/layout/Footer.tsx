@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
 
-const FooterOne: FC = () => {
+const Footer: FC = () => {
   return (
     <footer
       className='footer background-img position-relative z-1 overflow-hidden '
@@ -324,4 +324,4 @@ const FooterOne: FC = () => {
   );
 };
 
-export default FooterOne;
+export default Footer;

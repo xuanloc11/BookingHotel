@@ -2,18 +2,16 @@ import React from "react";
 import type { Metadata } from "next";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
-import HeaderTwo from "@/components/layout/HeaderTwo";
+import Header from "@/components/layout/Header";
 import Breadcrumb from "@/components/layout/Breadcrumb";
-import AboutTwo from "@/components/about/AboutTwo";
-import FeatureOne from "@/components/home/FeatureOne";
-import AboutOne from "@/components/about/AboutOne";
-import MarqueeOne from "@/components/home/MarqueeOne";
-import ClientOne from "@/components/home/ClientOne";
-import NewsletterOne from "@/components/home/NewsletterOne";
-import PricingTwo from "@/components/pricing/PricingTwo";
-import ContactTwo from "@/components/contact/ContactTwo";
-import ClientTwo from "@/components/home/ClientTwo";
-import FooterOne from "@/components/layout/FooterOne";
+import About from "@/components/about/About";
+import Feature from "@/components/home/Feature";
+import Marquee from "@/components/home/Marquee";
+import Client from "@/components/home/Client";
+import Newsletter from "@/components/home/Newsletter";
+import Pricing from "@/components/pricing/Pricing";
+import Contact from "@/components/contact/Contact";
+import Footer from "@/components/layout/Footer";
 import Checkout from "@/components/booking/Checkout";
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -46,7 +44,7 @@ const Page: React.FC = () => {
       <Preloader />
 
       {/* HeaderTwo */}
-      <HeaderTwo />
+      <Header />
 
       {/* Breadcrumb */}
       <Breadcrumb title='About Us' sub_title='Experience the Story' />
@@ -57,40 +55,40 @@ const Page: React.FC = () => {
       </section>
 
       {/* AboutTwo */}
-      <AboutTwo />
+      <About />
 
       {/* FeatureOne */}
-      <FeatureOne />
+      <Feature />
 
       {/* AboutOne */}
       <div className='pt-120'>
-        <AboutOne />
+        <About />
       </div>
 
       {/* MarqueeOne */}
-      <MarqueeOne />
+      <Marquee />
 
       {/* ClientOne */}
-      <ClientOne />
+      <Client />
 
       {/* NewsletterOne */}
-      <NewsletterOne />
+      <Newsletter />
 
       {/* PricingTwo */}
       <div className='pt-120 pricing-two-area'>
-        <PricingTwo />
+        <Pricing />
       </div>
 
       {/* ContactTwo */}
-      <ContactTwo />
+      <Contact />
 
       {/* ClientTwo */}
       <div className='pt-60 client_two'>
-        <ClientTwo />
+        <Client />
       </div>
 
       {/* FooterOne */}
-      <FooterOne />
+      <Footer />
     </AOSWrap>
   );
 };

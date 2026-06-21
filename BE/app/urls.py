@@ -43,6 +43,19 @@ urlpatterns = [
     path('vendor/bookings/<str:booking_id>/', views_vendor.update_booking_status, name='api-vendor-booking-status'),
     path('vendor/bookings/<str:booking_id>', views_vendor.update_booking_status),
     
+    path('vendor/reviews/', views_vendor.get_reviews, name='api-vendor-reviews'),
+    path('vendor/reviews', views_vendor.get_reviews),
+    path('vendor/reviews/<int:review_id>/reply/', views_vendor.reply_review, name='api-vendor-review-reply'),
+    path('vendor/reviews/<int:review_id>/reply', views_vendor.reply_review),
+    path('vendor/promotions/', views_vendor.manage_promotions, name='api-vendor-promotions'),
+    path('vendor/promotions', views_vendor.manage_promotions),
+    path('vendor/promotions/<int:promo_id>/', views_vendor.delete_promotion, name='api-vendor-promotion-delete'),
+    path('vendor/promotions/<int:promo_id>', views_vendor.delete_promotion),
+    path('vendor/finance/', views_vendor.get_finance, name='api-vendor-finance'),
+    path('vendor/finance', views_vendor.get_finance),
+    path('vendor/settings/', views_vendor.manage_settings, name='api-vendor-settings'),
+    path('vendor/settings', views_vendor.manage_settings),
+    
     path('system-admin/dashboard/', views_admin.dashboard_stats, name='api-admin-dashboard'),
     path('system-admin/dashboard', views_admin.dashboard_stats),
     path('system-admin/users/', views_admin.list_users, name='api-admin-users'),
@@ -55,4 +68,8 @@ urlpatterns = [
     path('system-admin/hotels/<int:hotel_id>', views_admin.manage_hotel),
     path('system-admin/bookings/', views_admin.list_bookings, name='api-admin-bookings'),
     path('system-admin/bookings', views_admin.list_bookings),
+    path('system-admin/approvals/', views_admin.list_approvals, name='api-admin-approvals'),
+    path('system-admin/approvals', views_admin.list_approvals),
+    path('system-admin/approvals/<int:hotel_id>/', views_admin.update_approval_status, name='api-admin-approval-status'),
+    path('system-admin/approvals/<int:hotel_id>', views_admin.update_approval_status),
 ]

@@ -24,6 +24,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     }
   }, [user, loading, router]);
 
+
   if (loading || !user || user.role !== "admin") {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
@@ -39,6 +40,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { label: "Người dùng", href: "/admin/users", icon: "ri-group-line" },
     { label: "Khách sạn", href: "/admin/hotels", icon: "ri-building-4-line" },
     { label: "Đơn đặt phòng", href: "/admin/bookings", icon: "ri-calendar-check-line" },
+    { label: "Kiểm duyệt", href: "/admin/approvals", icon: "ri-shield-check-line" },
   ];
 
   return (

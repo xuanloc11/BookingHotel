@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
 
-const BlogOne: FC = () => {
+const Blog: FC = () => {
   return (
     <section className='blog-area bg-neutral-300 py-120'>
       <div className='container'>
@@ -175,4 +175,4 @@ const BlogOne: FC = () => {
   );
 };
 
-export default BlogOne;
+export default Blog;

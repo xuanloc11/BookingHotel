@@ -24,6 +24,7 @@ export default function ExtranetLayout({ children }: { children: ReactNode }) {
     }
   }, [user, loading, router]);
 
+
   if (loading || !user || (user.role !== "vendor" && user.role !== "admin")) {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
@@ -38,6 +39,10 @@ export default function ExtranetLayout({ children }: { children: ReactNode }) {
     { label: "Tổng quan", href: "/extranet/dashboard", icon: "ri-dashboard-2-line" },
     { label: "Quản lý khách sạn", href: "/extranet/hotels", icon: "ri-building-line" },
     { label: "Quản lý đơn đặt", href: "/extranet/bookings", icon: "ri-calendar-check-line" },
+    { label: "Đánh giá của khách", href: "/extranet/reviews", icon: "ri-star-line" },
+    { label: "Khuyến mãi & Vouchers", href: "/extranet/promotions", icon: "ri-coupon-3-line" },
+    { label: "Tài chính & Doanh thu", href: "/extranet/finance", icon: "ri-wallet-3-line" },
+    { label: "Cài đặt & Thanh toán", href: "/extranet/settings", icon: "ri-settings-3-line" },
   ];
 
   return (

@@ -25,10 +25,7 @@ export const getMenuData = (lang: string = 'vi'): MenuItem[] => {
       },
       {
         label: "About Us",
-        subMenu: [
-          { label: "General Info", link: "/about" },
-          { label: "Hotel Details", link: "/hotel/1" },
-        ],
+        link: "/about",
       },
       {
         label: "Contact",
@@ -59,10 +56,7 @@ export const getMenuData = (lang: string = 'vi'): MenuItem[] => {
     },
     {
       label: "Giới thiệu",
-      subMenu: [
-        { label: "Giới thiệu chung", link: "/about" },
-        { label: "Chi tiết khách sạn", link: "/hotel/1" },
-      ],
+      link: "/about",
     },
     {
       label: "Liên hệ",

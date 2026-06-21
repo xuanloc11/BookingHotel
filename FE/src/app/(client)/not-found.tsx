@@ -1,12 +1,12 @@
-import HeaderTwo from "@/components/layout/HeaderTwo";
-import FooterOne from "@/components/layout/FooterOne";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function NotFound() {
   return (
     <>
-      <HeaderTwo />
+      <Header />
 
       <main
         className='error-page d-flex align-items-center justify-content-center position-relative'
@@ -42,7 +42,7 @@ export default function NotFound() {
         </div>
       </main>
 
-      <FooterOne />
+      <Footer />
     </>
   );
 }

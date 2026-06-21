@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-const NewsletterOne: FC = () => {
+const Newsletter: FC = () => {
   return (
     <section
       className='cta-area py-120 background-img position-relative z-1 tw-mx-11 tw-rounded-3xl overflow-hidden'
@@ -41,4 +41,4 @@ const NewsletterOne: FC = () => {
   );
 };
 
-export default NewsletterOne;
+export default Newsletter;

@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
 
-const OfferOne: FC = () => {
+const Offer: FC = () => {
   return (
     <section className='offer-area pb-120'>
       <div className='container'>
@@ -106,4 +106,4 @@ const OfferOne: FC = () => {
   );
 };
 
-export default OfferOne;
+export default Offer;

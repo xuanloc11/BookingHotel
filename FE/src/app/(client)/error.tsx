@@ -1,7 +1,7 @@
 "use client";
 
-import HeaderTwo from "@/components/layout/HeaderTwo";
-import FooterOne from "@/components/layout/FooterOne";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import Image from "next/image";
 
 export default function Error({
@@ -13,7 +13,7 @@ export default function Error({
 }) {
   return (
     <>
-      <HeaderTwo />
+      <Header />
 
       <main
         className='error-page d-flex align-items-center justify-content-center position-relative'
@@ -47,7 +47,7 @@ export default function Error({
         </div>
       </main>
 
-      <FooterOne />
+      <Footer />
     </>
   );
 }

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import Breadcrumb from "@/components/layout/Breadcrumb";
-import FooterOne from "@/components/layout/FooterOne";
-import HeaderTwo from "@/components/layout/HeaderTwo";
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
 import HotelDetails from "@/components/hotel/HotelDetails";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
@@ -45,10 +45,10 @@ export default async function HotelDetailsPage({
     return (
       <AOSWrap>
         <Preloader />
-        <HeaderTwo />
+        <Header />
         <Breadcrumb title={hotel.name} sub_title='Hotel Details' />
         <HotelDetails availability={availability} hotel={hotel} />
-        <FooterOne />
+        <Footer />
       </AOSWrap>
     );
   } catch {

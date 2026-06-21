@@ -2,14 +2,13 @@ import React from "react";
 import type { Metadata } from "next";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
-import HeaderTwo from "@/components/layout/HeaderTwo";
+import Header from "@/components/layout/Header";
 import Breadcrumb from "@/components/layout/Breadcrumb";
-import FooterOne from "@/components/layout/FooterOne";
+import Footer from "@/components/layout/Footer";
 import Checkout from "@/components/booking/Checkout";
-import FeatureTwo from "@/components/home/FeatureTwo";
-import AdvanceAreaThree from "@/components/home/AdvanceAreaThree";
-import FeatureOne from "@/components/home/FeatureOne";
-import MarqueeFour from "@/components/home/MarqueeFour";
+import Feature from "@/components/home/Feature";
+import AdvanceArea from "@/components/home/AdvanceArea";
+import Marquee from "@/components/home/Marquee";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
@@ -42,7 +41,7 @@ const Page: React.FC = () => {
       <Preloader />
 
       {/* HeaderTwo */}
-      <HeaderTwo />
+      <Header />
 
       {/* Breadcrumb */}
       <Breadcrumb title='Our amenities' sub_title='Experience the Story' />
@@ -54,20 +53,20 @@ const Page: React.FC = () => {
 
       {/* FeatureTwo */}
       <section className='feature-two-area_bg pt-120'>
-        <FeatureTwo />
+        <Feature />
       </section>
 
       {/* AdvanceAreaTwo */}
-      <AdvanceAreaThree />
+      <AdvanceArea />
 
       {/* FeatureOne */}
-      <FeatureOne />
+      <Feature />
 
       {/* MarqueeFour */}
-      <MarqueeFour />
+      <Marquee />
 
       {/* FooterOne */}
-      <FooterOne />
+      <Footer />
     </AOSWrap>
   );
 };

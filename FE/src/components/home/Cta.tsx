@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-const CtaOne: FC = () => {
+const Cta: FC = () => {
   return (
     <section
       className='cta-area py-120 background-img position-relative z-1 tw-mx-11 tw-rounded-3xl overflow-hidden'
@@ -41,4 +41,4 @@ const CtaOne: FC = () => {
   );
 };
 
-export default CtaOne;
+export default Cta;

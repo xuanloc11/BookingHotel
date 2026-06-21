@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { FC } from "react";
-import Marquee from "react-fast-marquee";
-const MarqueeOne: FC = () => {
+import FastMarquee from "react-fast-marquee";
+const Marquee: FC = () => {
   return (
     <div className='overflow-hidden tw-pb-10'>
-      <div className='marquee'>
-        <Marquee>
+      <div className='container'>
+        <FastMarquee className='marquee'>
           <div className='d-inline-flex align-items-center tw-gap-14'>
             <div className='marquee-icon'>
               <span>
@@ -40,10 +40,10 @@ const MarqueeOne: FC = () => {
               </h2>
             </div>
           </div>
-        </Marquee>
+        </FastMarquee>
       </div>
     </div>
   );
 };
 
-export default MarqueeOne;
+export default Marquee;

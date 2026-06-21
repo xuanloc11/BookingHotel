@@ -23,6 +23,11 @@ class Profile(models.Model):
 
 
 class Hotel(models.Model):
+	STATUS_PENDING = 'pending'
+	STATUS_APPROVED = 'approved'
+	STATUS_REJECTED = 'rejected'
+	STATUS_CHOICES = [(STATUS_PENDING, 'Pending'), (STATUS_APPROVED, 'Approved'), (STATUS_REJECTED, 'Rejected')]
+
 	owner = models.OneToOneField(
 		settings.AUTH_USER_MODEL,
 		on_delete=models.CASCADE,
@@ -39,6 +44,7 @@ class Hotel(models.Model):
 	amenities = models.JSONField(default=list)
 	thumbnail = models.URLField(blank=True, default='')
 	description = models.TextField(blank=True, default='')
+	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 
@@ -126,3 +132,78 @@ class Booking(models.Model):
 			'currency': self.currency,
 			'created_at': self.created_at.isoformat(),
 		}
+
+
+class Review(models.Model):
+	STATUS_PENDING = 'pending'
+	STATUS_REPLIED = 'replied'
+	STATUS_CHOICES = [(STATUS_PENDING, 'Pending'), (STATUS_REPLIED, 'Replied')]
+
+	hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='reviews')
+	booking = models.OneToOneField(Booking, on_delete=models.SET_NULL, null=True, blank=True, related_name='review')
+	customer_name = models.CharField(max_length=255)
+	rating = models.PositiveSmallIntegerField(default=5)
+	content = models.TextField()
+	reply = models.TextField(blank=True, default='')
+	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return f"{self.customer_name} - {self.hotel.name} - {self.rating} stars"
+
+
+class Promotion(models.Model):
+	TYPE_PERCENTAGE = 'percentage'
+	TYPE_FIXED = 'fixed'
+	TYPE_CHOICES = [(TYPE_PERCENTAGE, 'Percentage'), (TYPE_FIXED, 'Fixed Amount')]
+
+	hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='promotions')
+	code = models.CharField(max_length=50)
+	name = models.CharField(max_length=255)
+	discount_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default=TYPE_PERCENTAGE)
+	discount_value = models.PositiveIntegerField(default=0)
+	start_date = models.DateField()
+	end_date = models.DateField()
+	usage_count = models.PositiveIntegerField(default=0)
+	is_active = models.BooleanField(default=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return f"{self.code} - {self.hotel.name}"
+
+
+class Transaction(models.Model):
+	STATUS_PENDING = 'pending'
+	STATUS_COMPLETED = 'completed'
+	STATUS_CHOICES = [(STATUS_PENDING, 'Pending'), (STATUS_COMPLETED, 'Completed')]
+
+	TYPE_PAYOUT = 'payout'
+	TYPE_REVENUE = 'revenue'
+	TYPE_CHOICES = [(TYPE_PAYOUT, 'Payout'), (TYPE_REVENUE, 'Revenue')]
+
+	hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='transactions')
+	transaction_id = models.CharField(max_length=50, unique=True)
+	type = models.CharField(max_length=20, choices=TYPE_CHOICES, default=TYPE_REVENUE)
+	amount = models.BigIntegerField(default=0)
+	commission_fee = models.BigIntegerField(default=0)
+	net_amount = models.BigIntegerField(default=0)
+	description = models.CharField(max_length=255)
+	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_COMPLETED)
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return f"{self.transaction_id} - {self.hotel.name} - {self.amount}"
+
+
+class VendorSetting(models.Model):
+	user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='vendor_setting')
+	company_name = models.CharField(max_length=255, blank=True, default='')
+	tax_id = models.CharField(max_length=50, blank=True, default='')
+	bank_name = models.CharField(max_length=255, blank=True, default='')
+	bank_branch = models.CharField(max_length=255, blank=True, default='')
+	account_name = models.CharField(max_length=255, blank=True, default='')
+	account_number = models.CharField(max_length=50, blank=True, default='')
+
+	def __str__(self):
+		return f"{self.user.email} - Settings"
+

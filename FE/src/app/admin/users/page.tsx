@@ -1,13 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAdminUsers, updateAdminUser, deleteAdminUser } from "@/lib/api/adminApi";
+import { getAdminUsers, updateAdminUser, deleteAdminUser, createAdminUser } from "@/lib/api/adminApi";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
 export default function AdminUsersManage() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Modal State
+  const [showModal, setShowModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [formData, setFormData] = useState({
+    id: 0,
+    email: "",
+    password: "",
+    full_name: "",
+    role: "customer"
+  });
 
   const fetchUsers = () => {
     setLoading(true);
@@ -21,27 +32,58 @@ export default function AdminUsersManage() {
     fetchUsers();
   }, []);
 
-  const handleUpdateRole = async (userId: number, role: string) => {
-    const result = await Swal.fire({
-      title: "Cấp quyền tài khoản?",
-      text: `Xác nhận đổi quyền người dùng này thành ${role.toUpperCase()}?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Đồng ý",
-      cancelButtonText: "Hủy",
-    });
+  const handleOpenCreateModal = () => {
+    setIsEditMode(false);
+    setFormData({ id: 0, email: "", password: "", full_name: "", role: "customer" });
+    setShowModal(true);
+  };
 
-    if (!result.isConfirmed) return;
+  const handleOpenEditModal = (user: any) => {
+    setIsEditMode(true);
+    setFormData({
+      id: user.id,
+      email: user.email,
+      password: "", // Leave blank, only submit if user wants to change
+      full_name: user.full_name,
+      role: user.role
+    });
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => setShowModal(false);
+
+  const handleSubmitForm = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.email || !formData.full_name) {
+      toast.error("Vui lòng điền đầy đủ Email và Họ tên!");
+      return;
+    }
 
     try {
-      toast.loading("Đang cập nhật...", { id: `update-${userId}` });
-      await updateAdminUser(userId, { role });
-      toast.success("Cập nhật quyền thành công!", { id: `update-${userId}` });
+      if (isEditMode) {
+        toast.loading("Đang cập nhật...", { id: "user-submit" });
+        const payload: any = {
+          email: formData.email,
+          full_name: formData.full_name,
+          role: formData.role
+        };
+        if (formData.password) payload.password = formData.password;
+        
+        await updateAdminUser(formData.id, payload);
+        toast.success("Cập nhật thành công!", { id: "user-submit" });
+      } else {
+        if (!formData.password) {
+          toast.error("Vui lòng nhập mật khẩu cho người dùng mới!");
+          return;
+        }
+        toast.loading("Đang tạo người dùng...", { id: "user-submit" });
+        await createAdminUser(formData);
+        toast.success("Tạo người dùng thành công!", { id: "user-submit" });
+      }
+      setShowModal(false);
       fetchUsers();
     } catch (err: any) {
-      toast.error("Lỗi: " + err.message, { id: `update-${userId}` });
+      toast.error("Lỗi: " + err.message, { id: "user-submit" });
     }
   };
 
@@ -98,8 +140,11 @@ export default function AdminUsersManage() {
     <>
       <div className="row mt-4">
         <div className="col-12">
-          <div className="page-title-box">
+          <div className="page-title-box d-flex justify-content-between align-items-center">
             <h4 className="page-title">Quản lý Người dùng</h4>
+            <button className="btn btn-primary" onClick={handleOpenCreateModal}>
+              <i className="ri-add-line me-1"></i> Thêm Người Dùng
+            </button>
           </div>
         </div>
       </div>
@@ -175,10 +220,8 @@ export default function AdminUsersManage() {
                                 Tùy chọn
                               </button>
                               <ul className="dropdown-menu dropdown-menu-end shadow border-0">
-                                <li><h6 className="dropdown-header">Cấp quyền</h6></li>
-                                <li><button className="dropdown-item" onClick={() => handleUpdateRole(u.id, 'customer')} disabled={u.role === 'customer'}>Đặt làm Customer</button></li>
-                                <li><button className="dropdown-item" onClick={() => handleUpdateRole(u.id, 'vendor')} disabled={u.role === 'vendor'}>Đặt làm Vendor</button></li>
-                                <li><button className="dropdown-item text-danger" onClick={() => handleUpdateRole(u.id, 'admin')} disabled={u.role === 'admin'}>Thăng cấp Admin</button></li>
+                                <li><h6 className="dropdown-header">Cập nhật</h6></li>
+                                <li><button className="dropdown-item text-primary" onClick={() => handleOpenEditModal(u)}><i className="ri-edit-line me-2"/> Chỉnh sửa hồ sơ</button></li>
                                 <li><hr className="dropdown-divider" /></li>
                                 <li><h6 className="dropdown-header">Bảo mật</h6></li>
                                 {u.is_active ? (
@@ -200,6 +243,79 @@ export default function AdminUsersManage() {
           </div>
         </div>
       </div>
+
+      {/* Custom Modal */}
+      {showModal && (
+        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }} tabIndex={-1}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content border-0 shadow">
+              <form onSubmit={handleSubmitForm}>
+                <div className="modal-header">
+                  <h5 className="modal-title">{isEditMode ? "Chỉnh Sửa Người Dùng" : "Thêm Người Dùng Mới"}</h5>
+                  <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                </div>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label className="form-label">Email</label>
+                    <input 
+                      type="email" 
+                      className="form-control"
+                      required 
+                      placeholder="Nhập email..."
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label">Họ và Tên</label>
+                    <input 
+                      type="text" 
+                      className="form-control"
+                      required 
+                      placeholder="Nhập họ và tên..."
+                      value={formData.full_name}
+                      onChange={(e) => setFormData({...formData, full_name: e.target.value})}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Mật khẩu {isEditMode && <span className="text-muted fw-normal">(Bỏ trống nếu không muốn đổi)</span>}
+                    </label>
+                    <input 
+                      type="password" 
+                      className="form-control"
+                      placeholder="Nhập mật khẩu..."
+                      value={formData.password}
+                      onChange={(e) => setFormData({...formData, password: e.target.value})}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label">Vai trò (Role)</label>
+                    <select 
+                      className="form-select"
+                      value={formData.role}
+                      onChange={(e) => setFormData({...formData, role: e.target.value})}
+                    >
+                      <option value="customer">Customer (Khách hàng)</option>
+                      <option value="vendor">Vendor (Chủ khách sạn)</option>
+                      <option value="admin">Admin (Quản trị viên)</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-light" onClick={handleCloseModal}>Hủy bỏ</button>
+                  <button type="submit" className="btn btn-primary">
+                    {isEditMode ? "Lưu thay đổi" : "Tạo người dùng"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

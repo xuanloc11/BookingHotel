@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FC } from "react";
 
-const PricingOne: FC = () => {
+const Pricing: FC = () => {
   return (
     <section className='pricing-area bg-main-600 position-relative z-1'>
       <div className='container'>
@@ -177,4 +177,4 @@ const PricingOne: FC = () => {
   );
 };
 
-export default PricingOne;
+export default Pricing;

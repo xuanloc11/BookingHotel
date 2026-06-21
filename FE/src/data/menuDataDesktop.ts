@@ -35,11 +35,8 @@ export const getDesktopMenuData = (lang: string = 'vi'): DesktopMenuItem[] => {
       },
       {
         label: "About Us",
-        type: "submenu",
-        subMenu: [
-          { label: "General Info", link: "/about" },
-          { label: "Hotel Details", link: "/hotel/1" },
-        ],
+        type: "link",
+        link: "/about",
       },
       {
         label: "Contact",
@@ -74,11 +71,8 @@ export const getDesktopMenuData = (lang: string = 'vi'): DesktopMenuItem[] => {
     },
     {
       label: "Giới thiệu",
-      type: "submenu",
-      subMenu: [
-        { label: "Giới thiệu chung", link: "/about" },
-        { label: "Chi tiết khách sạn", link: "/hotel/1" },
-      ],
+      type: "link",
+      link: "/about",
     },
     {
       label: "Liên hệ",

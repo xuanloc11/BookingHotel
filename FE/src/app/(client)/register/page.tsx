@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 import AuthForm from "@/components/auth/AuthForm";
 import Breadcrumb from "@/components/layout/Breadcrumb";
-import FooterOne from "@/components/layout/FooterOne";
-import HeaderTwo from "@/components/layout/HeaderTwo";
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
 import type { PageSearchParams } from "@/lib/hotelSearchParams";
@@ -31,10 +31,10 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   return (
     <AOSWrap>
       <Preloader />
-      <HeaderTwo />
+      <Header />
       <Breadcrumb title='Register' sub_title='Account' />
       <AuthForm mode='register' nextPath={firstValue(params, "next")} />
-      <FooterOne />
+      <Footer />
     </AOSWrap>
   );
 }

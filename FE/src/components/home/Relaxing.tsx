@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
 
-const RelaxingOne: FC = () => {
+const Relaxing: FC = () => {
   return (
     <div className='pt-120 relaxing_one'>
       <section className='relaxing-area pb-120'>
@@ -95,4 +95,4 @@ const RelaxingOne: FC = () => {
   );
 };
 
-export default RelaxingOne;
+export default Relaxing;

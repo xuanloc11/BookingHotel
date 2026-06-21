@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
 
-const PackageOne: FC = () => {
+const Package: FC = () => {
   return (
     <section className='package-area py-120'>
       <div className='container-fluid'>
@@ -328,4 +328,4 @@ const PackageOne: FC = () => {
   );
 };
 
-export default PackageOne;
+export default Package;

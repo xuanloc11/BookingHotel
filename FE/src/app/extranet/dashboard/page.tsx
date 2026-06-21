@@ -119,7 +119,7 @@ export default function ExtranetDashboard() {
                       <CartesianGrid strokeDasharray="3 3" vertical={false} />
                       <XAxis dataKey="name" />
                       <YAxis tickFormatter={(value) => new Intl.NumberFormat('vi-VN', { notation: "compact", compactDisplay: "short" }).format(value)} />
-                      <Tooltip formatter={(value: number) => value.toLocaleString('vi-VN') + ' ₫'} />
+                      <Tooltip formatter={(value: any) => value.toLocaleString('vi-VN') + ' ₫'} />
                       <Area type="monotone" dataKey="revenue" name="Doanh thu" stroke="#0acf97" fill="#0acf97" fillOpacity={0.2} />
                     </AreaChart>
                   </ResponsiveContainer>

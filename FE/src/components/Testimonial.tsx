@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 
-const TestimonialOne: FC = () => {
+const Testimonial: FC = () => {
   return (
     <section className='testimonial-area testimonial-panel-area py-120 position-relative z-1'>
       <div className='container'>
@@ -250,4 +250,4 @@ const TestimonialOne: FC = () => {
   );
 };
 
-export default TestimonialOne;
+export default Testimonial;

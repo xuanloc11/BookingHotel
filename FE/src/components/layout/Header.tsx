@@ -1,16 +1,14 @@
 "use client";
 import { FC, useEffect, useRef, useState } from "react";
-import { menuData } from "@/data/menuData";
-import { desktopMenuData } from "@/data/menuDataDesktop";
+import { getMenuData } from "@/data/menuData";
+import { getDesktopMenuData } from "@/data/menuDataDesktop";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { getDesktopMenuData } from "@/data/menuDataDesktop";
-import { getMenuData } from "@/data/menuData";
 
-const HeaderOne: FC = () => {
+const Header: FC = () => {
   const pathname = usePathname();
   const { user, loading: authLoading, handleLogout } = useAuth();
   const [searchActive, setSearchActive] = useState(false);
@@ -157,10 +155,15 @@ const HeaderOne: FC = () => {
                   // ================= LINK ONLY =================
                   if (item.type === "link") {
                     return (
-                      <li key={index} className='nav-menu__item'>
+                      <li
+                        key={index}
+                        className={`nav-menu__item ${
+                          pathname === item.link ? "activePage" : ""
+                        } `}
+                      >
                         <Link
                           href={item.link || "#"}
-                          className='nav-menu__link text-white font-heading tw-py-11 fw-normal w-100'
+                          className='nav-menu__link tw-pe-5 text-white font-heading tw-py-11 fw-normal w-100'
                         >
                           {item.label}
                         </Link>
@@ -171,7 +174,7 @@ const HeaderOne: FC = () => {
                   // ================= MEGA MENU =================
                   if (item.type === "mega") {
                     return (
-                      <li key={index} className='nav-menu__item has-submenu'>
+                      <li key={index} className='nav-menu__item has-submenu '>
                         <Link
                           href='#'
                           className='nav-menu__link tw-pe-5 text-white font-heading tw-py-11 fw-normal w-100'
@@ -307,9 +310,9 @@ const HeaderOne: FC = () => {
               </div>
 
               {/* Auth Section */}
-              <div className='header-button d-flex align-items-center tw-gap-4'>
+              <div className='header-button header-two-button d-flex align-items-center tw-gap-4'>
                 <Link
-                  className='tw-btn-hover-yellow bg-white tw-py-5 tw-px-7 text-uppercase text-heading font-heading d-lg-inline-flex d-none align-items-center tw-gap-2 tw-rounded-lg'
+                  className='tw-btn-hover-white bg-main-600 tw-py-5 tw-px-7 text-capitalize text-heading font-heading d-lg-inline-flex d-none align-items-center tw-gap-2 tw-rounded-lg'
                   href='/room'
                 >
                   {t("header.bookNow")}
@@ -349,6 +352,16 @@ const HeaderOne: FC = () => {
                         <li className='tw-px-4 tw-py-2 border-bottom border-neutral-200'>
                           <span className='fw-semibold text-heading d-block text-truncate'>{user.full_name || user.email}</span>
                           <span className='tw-text-xs text-neutral-500 d-block text-truncate'>{user.email}</span>
+                        </li>
+                        <li>
+                          <Link
+                            href='/profile'
+                            onClick={() => setUserMenuOpen(false)}
+                            className='d-flex align-items-center tw-gap-2 tw-px-4 tw-py-2 text-heading hover-bg-neutral-200 tw-rounded'
+                          >
+                            <i className='ph ph-user' />
+                            {t("header.profile")}
+                          </Link>
                         </li>
                         <li>
                           <Link
@@ -409,6 +422,7 @@ const HeaderOne: FC = () => {
                 <i className='ph ph-list' />
               </button>
             </div>
+
             {/* Header Right End  */}
           </nav>
         </div>
@@ -514,6 +528,14 @@ const HeaderOne: FC = () => {
                     <span className='tw-text-xs text-neutral-500'>{user.email}</span>
                   </div>
                 </div>
+                <Link
+                  href='/profile'
+                  onClick={() => setActive(false)}
+                  className='d-flex align-items-center tw-gap-2 tw-py-2 text-heading hover-text-main-600'
+                >
+                  <i className='ph ph-user' />
+                  {t("header.profile")}
+                </Link>
                 <Link
                   href='/my-bookings'
                   onClick={() => setActive(false)}
@@ -662,4 +684,4 @@ const HeaderOne: FC = () => {
   );
 };
 
-export default HeaderOne;
+export default Header;

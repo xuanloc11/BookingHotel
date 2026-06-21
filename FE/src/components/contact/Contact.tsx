@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { FC } from "react";
 
-const ContactTwo: FC = () => {
+const Contact: FC = () => {
   return (
     <section className='contact-three-area py-120 position-relative z-1'>
       <div className='container'>
@@ -139,4 +139,4 @@ const ContactTwo: FC = () => {
   );
 };
 
-export default ContactTwo;
+export default Contact;

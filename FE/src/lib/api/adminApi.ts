@@ -36,6 +36,14 @@ export async function getAdminBookings(): Promise<any> {
   });
 }
 
+export async function createAdminUser(payload: any): Promise<any> {
+  return fetchBackendJson(`/system-admin/users`, {
+    method: "POST",
+    body: payload,
+    ...getAuthOptions(),
+  });
+}
+
 export async function updateAdminUser(userId: number, payload: any): Promise<any> {
   return fetchBackendJson(`/system-admin/users/${userId}`, {
     method: "PUT",
