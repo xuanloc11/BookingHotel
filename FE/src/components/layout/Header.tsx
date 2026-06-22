@@ -235,7 +235,22 @@ const Header: FC = () => {
                       </ul>
                     )}
                   </div>
-                ) : null}
+                ) : (
+                  <div className='d-flex align-items-center tw-gap-4 tw-ms-2'>
+                    <Link
+                      href='/login'
+                      className='text-white fw-medium hover-text-main-600'
+                    >
+                      {t("header.login")}
+                    </Link>
+                    <Link
+                      href='/register'
+                      className='tw-btn-hover-white bg-transparent border border-white tw-py-2 tw-px-5 text-white hover-text-heading fw-medium tw-rounded-lg d-none d-lg-block'
+                    >
+                      {t("header.register")}
+                    </Link>
+                  </div>
+                )}
               </div>
 
               <button
