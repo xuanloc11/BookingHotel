@@ -1,13 +1,176 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { getVendorBookings, updateVendorBookingStatus } from "@/lib/api/vendorApi";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
+// Modal chi tiết đơn đặt
+function BookingDetailModal({ booking, onClose }: { booking: any; onClose: () => void }) {
+  if (!booking) return null;
+  const statusLabel: Record<string, string> = {
+    confirmed: "Đã xác nhận",
+    pending: "Chờ duyệt",
+    completed: "Hoàn tất",
+    cancelled: "Đã hủy",
+  };
+  const statusClass: Record<string, string> = {
+    confirmed: "bg-success",
+    pending: "bg-warning text-dark",
+    completed: "bg-info",
+    cancelled: "bg-danger",
+  };
+  return createPortal(
+    <div
+      style={{
+        position: "fixed", inset: 0, zIndex: 99999,
+        background: "rgba(0,0,0,0.45)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}
+      onClick={onClose}
+    >
+      <div
+        style={{
+          background: "#fff", borderRadius: 12, width: "100%", maxWidth: 520,
+          boxShadow: "0 20px 60px rgba(0,0,0,0.2)", padding: 0, overflow: "hidden",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div style={{ background: "#2a7aef", color: "#fff", padding: "20px 24px" }}>
+          <div className="d-flex justify-content-between align-items-center">
+            <h5 className="mb-0 fw-bold">Chi tiết đơn #{booking.booking_id}</h5>
+            <button onClick={onClose} style={{ background: "none", border: "none", color: "#fff", fontSize: 20, cursor: "pointer" }}>×</button>
+          </div>
+          <span className={`badge mt-2 ${statusClass[booking.status] || "bg-secondary"}`}>
+            {statusLabel[booking.status] || booking.status}
+          </span>
+        </div>
+        {/* Body */}
+        <div style={{ padding: "24px" }}>
+          <div className="row g-3">
+            <div className="col-6">
+              <div className="text-muted" style={{ fontSize: 12 }}>Ngày nhận phòng</div>
+              <div className="fw-bold">{booking.check_in}</div>
+            </div>
+            <div className="col-6">
+              <div className="text-muted" style={{ fontSize: 12 }}>Ngày trả phòng</div>
+              <div className="fw-bold">{booking.check_out}</div>
+            </div>
+            <div className="col-6">
+              <div className="text-muted" style={{ fontSize: 12 }}>Số khách</div>
+              <div className="fw-bold">{booking.guests?.adults} người lớn, {booking.guests?.children} trẻ em</div>
+            </div>
+            <div className="col-6">
+              <div className="text-muted" style={{ fontSize: 12 }}>Ngày đặt</div>
+              <div className="fw-bold">{new Date(booking.created_at).toLocaleDateString("vi-VN")}</div>
+            </div>
+            <div className="col-12">
+              <hr style={{ margin: "4px 0 12px" }} />
+              <div className="d-flex justify-content-between align-items-center">
+                <span className="text-muted">Tổng tiền đơn</span>
+                <span className="fw-bold text-primary fs-5">{booking.total?.toLocaleString("vi-VN")} ₫</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ padding: "0 24px 20px" }}>
+          <button onClick={onClose} className="btn btn-secondary w-100">Đóng</button>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+// Dropdown render qua React Portal - tránh bị clip bởi overflow của parent
+function StatusDropdown({ bookingId, onSelect }: { bookingId: string; onSelect: (id: string, status: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const handleToggle = () => {
+    if (!open && btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setPos({ top: rect.bottom + window.scrollY, left: rect.right - 190 });
+    }
+    setOpen((v) => !v);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        menuRef.current && !menuRef.current.contains(e.target as Node) &&
+        btnRef.current && !btnRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+    if (open) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+  return (
+    <>
+      <button
+        ref={btnRef}
+        className="btn btn-light btn-sm dropdown-toggle"
+        type="button"
+        onClick={handleToggle}
+      >
+        Đổi trạng thái
+      </button>
+      {open && typeof document !== "undefined" && createPortal(
+        <div
+          ref={menuRef}
+          style={{
+            position: "absolute",
+            top: pos.top + 4,
+            left: pos.left,
+            zIndex: 99999,
+            minWidth: 190,
+            background: "#fff",
+            borderRadius: 6,
+            boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+            border: "1px solid #e9ecef",
+            padding: "4px 0",
+          }}
+        >
+          <button
+            className="dropdown-item"
+            style={{ padding: "9px 16px" }}
+            onClick={() => { setOpen(false); onSelect(bookingId, "confirmed"); }}
+          >
+            <i className="ri-check-line text-success me-2" /> Xác nhận đơn
+          </button>
+          <button
+            className="dropdown-item"
+            style={{ padding: "9px 16px" }}
+            onClick={() => { setOpen(false); onSelect(bookingId, "completed"); }}
+          >
+            <i className="ri-flag-line text-primary me-2" /> Đánh dấu hoàn tất
+          </button>
+          <hr style={{ margin: "4px 0" }} />
+          <button
+            className="dropdown-item text-danger"
+            style={{ padding: "9px 16px" }}
+            onClick={() => { setOpen(false); onSelect(bookingId, "cancelled"); }}
+          >
+            <i className="ri-close-line text-danger me-2" /> Hủy đơn đặt
+          </button>
+        </div>,
+        document.body
+      )}
+    </>
+  );
+}
+
 export default function VendorBookingsManage() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedBooking, setSelectedBooking] = useState<any>(null);
 
   const fetchBookings = () => {
     setLoading(true);
@@ -26,23 +189,14 @@ export default function VendorBookingsManage() {
     let actionColor = "#3085d6";
     let icon: any = "info";
 
-    if (newStatus === 'cancelled') {
-      actionText = "HỦY";
-      actionColor = "#d33";
-      icon = "warning";
-    } else if (newStatus === 'confirmed') {
-      actionText = "XÁC NHẬN";
-      actionColor = "#28a745";
-      icon = "question";
-    } else if (newStatus === 'completed') {
-      actionText = "ĐÁNH DẤU HOÀN TẤT";
-      actionColor = "#17a2b8";
-    }
+    if (newStatus === "cancelled") { actionText = "HỦY"; actionColor = "#d33"; icon = "warning"; }
+    else if (newStatus === "confirmed") { actionText = "XÁC NHẬN"; actionColor = "#28a745"; icon = "question"; }
+    else if (newStatus === "completed") { actionText = "ĐÁNH DẤU HOÀN TẤT"; actionColor = "#17a2b8"; }
 
     const result = await Swal.fire({
       title: `${actionText} ĐƠN ĐẶT PHÒNG?`,
       text: `Xác nhận chuyển trạng thái đơn #${bookingId} thành ${actionText}?`,
-      icon: icon,
+      icon,
       showCancelButton: true,
       confirmButtonColor: actionColor,
       cancelButtonColor: "#6c757d",
@@ -51,12 +205,12 @@ export default function VendorBookingsManage() {
     });
 
     if (!result.isConfirmed) return;
-    
+
     try {
       toast.loading("Đang cập nhật trạng thái...", { id: `status-${bookingId}` });
       await updateVendorBookingStatus(bookingId, newStatus);
       toast.success("Cập nhật trạng thái thành công!", { id: `status-${bookingId}` });
-      fetchBookings(); // Refresh data
+      fetchBookings();
     } catch (err: any) {
       toast.error("Lỗi: " + err.message, { id: `status-${bookingId}` });
     }
@@ -64,6 +218,9 @@ export default function VendorBookingsManage() {
 
   return (
     <>
+      {selectedBooking && (
+        <BookingDetailModal booking={selectedBooking} onClose={() => setSelectedBooking(null)} />
+      )}
       <div className="row mt-4">
         <div className="col-12">
           <div className="page-title-box">
@@ -71,7 +228,7 @@ export default function VendorBookingsManage() {
           </div>
         </div>
       </div>
-      
+
       <div className="row">
         <div className="col-12">
           <div className="card border-0 shadow-sm">
@@ -110,10 +267,14 @@ export default function VendorBookingsManage() {
                       </tr>
                     ) : (
                       bookings.map((b) => (
-                        <tr key={b.booking_id}>
+                        <tr
+                          key={b.booking_id}
+                          style={{ cursor: "pointer" }}
+                          onClick={() => setSelectedBooking(b)}
+                        >
                           <td className="px-4">
                             <span className="fw-bold">#{b.booking_id}</span>
-                            <div className="fs-6 text-muted mt-1">{new Date(b.created_at).toLocaleDateString('vi-VN')}</div>
+                            <div className="fs-6 text-muted mt-1">{new Date(b.created_at).toLocaleDateString("vi-VN")}</div>
                           </td>
                           <td>
                             <div className="fw-medium">{b.check_in}</div>
@@ -123,31 +284,21 @@ export default function VendorBookingsManage() {
                             <div className="fw-medium">{b.guests.adults} NL, {b.guests.children} TE</div>
                             <div className="fs-6 text-muted">Khách hàng đặt qua App</div>
                           </td>
-                          <td className="fw-bold text-primary">{b.total.toLocaleString('vi-VN')} ₫</td>
+                          <td className="fw-bold text-primary">{b.total.toLocaleString("vi-VN")} ₫</td>
                           <td>
                             <span className={`badge ${
-                              b.status === 'confirmed' ? 'bg-success' : 
-                              b.status === 'pending' ? 'bg-warning text-dark' : 
-                              b.status === 'completed' ? 'bg-info' : 'bg-danger'
+                              b.status === "confirmed" ? "bg-success" :
+                              b.status === "pending" ? "bg-warning text-dark" :
+                              b.status === "completed" ? "bg-info" : "bg-danger"
                             }`}>
-                              {b.status === 'confirmed' ? 'ĐÃ XÁC NHẬN' : 
-                               b.status === 'pending' ? 'CHỜ DUYỆT' : 
-                               b.status === 'completed' ? 'HOÀN TẤT' : 
-                               b.status === 'cancelled' ? 'ĐÃ HỦY' : b.status.toUpperCase()}
+                              {b.status === "confirmed" ? "ĐÃ XÁC NHẬN" :
+                               b.status === "pending" ? "CHỜ DUYỆT" :
+                               b.status === "completed" ? "HOÀN TẤT" :
+                               b.status === "cancelled" ? "ĐÃ HỦY" : b.status.toUpperCase()}
                             </span>
                           </td>
                           <td className="px-4 text-end">
-                            <div className="dropdown">
-                              <button className="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Đổi trạng thái
-                              </button>
-                              <ul className="dropdown-menu dropdown-menu-end shadow border-0">
-                                <li><button className="dropdown-item" onClick={() => handleStatusChange(b.booking_id, 'confirmed')}><i className="ri-check-line text-success me-2"/> Xác nhận đơn</button></li>
-                                <li><button className="dropdown-item" onClick={() => handleStatusChange(b.booking_id, 'completed')}><i className="ri-flag-line text-primary me-2"/> Đánh dấu hoàn tất</button></li>
-                                <li><hr className="dropdown-divider" /></li>
-                                <li><button className="dropdown-item text-danger" onClick={() => handleStatusChange(b.booking_id, 'cancelled')}><i className="ri-close-line text-danger me-2"/> Hủy đơn đặt</button></li>
-                              </ul>
-                            </div>
+                            <StatusDropdown bookingId={b.booking_id} onSelect={handleStatusChange} />
                           </td>
                         </tr>
                       ))

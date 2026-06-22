@@ -9,6 +9,7 @@ export default function VendorRoomsManage() {
   const [loading, setLoading] = useState(true);
   const [editingRoom, setEditingRoom] = useState<any>(null);
   const [formData, setFormData] = useState<any>({});
+  const [featuresRaw, setFeaturesRaw] = useState<string>('');
   const [saving, setSaving] = useState(false);
 
   const fetchRooms = () => {
@@ -29,17 +30,19 @@ export default function VendorRoomsManage() {
   };
 
   const handleFeaturesChange = (e: any) => {
-    const features = e.target.value.split(',').map((s: string) => s.trim());
-    setFormData((prev: any) => ({ ...prev, features }));
+    // Lưu raw string để không bị mất dấu cách khi đang gõ
+    setFeaturesRaw(e.target.value);
   };
 
   const openAddForm = () => {
     setFormData({ name: '', price: 0, capacity: 2, available_rooms: 1, features: [] });
+    setFeaturesRaw('');
     setEditingRoom('new');
   };
 
   const openEditForm = (room: any) => {
     setFormData({ ...room });
+    setFeaturesRaw(room.features?.join(', ') || '');
     setEditingRoom(room.id);
   };
 
@@ -56,11 +59,14 @@ export default function VendorRoomsManage() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setSaving(true);
+    // Parse features từ raw string khi submit
+    const parsedFeatures = featuresRaw.split(',').map((s: string) => s.trim()).filter(Boolean);
+    const dataToSave = { ...formData, features: parsedFeatures };
     try {
       if (editingRoom === 'new') {
-        await createVendorRoom(formData);
+        await createVendorRoom(dataToSave);
       } else {
-        await updateVendorRoom(editingRoom, formData);
+        await updateVendorRoom(editingRoom, dataToSave);
       }
       setEditingRoom(null);
       fetchRooms();
@@ -77,12 +83,14 @@ export default function VendorRoomsManage() {
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <Link href="/extranet/hotels" className="text-neutral-500 hover-text-main-600 mb-1 d-inline-block"><i className="ph ph-arrow-left" /> Quay lại khách sạn</Link>
+          <Link href="/extranet/hotels" className="text-neutral-500 hover-text-main-600 mb-1 d-inline-block">
+            <i className="ri-arrow-left-line me-1" /> Quay lại khách sạn
+          </Link>
           <h3 className="fw-bold m-0">Quản lý Kho phòng</h3>
         </div>
         {!editingRoom && (
-          <button onClick={openAddForm} className="btn btn-primary d-flex align-items-center tw-gap-2">
-            <i className="ph ph-plus" /> Thêm phòng mới
+          <button onClick={openAddForm} className="btn btn-primary d-flex align-items-center gap-2">
+            <i className="ri-add-line" /> Thêm phòng mới
           </button>
         )}
       </div>
@@ -111,7 +119,7 @@ export default function VendorRoomsManage() {
                 </div>
                 <div className="col-12">
                   <label className="form-label fw-medium">Tiện nghi phòng (Cách nhau dấu phẩy)</label>
-                  <input type="text" className="form-control" value={formData.features?.join(', ') || ''} onChange={handleFeaturesChange} placeholder="Tivi, Điều hòa, Bồn tắm..." />
+                  <input type="text" className="form-control" value={featuresRaw} onChange={handleFeaturesChange} placeholder="Tivi, Điều hòa, Bồn tắm..." />
                 </div>
                 
                 <div className="col-12 d-flex tw-gap-3 mt-4">
@@ -143,9 +151,9 @@ export default function VendorRoomsManage() {
                     <h5 className="fw-bold mb-1">{room.name}</h5>
                     <p className="text-main-600 fw-bold mb-3">{room.price.toLocaleString('vi-VN')} ₫ / đêm</p>
                     
-                    <div className="d-flex tw-gap-4 mb-3 text-neutral-600 tw-text-sm">
-                      <div><i className="ph ph-users" /> {room.capacity} người</div>
-                      <div><i className="ph ph-door" /> Còn {room.available_rooms} phòng</div>
+                    <div className="d-flex gap-4 mb-3 text-muted" style={{ fontSize: 14 }}>
+                      <div><i className="ri-group-line me-1" />{room.capacity} người</div>
+                      <div><i className="ri-door-open-line me-1" />Còn {room.available_rooms} phòng</div>
                     </div>
                     
                     <div className="d-flex flex-wrap tw-gap-1 mb-4">
@@ -155,9 +163,13 @@ export default function VendorRoomsManage() {
                       {room.features?.length > 3 && <span className="badge bg-light text-dark border">+{room.features.length - 3}</span>}
                     </div>
                     
-                    <div className="d-flex tw-gap-2">
-                      <button onClick={() => openEditForm(room)} className="btn btn-outline-primary btn-sm flex-grow-1">Sửa</button>
-                      <button onClick={() => handleDelete(room.id)} className="btn btn-outline-danger btn-sm"><i className="ph ph-trash" /></button>
+                    <div className="d-flex gap-2">
+                      <button onClick={() => openEditForm(room)} className="btn btn-outline-primary btn-sm flex-grow-1">
+                        <i className="ri-edit-box-line me-1" />Sửa
+                      </button>
+                      <button onClick={() => handleDelete(room.id)} className="btn btn-outline-danger btn-sm px-3">
+                        <i className="ri-delete-bin-line" />
+                      </button>
                     </div>
                   </div>
                 </div>

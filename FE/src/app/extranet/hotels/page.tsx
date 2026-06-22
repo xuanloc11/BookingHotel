@@ -10,6 +10,7 @@ export default function VendorHotelManage() {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<any>({});
+  const [amenitiesRaw, setAmenitiesRaw] = useState<string>('');
   const [saving, setSaving] = useState(false);
 
   const fetchHotel = () => {
@@ -19,8 +20,9 @@ export default function VendorHotelManage() {
         setHotel(res.hotel);
         if (res.hotel) {
           setFormData(res.hotel);
+          setAmenitiesRaw(res.hotel.amenities?.join(', ') || '');
         } else {
-          setIsEditing(true); // Auto-open form if no hotel
+          setIsEditing(true);
         }
       })
       .catch((err) => console.error(err))
@@ -37,21 +39,24 @@ export default function VendorHotelManage() {
   };
 
   const handleAmenitiesChange = (e: any) => {
-    const amenities = e.target.value.split(',').map((s: string) => s.trim());
-    setFormData((prev: any) => ({ ...prev, amenities }));
+    // Lưu raw string để không bị mất dấu cách khi đang gõ
+    setAmenitiesRaw(e.target.value);
   };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setSaving(true);
+    // Parse amenities từ raw string chỉ khi submit
+    const parsedAmenities = amenitiesRaw.split(',').map((s: string) => s.trim()).filter(Boolean);
+    const dataToSave = { ...formData, amenities: parsedAmenities };
     try {
       if (hotel) {
         toast.loading("Đang cập nhật...", { id: "save" });
-        await updateVendorHotel(formData);
+        await updateVendorHotel(dataToSave);
         toast.success("Cập nhật thành công!", { id: "save" });
       } else {
         toast.loading("Đang tạo...", { id: "save" });
-        await createVendorHotel(formData);
+        await createVendorHotel(dataToSave);
         toast.success("Tạo khách sạn thành công!", { id: "save" });
       }
       setIsEditing(false);
@@ -162,7 +167,7 @@ export default function VendorHotelManage() {
                     </div>
                     <div className="col-12">
                       <label className="form-label fw-medium">Tiện ích (Cách nhau bằng dấu phẩy)</label>
-                      <input type="text" className="form-control" value={formData.amenities?.join(', ') || ''} onChange={handleAmenitiesChange} placeholder="Hồ bơi, Spa, Gym..." />
+                      <input type="text" className="form-control" value={amenitiesRaw} onChange={handleAmenitiesChange} placeholder="Hồ bơi, Spa, Gym..." />
                     </div>
                     <div className="col-12">
                       <label className="form-label fw-medium">Mô tả</label>

@@ -9,13 +9,11 @@ export default function ExtranetPromotions() {
     <>
       <div className="row">
         <div className="col-12">
-          <div className="page-title-box">
-            <div className="page-title-right">
-              <button className="btn btn-primary">
-                <i className="ri-add-line me-1"></i> Tạo khuyến mãi mới
-              </button>
-            </div>
+          <div className="page-title-box d-flex justify-content-between align-items-center">
             <h4 className="page-title">Quản lý Khuyến mãi & Vouchers</h4>
+            <button className="btn btn-primary">
+              <i className="ri-add-line me-1"></i> Tạo khuyến mãi mới
+            </button>
           </div>
         </div>
       </div>
