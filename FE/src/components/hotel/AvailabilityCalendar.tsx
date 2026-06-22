@@ -40,6 +40,11 @@ export default function AvailabilityCalendar({
   availability,
 }: AvailabilityCalendarProps) {
   const firstAvailable = availability.find((day) => day.is_available);
+  const availableDateSet = useMemo(
+    () => new Set(availability.filter((day) => day.is_available).map((day) => day.date)),
+    [availability],
+  );
+
   const [checkIn, setCheckIn] = useState(firstAvailable?.date ?? "");
   const [checkOut, setCheckOut] = useState(
     firstAvailable ? addDays(firstAvailable.date, 1) : "",
@@ -50,7 +55,18 @@ export default function AvailabilityCalendar({
     rooms: 1,
   });
 
-  const canContinue = checkIn && checkOut && checkOut > checkIn;
+  const checkInAvailable = checkIn ? availableDateSet.has(checkIn) : false;
+  const checkOutAfterCheckIn = checkIn && checkOut ? checkOut > checkIn : false;
+  const canContinue = Boolean(checkIn && checkOut && checkInAvailable && checkOutAfterCheckIn);
+
+  const statusMessage = !checkIn || !checkOut
+    ? "Vui lòng chọn ngày nhận và trả phòng."
+    : !checkInAvailable
+      ? "Ngày nhận phòng đã chọn hiện không còn phòng. Vui lòng chọn ngày khác."
+      : !checkOutAfterCheckIn
+        ? "Ngày trả phòng phải sau ngày nhận phòng ít nhất 1 đêm."
+        : null;
+
   const checkoutHref = useMemo(
     () =>
       canContinue
@@ -66,6 +82,29 @@ export default function AvailabilityCalendar({
     }));
   };
 
+  const handleCheckInChange = (value: string) => {
+    setCheckIn(value);
+
+    if (!checkOut || value >= checkOut) {
+      setCheckOut(addDays(value, 1));
+    }
+  };
+
+  const handleCheckOutChange = (value: string) => {
+    if (!checkIn) {
+      setCheckOut(value);
+      return;
+    }
+
+    // Auto-correct invalid checkout to improve UX
+    if (value <= checkIn) {
+      setCheckOut(addDays(checkIn, 1));
+      return;
+    }
+
+    setCheckOut(value);
+  };
+
   return (
     <div className='bg-white tw-rounded-lg tw-p-8'>
       <h3 className='tw-text-8 fw-normal tw-mb-6'>Lịch trống phòng</h3>
@@ -78,12 +117,7 @@ export default function AvailabilityCalendar({
           <input
             className='form-control tw-h-14'
             min={firstAvailable?.date}
-            onChange={(event) => {
-              setCheckIn(event.target.value);
-              if (event.target.value >= checkOut) {
-                setCheckOut(addDays(event.target.value, 1));
-              }
-            }}
+            onChange={(event) => handleCheckInChange(event.target.value)}
             type='date'
             value={checkIn}
           />
@@ -96,7 +130,7 @@ export default function AvailabilityCalendar({
           <input
             className='form-control tw-h-14'
             min={checkIn ? addDays(checkIn, 1) : firstAvailable?.date}
-            onChange={(event) => setCheckOut(event.target.value)}
+            onChange={(event) => handleCheckOutChange(event.target.value)}
             type='date'
             value={checkOut}
           />
@@ -170,6 +204,12 @@ export default function AvailabilityCalendar({
           />
         </div>
       </div>
+
+      {statusMessage ? (
+        <p className='tw-text-sm text-danger tw-mb-4' role='status'>
+          {statusMessage}
+        </p>
+      ) : null}
 
       {canContinue ? (
         <Link
