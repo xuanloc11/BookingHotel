@@ -52,7 +52,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
       <AOSWrap>
         <Preloader />
         <Header />
-        <Breadcrumb title='Checkout' sub_title='Booking' />
+        <Breadcrumb title='Thanh toán' sub_title='Đặt phòng' titleKey='checkout.title' subTitleKey='checkout.booking' />
         <CheckoutMissingState />
         <Footer />
       </AOSWrap>
@@ -71,7 +71,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
     <AOSWrap>
       <Preloader />
       <Header />
-      <Breadcrumb title='Checkout' sub_title='Booking' />
+      <Breadcrumb title='Thanh toán' sub_title='Đặt phòng' titleKey='checkout.title' subTitleKey='checkout.booking' />
       <CheckoutForm hotel={hotel} price={price} selection={selection} />
       <Footer />
     </AOSWrap>

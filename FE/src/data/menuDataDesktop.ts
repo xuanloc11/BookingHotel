@@ -27,21 +27,8 @@ export const getDesktopMenuData = (lang: string = 'vi'): DesktopMenuItem[] => {
       },
       {
         label: "Rooms",
-        type: "submenu",
-        subMenu: [
-          { label: "Room List", link: "/room" },
-          { label: "Gallery", link: "/gallery" },
-        ],
-      },
-      {
-        label: "About Us",
         type: "link",
-        link: "/about",
-      },
-      {
-        label: "Contact",
-        type: "link",
-        link: "/contact",
+        link: "/room",
       },
       {
         label: "Account",
@@ -63,21 +50,8 @@ export const getDesktopMenuData = (lang: string = 'vi'): DesktopMenuItem[] => {
     },
     {
       label: "Phòng nghỉ",
-      type: "submenu",
-      subMenu: [
-        { label: "Danh sách phòng", link: "/room" },
-        { label: "Thư viện ảnh", link: "/gallery" },
-      ],
-    },
-    {
-      label: "Giới thiệu",
       type: "link",
-      link: "/about",
-    },
-    {
-      label: "Liên hệ",
-      type: "link",
-      link: "/contact",
+      link: "/room",
     },
     {
       label: "Tài khoản",

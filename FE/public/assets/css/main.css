@@ -76,8 +76,8 @@
 /* ========================= Variable Css Start ======================== */
 :root {
   /* Font Family Variable */
-    --heading-font: "Marcellus", serif;
-    --body-font: "Satoshi", sans-serif;
+  /* --heading-font: "Marcellus", serif; */
+  /* --body-font: "Satoshi", sans-serif; */
   /* Font Size Variable Start */
     --heading-one: clamp(2rem, -0.0733rem + 6.3692vw, 4.25rem);
     --heading-two: clamp(1.75rem, 0.7133rem + 2.8846vw, 2.875rem);
@@ -7993,12 +7993,12 @@ input:focus, input:focus-visible {
 }
 
 .banner-area {
-    padding: 270px 0 290px;
+    padding: 180px 0 220px;
 }
 
 @media screen and (max-width: 767px) {
     .banner-area {
-        padding: 200px 0 160px;
+        padding: 140px 0 160px;
     }
 }
 
@@ -8157,8 +8157,8 @@ input:focus, input:focus-visible {
     max-width: 312px;
     width: 100%;
     border-right: 0.8px solid rgba(35, 28, 37, 0.14);
-    padding-inline-end: 30px;
-    padding-inline-start: 13px;
+    padding-inline-end: 20px;
+    padding-inline-start: 20px;
 }
 
 @media screen and (max-width: 767px) {
@@ -8168,13 +8168,13 @@ input:focus, input:focus-visible {
 }
 
 .checkout-wrapper:first-child {
-    max-width: 165px;
+    max-width: 180px;
     padding-inline-start: 0;
     padding-inline-end: 10px;
 }
 
 .checkout-wrapper:nth-child(2) {
-    max-width: 240px;
+    max-width: 190px;
 }
 
 @media screen and (max-width: 991px) {
@@ -8185,7 +8185,7 @@ input:focus, input:focus-visible {
 }
 
 .checkout-wrapper:nth-child(3) {
-    max-width: 200px;
+    max-width: 190px;
 }
 
 @media screen and (max-width: 1199px) {
@@ -8202,7 +8202,8 @@ input:focus, input:focus-visible {
 }
 
 .checkout-wrapper:nth-child(4) {
-    border: none;
+    max-width: 160px;
+    border-right: 0.8px solid rgba(35, 28, 37, 0.14);
 }
 
 @media screen and (max-width: 1199px) {
@@ -8218,10 +8219,16 @@ input:focus, input:focus-visible {
     }
 }
 
+.checkout-wrapper:nth-child(5) {
+    max-width: 250px;
+    padding-inline-start: 15px;
+    padding-inline-end: 15px;
+}
+
 .checkout-wrapper:last-child {
     border: none;
     padding-inline-end: 0;
-    max-width: 212px;
+    max-width: 180px;
 }
 
 @media screen and (max-width: 991px) {

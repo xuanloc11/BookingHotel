@@ -67,7 +67,7 @@ export default async function Page({ searchParams }: RoomPageProps) {
       <Header />
 
       {/* Breadcrumb */}
-      <Breadcrumb title='Phòng nghỉ' sub_title='Danh sách phòng' />
+      <Breadcrumb title='Phòng nghỉ' sub_title='Danh sách phòng' imageUrl={hotels[0]?.thumbnail} />
 
       <SearchFilters amenities={amenities} filters={filters} />
 

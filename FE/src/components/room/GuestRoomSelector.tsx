@@ -1,7 +1,9 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const GuestRoomSelector = () => {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
@@ -36,15 +38,14 @@ const GuestRoomSelector = () => {
     if (newVal >= min) setter(newVal);
   };
 
-  const displayText = `${adults} người lớn · ${children} trẻ em · ${rooms} phòng`;
+  const displayText = `${adults} ${t("checkout.adultsCount")} · ${children} ${t("checkout.childrenCount")} · ${rooms} ${t("checkout.roomsCount")}`;
 
   return (
     <div className='position-relative tw-w-full' ref={dropdownRef}>
       {/* Trigger Button */}
       <div
-        className='custom-date-input tw-flex tw-items-center tw-justify-between tw-p-3 tw-border tw-border-gray-300 tw-rounded-lg tw-cursor-pointer tw-bg-white tw-w-full'
+        className='custom-date-input tw-flex tw-items-center tw-justify-between tw-px-3 tw-py-[7px] tw-border tw-border-gray-300 tw-rounded-lg tw-cursor-pointer tw-bg-white tw-w-full'
         onClick={handleToggle}
-        style={{ minHeight: "48px" }}
       >
         <div className='d-flex gap-2 tw-items-center align-items-center'>
           <span className='tw-text-gray-800 tw-text-sm'>{displayText}</span>
@@ -67,7 +68,7 @@ const GuestRoomSelector = () => {
         >
           {/* Adults Row */}
           <div className='d-flex justify-content-between align-items-center tw-mb-4'>
-            <span className='tw-text-gray-800 tw-font-medium'>Người lớn</span>
+            <span className='tw-text-gray-800 tw-font-medium'>{t("checkout.adults")}</span>
             <div className='d-flex align-items-center tw-gap-3'>
               <button
                 type='button'
@@ -92,7 +93,7 @@ const GuestRoomSelector = () => {
 
           {/* Children Row */}
           <div className='d-flex justify-content-between align-items-center tw-mb-4'>
-            <span className='tw-text-gray-800 tw-font-medium'>Trẻ em</span>
+            <span className='tw-text-gray-800 tw-font-medium'>{t("checkout.children")}</span>
             <div className='d-flex align-items-center tw-gap-3'>
               <button
                 type='button'
@@ -117,7 +118,7 @@ const GuestRoomSelector = () => {
 
           {/* Rooms Row */}
           <div className='d-flex justify-content-between align-items-center tw-mb-4'>
-            <span className='tw-text-gray-800 tw-font-medium'>Phòng</span>
+            <span className='tw-text-gray-800 tw-font-medium'>{t("checkout.rooms")}</span>
             <div className='d-flex align-items-center tw-gap-3'>
               <button
                 type='button'
@@ -147,7 +148,7 @@ const GuestRoomSelector = () => {
             style={{ borderRadius: "8px" }}
             onClick={() => setIsOpen(false)}
           >
-            Xong
+            {t("checkout.done")}
           </button>
         </div>
       )}

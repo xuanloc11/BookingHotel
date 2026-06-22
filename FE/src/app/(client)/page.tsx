@@ -8,6 +8,7 @@ import Footer from "@/components/layout/Footer";
 import QuickPlanner from "@/components/home/QuickPlanner";
 import FeaturedHotelsCarousel from "@/components/home/FeaturedHotelsCarousel";
 import { fetchProvinces, fetchHotels } from "@/lib/api/hotelApi";
+import ClientHome from "@/components/home/ClientHome";
 
 export default async function Home() {
   const provinces = await fetchProvinces().catch(() => []);
@@ -31,29 +32,8 @@ export default async function Home() {
       {/* Checkout (Search Filter) */}
       <Checkout />
 
-      {/* Booking.com Style Home Layout */}
-      
-      {/* Lên kế hoạch nhanh (Explore Vietnam) */}
-      {provinces.length > 0 && (
-        <QuickPlanner provinces={provinces} />
-      )}
-
-      {/* Featured Hotels */}
-      {topHotels.length > 0 && (
-        <FeaturedHotelsCarousel 
-          title="Lưu trú tại các chỗ nghỉ độc đáo hàng đầu" 
-          subtitle="Từ biệt thự, lâu đài cho đến nhà thuyền, igloo, chúng tôi đều có hết"
-          hotels={topHotels} 
-        />
-      )}
-
-      {/* Guest Loved Hotels */}
-      {lovedHotels.length > 0 && (
-        <FeaturedHotelsCarousel 
-          title="Nhà ở mà khách yêu thích" 
-          hotels={lovedHotels} 
-        />
-      )}
+      {/* Booking.com Style Home Layout wrapped in Client Component to access useLanguage */}
+      <ClientHome topHotels={topHotels} lovedHotels={lovedHotels} provinces={provinces} />
 
       {/* FooterOne */}
       <Footer />

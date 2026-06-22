@@ -1,8 +1,12 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const Footer: FC = () => {
+  const { t } = useLanguage();
+
   return (
     <footer
       className='footer background-img position-relative z-1 overflow-hidden '
@@ -20,8 +24,8 @@ const Footer: FC = () => {
               >
                 <div className='footer-col-1 tw_fade_anim' data-delay='.3'>
                   <h4 className='cursor-big tw-text-9 fw-normal text--white tw-mb-8'>
-                    Đăng ký nhận bản tin
-                    <br /> và các ưu đãi mới nhất
+                    {t("footer.newsletterTitle")}
+                    <br /> {t("footer.newsletterSubtitle")}
                   </h4>
                   <form
                     action='#'
@@ -30,26 +34,26 @@ const Footer: FC = () => {
                     <input
                       type='email'
                       className='form-control tw-w-288-px  bg-white shadow-none border border-neutral-700 text-heading tw-ps-6 tw-pe-13 focus-border-main-600 tw-h-14 tw-placeholder-text-neutral-700 focus-tw-placeholder-text-hidden tw-placeholder-transition-2'
-                      placeholder='Email...'
+                      placeholder={t("footer.emailPlaceholder")}
                       required
                     />
                     <button
                       type='submit'
                       className='tw-btn-hover-white bg-main-600 text-heading fw-bold tw-py-4 tw-px-8 tw-rounded-md transition-all d-flex tw-gap-3'
                     >
-                      Đăng ký{" "}
+                      {t("footer.subscribe")}{" "}
                       <span>
                         <i className='ph ph-paper-plane-tilt' />
                       </span>
                     </button>
                   </form>
                   <p className='font-heading fw-normal text-white'>
-                    Bằng cách đăng ký, bạn đồng ý với{" "}
+                    {t("footer.agreeTo")}
                     <Link
                       className='text-main-600 hover-text-white text-decoration-underline'
                       href='#'
                     >
-                      Chính sách bảo mật
+                      {t("footer.privacyPolicy")}
                     </Link>
                   </p>
                 </div>
@@ -61,7 +65,7 @@ const Footer: FC = () => {
               >
                 <div className='footer-col-2 tw_fade_anim' data-delay='.5'>
                   <h4 className='cursor-big tw-text-505 fw-normal text--white tw-mb-8'>
-                    Về chúng tôi
+                    {t("footer.aboutUs")}
                   </h4>
                   <ul className='d-flex flex-column tw-gap-4'>
                     <li>
@@ -69,7 +73,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Danh mục khách sạn
+                        {t("footer.hotelCategories")}
                       </Link>
                     </li>
                     <li>
@@ -77,7 +81,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Khách sạn nổi bật
+                        {t("footer.featuredHotels")}
                       </Link>
                     </li>
                     <li>
@@ -85,7 +89,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Liên kết nhanh
+                        {t("footer.quickLinks")}
                       </Link>
                     </li>
                     <li>
@@ -93,7 +97,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Liên kết quan trọng
+                        {t("footer.importantLinks")}
                       </Link>
                     </li>
                     <li>
@@ -101,7 +105,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Tin tức & Sự kiện
+                        {t("footer.newsEvents")}
                       </Link>
                     </li>
                     <li className='mb-0'>
@@ -109,7 +113,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Trung tâm trợ giúp
+                        {t("footer.helpCenter")}
                       </Link>
                     </li>
                   </ul>
@@ -122,7 +126,7 @@ const Footer: FC = () => {
               >
                 <div className='footer-col-3 tw_fade_anim' data-delay='.7'>
                   <h4 className='cursor-big tw-text-505 fw-normal text--white tw-mb-8'>
-                    Tài khoản của tôi
+                    {t("footer.myAccount")}
                   </h4>
                   <ul className='d-flex flex-column tw-gap-4'>
                     <li>
@@ -130,7 +134,7 @@ const Footer: FC = () => {
                         href='/contact'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Liên hệ chúng tôi
+                        {t("footer.contactUs")}
                       </Link>
                     </li>
                     <li>
@@ -138,7 +142,7 @@ const Footer: FC = () => {
                         href='/faq'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Hỏi đáp (FAQ)
+                        {t("footer.faq")}
                       </Link>
                     </li>
                     <li>
@@ -146,7 +150,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Kết nối ngay
+                        {t("footer.connectNow")}
                       </Link>
                     </li>
                     <li>
@@ -154,7 +158,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Mạng lưới toàn cầu
+                        {t("footer.globalNetwork")}
                       </Link>
                     </li>
                     <li>
@@ -162,7 +166,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Hỗ trợ 24/7
+                        {t("footer.support247")}
                       </Link>
                     </li>
                   </ul>
@@ -175,7 +179,7 @@ const Footer: FC = () => {
               >
                 <div className='footer-col-4 tw_fade_anim' data-delay='.9'>
                   <h4 className='cursor-big tw-text-505 fw-normal text--white tw-mb-8'>
-                    Dịch vụ
+                    {t("footer.services")}
                   </h4>
                   <ul className='d-flex flex-column tw-gap-4'>
                     <li>
@@ -183,7 +187,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Yêu cầu hỗ trợ
+                        {t("footer.supportRequest")}
                       </Link>
                     </li>
                     <li>
@@ -191,7 +195,7 @@ const Footer: FC = () => {
                         href='/service-details'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Dịch vụ của chúng tôi
+                        {t("footer.ourServices")}
                       </Link>
                     </li>
                     <li>
@@ -199,7 +203,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Lĩnh vực hoạt động
+                        {t("footer.areasOfOperation")}
                       </Link>
                     </li>
                     <li>
@@ -207,7 +211,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Chính sách đặt phòng
+                        {t("footer.bookingPolicy")}
                       </Link>
                     </li>
                     <li>
@@ -215,7 +219,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Vận chuyển
+                        {t("footer.transportation")}
                       </Link>
                     </li>
                     <li className='mb-0'>
@@ -223,7 +227,7 @@ const Footer: FC = () => {
                         href='#'
                         className='text--white hover-text-main-600 hover-underline'
                       >
-                        Bảng giá linh hoạt
+                        {t("footer.flexiblePricing")}
                       </Link>
                     </li>
                   </ul>
@@ -291,19 +295,6 @@ const Footer: FC = () => {
                   </Link>
                 </li>
               </ul>
-              <p
-                className='text--white text-line-1 fw-medium tw-text-lg aos-init tw_fade_anim'
-                data-delay='.7'
-              >
-                Made with ❤️ by{" "}
-                <Link
-                  href='/'
-                  className='fw-semibold text-main-600 hover-underline hover-text-white'
-                >
-                  wowtheme7.
-                </Link>
-                - Powered by Themeforest
-              </p>
             </div>
           </div>
         </div>

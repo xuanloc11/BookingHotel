@@ -272,6 +272,7 @@
 .custom-date-input {
   transition: all 0.2s ease;
   cursor: pointer;
+  margin-top: 8px;
 }
 
 .custom-date-input:hover {

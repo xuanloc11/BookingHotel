@@ -6,6 +6,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Hotel } from "@/types/hotel";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface FeaturedHotelsCarouselProps {
   title: string;
@@ -18,14 +19,15 @@ const moneyFormatter = new Intl.NumberFormat("vi-VN", {
   currency: "VND",
 });
 
-const getRatingText = (rating: number) => {
-  if (rating >= 9) return "Tuyệt hảo";
-  if (rating >= 8) return "Rất tốt";
-  if (rating >= 7) return "Tốt";
-  return "Đánh giá";
+const getRatingText = (rating: number, t: (key: string) => string) => {
+  if (rating >= 9) return t("rating.excellent");
+  if (rating >= 8) return t("rating.veryGood");
+  if (rating >= 7) return t("rating.good");
+  return t("rating.review");
 };
 
 const FeaturedHotelsCarousel: FC<FeaturedHotelsCarouselProps> = ({ title, subtitle, hotels }) => {
+  const { t } = useLanguage();
   if (!hotels || hotels.length === 0) return null;
 
   return (
@@ -48,7 +50,7 @@ const FeaturedHotelsCarousel: FC<FeaturedHotelsCarouselProps> = ({ title, subtit
           }}
         >
           {hotels.map((hotel) => (
-            <SwiperSlide key={hotel.id}>
+            <SwiperSlide key={hotel.id} style={{ height: "auto" }}>
               <div className='card border-0 shadow-sm h-100 tw-rounded-xl overflow-hidden d-flex flex-column'>
                 <Link href={`/hotel/${hotel.id}`} className='text-decoration-none'>
                   <div className='position-relative' style={{ aspectRatio: "4/3" }}>
@@ -81,13 +83,13 @@ const FeaturedHotelsCarousel: FC<FeaturedHotelsCarouselProps> = ({ title, subtit
                       {hotel.rating.toFixed(1)}
                     </span>
                     <div>
-                      <span className='fw-medium text-dark me-1'>{getRatingText(hotel.rating)}</span>
-                      <span className='text-neutral-500 tw-text-sm'>· {hotel.reviews_count} đánh giá</span>
+                      <span className='fw-medium text-dark me-1'>{getRatingText(hotel.rating, t)}</span>
+                      <span className='text-neutral-500 tw-text-sm'>· {hotel.reviews_count} {t("hotel.reviews")}</span>
                     </div>
                   </div>
 
                   <div className='mt-auto text-end'>
-                    <span className='text-neutral-500 tw-text-sm d-block'>Bắt đầu từ</span>
+                    <span className='text-neutral-500 tw-text-sm d-block'>{t("hotel.startingFrom")}</span>
                     <strong className='tw-text-lg text-dark'>{moneyFormatter.format(hotel.price_per_night)}</strong>
                   </div>
                 </div>

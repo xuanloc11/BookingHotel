@@ -18,18 +18,7 @@ export const getMenuData = (lang: string = 'vi'): MenuItem[] => {
       },
       {
         label: "Rooms",
-        subMenu: [
-          { label: "Room List", link: "/room" },
-          { label: "Gallery", link: "/gallery" },
-        ],
-      },
-      {
-        label: "About Us",
-        link: "/about",
-      },
-      {
-        label: "Contact",
-        link: "/contact",
+        link: "/room",
       },
       {
         label: "Account",
@@ -49,18 +38,7 @@ export const getMenuData = (lang: string = 'vi'): MenuItem[] => {
     },
     {
       label: "Phòng nghỉ",
-      subMenu: [
-        { label: "Danh sách phòng", link: "/room" },
-        { label: "Thư viện ảnh", link: "/gallery" },
-      ],
-    },
-    {
-      label: "Giới thiệu",
-      link: "/about",
-    },
-    {
-      label: "Liên hệ",
-      link: "/contact",
+      link: "/room",
     },
     {
       label: "Tài khoản",

@@ -1,9 +1,10 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 import Script from "next/script";
 import { Plus_Jakarta_Sans } from "next/font/google";
 
@@ -36,6 +37,21 @@ export default function ExtranetLayout({ children }: { children: ReactNode }) {
   const { user, loading, handleLogout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+
+  const [currency, setCurrency] = useState("VND");
+  const { language, toggleLanguage } = useLanguage();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCurrency(localStorage.getItem("app_currency") || "VND");
+    }
+  }, []);
+
+  const toggleCurrency = () => {
+    const newCurr = currency === "VND" ? "USD" : "VND";
+    localStorage.setItem("app_currency", newCurr);
+    window.location.reload();
+  };
 
   useEffect(() => {
     if (!loading) {
@@ -104,6 +120,19 @@ export default function ExtranetLayout({ children }: { children: ReactNode }) {
             </div>
 
             <ul className="topbar-menu d-flex align-items-center gap-3">
+              {/* Currency & Language (same logic as client app) */}
+              <li className="dropdown d-none d-lg-flex align-items-center gap-3 me-2">
+                <button
+                  onClick={toggleCurrency}
+                  className="btn btn-sm btn-light d-flex align-items-center gap-1 fw-bold border"
+                  title="Chọn tiền tệ"
+                  style={{ padding: "6px 12px", borderRadius: "8px", background: "#f8f9fa", color: "#333", borderColor: "#dee2e6" }}
+                >
+                  <i className="ri-money-dollar-circle-line fs-18"></i>
+                  {currency}
+                </button>
+              </li>
+
               <li className="dropdown">
                 <a className="nav-link dropdown-toggle arrow-none nav-user" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
                   <span className="account-user-avatar">

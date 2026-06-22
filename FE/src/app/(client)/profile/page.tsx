@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import Breadcrumb from "@/components/layout/Breadcrumb";
-import ProfileDashboard from "@/components/profile/ProfileDashboard";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import AOSWrap from "@/helper/AOSWrap";
@@ -12,6 +10,7 @@ import { AUTH_ACCESS_TOKEN_COOKIE } from "@/lib/api/authApi";
 import { fetchCurrentUser } from "@/lib/api/userApi";
 import { fetchMyBookings } from "@/lib/api/bookingApi";
 import { Suspense } from "react";
+import ProfilePageClient from "@/components/profile/ProfilePageClient";
 
 export const dynamic = "force-dynamic";
 
@@ -52,9 +51,8 @@ export default async function ProfilePage() {
     <AOSWrap>
       <Preloader />
       <Header />
-      <Breadcrumb title='Hồ sơ cá nhân' sub_title='Tài khoản' />
       <Suspense fallback={<div>Loading...</div>}>
-        <ProfileDashboard user={user} bookings={bookings} />
+        <ProfilePageClient user={user} bookings={bookings} />
       </Suspense>
       <Footer />
     </AOSWrap>

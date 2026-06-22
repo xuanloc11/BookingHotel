@@ -130,6 +130,7 @@ class Booking(models.Model):
 			'status': self.status,
 			'total': self.total,
 			'currency': self.currency,
+			'customer': self.customer,
 			'created_at': self.created_at.isoformat(),
 		}
 

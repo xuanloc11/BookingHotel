@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { BookingSummary } from "@/types/booking";
 import type { UserProfile } from "@/types/user";
 
@@ -20,21 +23,22 @@ export default function MyBookingsDashboard({
   user,
   error,
 }: MyBookingsDashboardProps) {
+  const { t } = useLanguage();
   return (
     <section className='bg_2 pt-120 pb-120'>
       <div className='container'>
         <div className='d-flex justify-content-between align-items-end flex-wrap row-gap-3 tw-mb-10'>
           <div>
-            <h1 className='section-title fw-normal tw-mb-3'>My Bookings</h1>
+            <h1 className='section-title fw-normal tw-mb-3'>{t("myBookings.title")}</h1>
             <p className='mb-0'>
-              {user ? `Signed in as ${user.full_name || user.email}` : "Your booking history"}
+              {user ? `${t("myBookings.signedInAs")} ${user.full_name || user.email}` : t("myBookings.history")}
             </p>
           </div>
           <Link
             className='tw-btn-hover-black bg-main-600 tw-py-4 tw-px-8 text-heading font-heading tw-rounded-lg'
             href='/room'
           >
-            Book another stay
+            {t("myBookings.bookAnother")}
           </Link>
         </div>
 
@@ -46,12 +50,12 @@ export default function MyBookingsDashboard({
 
         {bookings.length === 0 ? (
           <div className='bg-white tw-rounded-lg tw-p-10 text-center'>
-            <h2 className='tw-text-8 fw-normal tw-mb-3'>Chưa có đơn đặt phòng</h2>
+            <h2 className='tw-text-8 fw-normal tw-mb-3'>{t("myBookings.emptyTitle")}</h2>
             <p className='tw-mb-6'>
-              Các đơn đặt phòng đã xác nhận và chờ xử lý sẽ xuất hiện ở đây sau khi thanh toán.
+              {t("myBookings.emptyDesc")}
             </p>
             <Link className='text-main-600 fw-bold' href='/room'>
-              Duyệt khách sạn
+              {t("myBookings.browseHotels")}
             </Link>
           </div>
         ) : (
@@ -80,10 +84,10 @@ export default function MyBookingsDashboard({
                     </span>
                   </div>
                   <p className='tw-mb-2'>
-                    {booking.check_in} to {booking.check_out}
+                    {booking.check_in} {t("myBookings.to")} {booking.check_out}
                   </p>
                   <p className='mb-0'>
-                    Booking ID: <strong>{booking.booking_id}</strong>
+                    {t("myBookings.bookingId")}: <strong>{booking.booking_id}</strong>
                   </p>
                 </div>
                 <div className='text-xl-end'>
@@ -94,7 +98,7 @@ export default function MyBookingsDashboard({
                     className='font-heading text-heading hover-text-main-600'
                     href={`/hotel/${booking.hotel_id}`}
                   >
-                    View hotel <i className='ph ph-arrow-up-right' />
+                    {t("myBookings.viewHotel")} <i className='ph ph-arrow-up-right' />
                   </Link>
                 </div>
               </article>

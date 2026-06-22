@@ -9,6 +9,7 @@ from app.patterns.interpreter import (
     PriceRangeExpression,
     StarRatingExpression,
 )
+from app.models import Booking
 
 
 class HotelService:
@@ -69,14 +70,41 @@ class HotelService:
 
         today = datetime.utcnow().date()
         availability: list[dict] = []
+        
+        # Calculate booked rooms per date
+        booked_rooms_per_date = Counter()
+        bookings = Booking.objects.filter(hotel_id=hotel_id).exclude(status='cancelled')
+        for booking in bookings:
+            try:
+                check_in_date = datetime.strptime(booking.check_in, '%Y-%m-%d').date()
+                check_out_date = datetime.strptime(booking.check_out, '%Y-%m-%d').date()
+                rooms = int(booking.guests.get('rooms', 1))
+                
+                # Iterate through each night of the stay
+                current_date = check_in_date
+                while current_date < check_out_date:
+                    booked_rooms_per_date[current_date.isoformat()] += rooms
+                    current_date += timedelta(days=1)
+            except Exception:
+                pass # Ignore malformed bookings
 
         for index in range(21):
             date_value = today + timedelta(days=index)
-            is_available = index % 6 != 5
+            date_str = date_value.isoformat()
+            
+            # Base logic
+            base_available = index % 6 != 5
+            base_rooms = 4 - (index % 3) if base_available else 0
+            
+            # Subtract booked rooms
+            booked = booked_rooms_per_date[date_str]
+            remaining_rooms = max(0, base_rooms - booked)
+            is_available = remaining_rooms > 0
+
             availability.append(
                 {
-                    'date': date_value.isoformat(),
-                    'available_rooms': 4 - (index % 3) if is_available else 0,
+                    'date': date_str,
+                    'available_rooms': remaining_rooms,
                     'nightly_rate': hotel.get('price_per_night', 0),
                     'is_available': is_available,
                 }

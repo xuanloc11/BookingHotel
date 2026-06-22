@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
 // Modal chi tiết đơn đặt
-function BookingDetailModal({ booking, onClose }: { booking: any; onClose: () => void }) {
+function BookingDetailModal({ booking, onClose, formatMoney }: { booking: any; onClose: () => void; formatMoney: (amount: number, bCurr: string) => string }) {
   if (!booking) return null;
   const statusLabel: Record<string, string> = {
     confirmed: "Đã xác nhận",
@@ -48,8 +48,35 @@ function BookingDetailModal({ booking, onClose }: { booking: any; onClose: () =>
           </span>
         </div>
         {/* Body */}
-        <div style={{ padding: "24px" }}>
+        <div style={{ padding: "24px", maxHeight: "70vh", overflowY: "auto" }}>
           <div className="row g-3">
+            {booking.customer && (
+              <div className="col-12 mb-1">
+                <div className="p-3 bg-light rounded border">
+                  <h6 className="mb-2 fw-bold text-primary"><i className="ri-user-line me-1"></i> Thông tin khách hàng</h6>
+                  <div className="row">
+                    <div className="col-sm-6">
+                      <div className="text-muted" style={{ fontSize: 12 }}>Họ và tên</div>
+                      <div className="fw-bold">{booking.customer.last_name} {booking.customer.first_name}</div>
+                    </div>
+                    <div className="col-sm-6">
+                      <div className="text-muted" style={{ fontSize: 12 }}>Số điện thoại</div>
+                      <div className="fw-bold">{booking.customer.phone || "Không có"}</div>
+                    </div>
+                    <div className="col-sm-12 mt-2">
+                      <div className="text-muted" style={{ fontSize: 12 }}>Email</div>
+                      <div className="fw-bold">{booking.customer.email || "Không có"}</div>
+                    </div>
+                    {booking.customer.special_requests && (
+                      <div className="col-sm-12 mt-2">
+                        <div className="text-muted" style={{ fontSize: 12 }}>Yêu cầu đặc biệt</div>
+                        <div className="fw-bold text-danger">{booking.customer.special_requests}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="col-6">
               <div className="text-muted" style={{ fontSize: 12 }}>Ngày nhận phòng</div>
               <div className="fw-bold">{booking.check_in}</div>
@@ -70,7 +97,9 @@ function BookingDetailModal({ booking, onClose }: { booking: any; onClose: () =>
               <hr style={{ margin: "4px 0 12px" }} />
               <div className="d-flex justify-content-between align-items-center">
                 <span className="text-muted">Tổng tiền đơn</span>
-                <span className="fw-bold text-primary fs-5">{booking.total?.toLocaleString("vi-VN")} ₫</span>
+                <span className="fw-bold text-primary fs-5">
+                  {formatMoney(booking.total || 0, booking.currency)}
+                </span>
               </div>
             </div>
           </div>
@@ -180,9 +209,24 @@ export default function VendorBookingsManage() {
       .finally(() => setLoading(false));
   };
 
+  const [currency, setCurrency] = useState("VND");
+
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCurrency(localStorage.getItem("app_currency") || "VND");
+    }
     fetchBookings();
   }, []);
+
+  const formatMoney = (amount: number, bCurr: string = "VND") => {
+    let finalAmount = amount;
+    if (bCurr === "USD" && currency === "VND") {
+      finalAmount = amount * 25300;
+    } else if (bCurr === "VND" && currency === "USD") {
+      finalAmount = amount / 25300;
+    }
+    return new Intl.NumberFormat("vi-VN", { style: "currency", currency: currency }).format(finalAmount);
+  };
 
   const handleStatusChange = async (bookingId: string, newStatus: string) => {
     let actionText = newStatus.toUpperCase();
@@ -219,7 +263,7 @@ export default function VendorBookingsManage() {
   return (
     <>
       {selectedBooking && (
-        <BookingDetailModal booking={selectedBooking} onClose={() => setSelectedBooking(null)} />
+        <BookingDetailModal booking={selectedBooking} onClose={() => setSelectedBooking(null)} formatMoney={formatMoney} />
       )}
       <div className="row mt-4">
         <div className="col-12">
@@ -281,23 +325,32 @@ export default function VendorBookingsManage() {
                             <div className="text-muted fs-6">đến {b.check_out}</div>
                           </td>
                           <td>
-                            <div className="fw-medium">{b.guests.adults} NL, {b.guests.children} TE</div>
-                            <div className="fs-6 text-muted">Khách hàng đặt qua App</div>
+                            <div className="fw-medium">
+                              {b.customer ? `${b.customer.last_name} ${b.customer.first_name}` : `${b.guests.adults} NL, ${b.guests.children} TE`}
+                            </div>
+                            <div className="fs-6 text-muted">{b.customer?.phone || "Khách hàng đặt qua App"}</div>
                           </td>
-                          <td className="fw-bold text-primary">{b.total.toLocaleString("vi-VN")} ₫</td>
+                          <td className="fw-bold text-primary">
+                            {formatMoney(b.total || 0, b.currency)}
+                          </td>
                           <td>
-                            <span className={`badge ${
-                              b.status === "confirmed" ? "bg-success" :
-                              b.status === "pending" ? "bg-warning text-dark" :
-                              b.status === "completed" ? "bg-info" : "bg-danger"
-                            }`}>
-                              {b.status === "confirmed" ? "ĐÃ XÁC NHẬN" :
-                               b.status === "pending" ? "CHỜ DUYỆT" :
-                               b.status === "completed" ? "HOÀN TẤT" :
-                               b.status === "cancelled" ? "ĐÃ HỦY" : b.status.toUpperCase()}
-                            </span>
+                            {(() => {
+                              const stat = (b.status || "").toLowerCase();
+                              return (
+                                <span className={`badge ${
+                                  stat === "confirmed" ? "bg-success" :
+                                  stat === "pending" ? "bg-warning text-dark" :
+                                  stat === "completed" ? "bg-info" : "bg-danger"
+                                }`}>
+                                  {stat === "confirmed" ? "ĐÃ XÁC NHẬN" :
+                                   stat === "pending" ? "CHỜ DUYỆT" :
+                                   stat === "completed" ? "HOÀN TẤT" :
+                                   stat === "cancelled" ? "ĐÃ HỦY" : b.status.toUpperCase()}
+                                </span>
+                              );
+                            })()}
                           </td>
-                          <td className="px-4 text-end">
+                          <td className="px-4 text-end" onClick={(e) => e.stopPropagation()}>
                             <StatusDropdown bookingId={b.booking_id} onSelect={handleStatusChange} />
                           </td>
                         </tr>

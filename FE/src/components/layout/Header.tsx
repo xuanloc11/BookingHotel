@@ -93,151 +93,18 @@ const Header: FC = () => {
         }`}
       >
         <div className='container tw-container-1750-px'>
-          <nav className='d-flex align-items-center justify-content-between position-relative'>
+          <nav className='d-flex align-items-center justify-content-between position-relative tw-py-5'>
             {/* Logo Start */}
             <div className='logo'>
               <Link href='/' className='link'>
                 <div className='d-flex align-items-center gap-2'>
                   <i className='ph-fill ph-buildings tw-text-4xl text-main-600'></i>
-                  <span className='fw-bold tw-text-3xl text-white' style={{ textShadow: '0px 2px 4px rgba(0,0,0,0.3)' }}>VPL Hotel</span>
+                  <span className={`fw-bold tw-text-3xl ${scroll || pathname !== '/' ? 'text-white' : 'text-dark'}`}>VPL Hotel</span>
                 </div>
               </Link>
             </div>
             {/* Logo End  */}
-            {/* Menu Start  */}
-            <div className='header-menu d-lg-block d-none'>
-              {/* Nav menu Start */}
-              <ul className='nav-menu d-lg-flex align-items-center tw-gap-8'>
-                {dynamicDesktopMenu.map((item, index) => {
-                  // ================= LINK ONLY =================
-                  if (item.type === "link") {
-                    return (
-                      <li
-                        key={index}
-                        className={`nav-menu__item ${
-                          pathname === item.link ? "activePage" : ""
-                        } `}
-                      >
-                        <Link
-                          href={item.link || "#"}
-                          className='nav-menu__link tw-pe-5 text-white font-heading tw-py-11 fw-normal w-100'
-                        >
-                          {item.label}
-                        </Link>
-                      </li>
-                    );
-                  }
-
-                  // ================= MEGA MENU =================
-                  if (item.type === "mega") {
-                    return (
-                      <li key={index} className='nav-menu__item has-submenu '>
-                        <Link
-                          href='#'
-                          className='nav-menu__link tw-pe-5 text-white font-heading tw-py-11 fw-normal w-100'
-                        >
-                          {item.label}
-                        </Link>
-
-                        <div className='mega-menu tw-p-6 tw-rounded-lg scroll-sm nav-submenu position-absolute start-0 top-100 tw-w-max bg-white tw-rounded-md tw-duration-200 tw-z-99'>
-                          <div className='row g-4 row-cols-1 row-cols-lg-3 row-cols-xl-4'>
-                            {item.megaItems?.map((home, i) => (
-                              <div key={i} className='col'>
-                                <div className='mega-menu-item group-item'>
-                                  <div className='position-relative border border-neutral-200 tw-rounded-lg overflow-hidden'>
-                                    <Link href={home.link} className='d-block'>
-                                      <Image
-                                        src={home.image}
-                                        width={1440}
-                                        height={2100}
-                                        alt='Home Page Image'
-                                        className='tw-h-320-px w-100 object-fit-cover object-top'
-                                      />
-                                    </Link>
-
-                                    <div className='d-lg-flex d-none'>
-                                      <div className='mega-menu-item__overlay position-absolute top-0 tw-start-0 w-100 h-100 d-flex justify-content-center align-items-center tw-invisible opacity-0 group-hover-item-visible group-hover-item-opacity-1 tw-scale-08 group-hover-item-scale-1 tw-rounded-lg pointer-event-none'></div>
-                                      <div className='mega-menu-item__buttons position-absolute top-0 tw-start-0 w-100 h-100 d-flex justify-content-center align-items-center flex-column tw-gap-4 tw-invisible opacity-0 group-hover-item-visible group-hover-item-opacity-1'>
-                                        <Link
-                                          className='tw-btn-hover-white bg-main-600 tw-py-4 tw-px-8 text-capitalize text-heading font-heading d-inline-flex align-items-center tw-gap-2 tw-rounded-lg'
-                                          href={home.link}
-                                        >
-                                          Xem ngay
-                                          <span className='d-inline-block lh-1 tw-text-lg'>
-                                            <i className='ph ph-arrow-up-right' />
-                                          </span>
-                                        </Link>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div className='tw-mt-4 text-center'>
-                                    <Link
-                                      href={home.link}
-                                      className='text-heading hover-text-main-600 fw-semibold tw-text-md text-capitalize line-clamp-1'
-                                    >
-                                      {home.title}
-                                    </Link>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </li>
-                    );
-                  }
-
-                  // ================= SUB MENU =================
-                  return (
-                    <li
-                      key={index}
-                      className='nav-menu__item has-submenu position-relative'
-                    >
-                      <Link
-                        href='#'
-                        className='nav-menu__link tw-pe-5 text-white font-heading tw-py-11 fw-normal w-100'
-                      >
-                        {item.label}
-                      </Link>
-
-                      <ul className='nav-submenu scroll-sm position-absolute start-0 top-100 tw-w-max bg-white tw-rounded-md overflow-hidden tw-p-2 tw-duration-200 tw-z-99'>
-                        {item.subMenu?.map((sub, i) => (
-                          <li
-                            key={i}
-                            className={`nav-submenu__item d-block tw-rounded tw-duration-200 position-relative ${
-                              pathname === sub.link ? "activePage" : ""
-                            }`}
-                          >
-                            {sub.link === "/logout" ? (
-                              <button
-                                type="button"
-                                onClick={async (e) => {
-                                  e.preventDefault();
-                                  await handleLogout();
-                                }}
-                                className='nav-submenu__link hover-bg-neutral-200 text-danger font-heading fw-normal w-100 d-block text-start tw-py-2 tw-px-305 tw-rounded border-0 bg-transparent'
-                              >
-                                {sub.label}
-                              </button>
-                            ) : (
-                              <Link
-                                href={sub.link}
-                                className='nav-submenu__link hover-bg-neutral-200 text-heading font-heading fw-normal w-100 d-block tw-py-2 tw-px-305 tw-rounded'
-                              >
-                                {sub.label}
-                              </Link>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
-                  );
-                })}
-              </ul>
-              {/* Nav menu End  */}
-            </div>
-            {/* Menu End  */}
+            {/* Menu removed to match Booking.com style */}
             {/* Header Right start */}
             <div className='header-right d-flex tw-gap-28'>
               <div className='header-btn-wrap d-flex align-items-center tw-gap-5'>
@@ -407,65 +274,7 @@ const Header: FC = () => {
             </div>
           </Link>
 
-          <div className='mobile-menu__menu'>
-            <ul className='nav-menu d-lg-flex align-items-center nav-menu--mobile d-block tw-mt-8'>
-              {dynamicMobileMenu.map((item, index) => (
-                <li
-                  key={index}
-                  className={`nav-menu__item ${
-                    item.subMenu ? "has-submenu position-relative" : ""
-                  } ${activeIndex === index ? "active" : ""}`}
-                  onClick={() => handleToggle(index)}
-                >
-                  <Link
-                    href={item.link ?? "#"}
-                    className='nav-menu__link tw-pe-5 text-white font-heading tw-py-11 fw-normal w-100'
-                  >
-                    {item.label}
-                  </Link>
-
-                  {item.subMenu && (
-                    <ul
-                      className={`nav-submenu scroll-sm position-absolute start-0 top-100 tw-w-max bg-white tw-rounded-md overflow-hidden tw-p-2 tw-duration-200 tw-z-99 ${
-                        activeIndex === index && isMobile
-                          ? "active_submenu"
-                          : "de_active_submenu"
-                      }`}
-                    >
-                      {item.subMenu.map((sub, subIndex) => (
-                        <li
-                          key={subIndex}
-                          className='nav-submenu__item d-block tw-rounded tw-duration-200 position-relative'
-                        >
-                          {sub.link === "/logout" ? (
-                            <button
-                              type='button'
-                              onClick={async (e) => {
-                                e.preventDefault();
-                                setActive(false);
-                                await handleLogout();
-                              }}
-                              className='nav-submenu__link hover-bg-neutral-200 text-danger font-heading fw-normal w-100 d-block text-start tw-py-2 tw-px-305 tw-rounded border-0 bg-transparent'
-                            >
-                              {sub.label}
-                            </button>
-                          ) : (
-                            <Link
-                              href={sub.link}
-                              onClick={() => setActive(false)}
-                              className='nav-submenu__link hover-bg-neutral-200 text-heading font-heading fw-normal w-100 d-block tw-py-2 tw-px-305 tw-rounded'
-                            >
-                              {sub.label}
-                            </Link>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Mobile Menu Links Removed */}
 
           {/* Mobile Auth */}
           <div className='tw-mt-8 tw-border-t tw-border-neutral-200 tw-pt-6'>

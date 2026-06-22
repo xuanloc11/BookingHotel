@@ -7,6 +7,7 @@ import { ZodError } from "zod";
 
 import { createBooking } from "@/lib/api/bookingApi";
 import { readStoredAccessToken } from "@/lib/api/authApi";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type {
   BookingPriceBreakdown,
   CheckoutSelection,
@@ -53,6 +54,7 @@ export default function CheckoutForm({
   price,
 }: CheckoutFormProps) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -114,11 +116,93 @@ export default function CheckoutForm({
     <section className='bg_2 pt-120 pb-120'>
       <div className='container'>
         <div className='row row-gap-5'>
-          <div className='col-xl-7'>
-            <div className='bg-white tw-rounded-lg tw-p-10'>
-              <h2 className='tw-text-10 fw-normal tw-mb-7'>
-                Thông tin khách hàng
+          <div className='col-xl-4'>
+            {/* Hotel & Booking Summary Card */}
+            <aside className='bg-white tw-rounded-lg tw-p-8 tw-mb-6 tw-shadow-sm border border-neutral'>
+              <Image
+                alt={hotel.name}
+                className='tw-rounded-lg w-100 object-fit-cover tw-mb-6'
+                height={300}
+                src={hotel.thumbnail}
+                width={520}
+              />
+              <h2 className='tw-text-6 fw-normal tw-mb-2'>{hotel.name}</h2>
+              <p className='tw-mb-4 tw-text-sm text-secondary'>{hotel.address}</p>
+
+              <div className='border-top tw-pt-4 tw-mt-4'>
+                <h3 className='tw-text-base fw-bold tw-mb-3'>{t("checkout.booking")}</h3>
+                <div className='d-flex justify-content-between tw-mb-2 tw-text-sm'>
+                  <span>{t("calendar.checkIn")}</span>
+                  <strong>{selection.check_in}</strong>
+                </div>
+                <div className='d-flex justify-content-between tw-mb-3 tw-text-sm'>
+                  <span>{t("calendar.checkOut")}</span>
+                  <strong>{selection.check_out}</strong>
+                </div>
+                <div className='d-flex justify-content-between tw-text-sm'>
+                  <span>{t("checkout.quantity")}</span>
+                  <strong className='text-end'>
+                    {selection.guests.adults} {t("checkout.adultsCount")}, {selection.guests.children}{" "}
+                    {t("checkout.childrenCount")}, {selection.guests.rooms} {t("checkout.roomsCount")}
+                  </strong>
+                </div>
+              </div>
+            </aside>
+
+            {/* Price Summary Card */}
+            <aside className='bg-white tw-rounded-lg tw-p-8 tw-shadow-sm border border-neutral'>
+              <h3 className='tw-text-lg fw-bold tw-mb-4'>{t("checkout.totalAmount")}</h3>
+              
+              <div className='d-flex justify-content-between tw-mb-3 tw-text-sm'>
+                <span>
+                  {moneyFormatter.format(price.nightly_rate)} x {price.nights}{" "}
+                  {t("checkout.nightsCount")} x {price.rooms} {t("checkout.roomsCount")}
+                </span>
+                <strong>{moneyFormatter.format(price.subtotal)}</strong>
+              </div>
+              
+              <div className='border-top tw-pt-4 tw-mt-4 tw-mb-4'>
+                <h3 className='tw-text-base fw-bold tw-mb-3'>{t("checkout.priceDetails")}</h3>
+                <div className='d-flex align-items-start tw-gap-3 tw-mb-2'>
+                  <i className='ph-bold ph-money tw-text-xl'></i>
+                  <div className='w-100'>
+                    <div className='tw-text-sm tw-mb-2'>
+                      {t("checkout.included")} {moneyFormatter.format(price.taxes_and_fees)} {t("checkout.includesTaxes")}
+                    </div>
+                    <div className='d-flex justify-content-between tw-text-sm text-secondary tw-mb-1'>
+                      <span>8% {t("checkout.vat")}</span>
+                      <span>{moneyFormatter.format(Math.round(price.subtotal * 0.08))}</span>
+                    </div>
+                    <div className='d-flex justify-content-between tw-text-sm text-secondary'>
+                      <span>5% {t("checkout.serviceFee")}</span>
+                      <span>{moneyFormatter.format(Math.round(price.subtotal * 0.05))}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className='bg-main-50 tw-p-4 tw-rounded-md tw-mb-4'>
+                <div className='d-flex justify-content-between tw-text-xl fw-bold text-main-600'>
+                  <span>{t("checkout.totalAmount")}</span>
+                  <span>{moneyFormatter.format(price.total)}</span>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          <div className='col-xl-8'>
+            <div className='bg-white tw-rounded-lg tw-p-10 tw-shadow-sm border border-neutral'>
+              <h2 className='tw-text-8 fw-bold tw-mb-4'>
+                {t("checkout.customerInfo")}
               </h2>
+
+              <div className='alert alert-info d-flex tw-gap-3 align-items-center tw-mb-8'>
+                <i className='ph-fill ph-info tw-text-2xl text-main-600'></i>
+                <div>
+                  <p className='fw-bold mb-0'>{t("checkout.almostDone")}</p>
+                  <p className='mb-0 tw-text-sm'>{t("checkout.useLatin")}</p>
+                </div>
+              </div>
 
               {error ? (
                 <div className='alert alert-danger' role='alert'>
@@ -130,7 +214,7 @@ export default function CheckoutForm({
                 <div className='row row-gap-4'>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                      Họ
+                      {t("checkout.firstName")} <span className='text-danger'>*</span>
                     </label>
                     <input
                       className='form-control tw-h-14'
@@ -142,7 +226,7 @@ export default function CheckoutForm({
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                      Tên
+                      {t("checkout.lastName")} <span className='text-danger'>*</span>
                     </label>
                     <input
                       className='form-control tw-h-14'
@@ -154,7 +238,7 @@ export default function CheckoutForm({
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                      Email
+                      {t("checkout.email")} <span className='text-danger'>*</span>
                     </label>
                     <input
                       className='form-control tw-h-14'
@@ -162,10 +246,11 @@ export default function CheckoutForm({
                       required
                       type='email'
                     />
+                    <small className='text-secondary tw-text-xs tw-mt-1 d-block'>{t("checkout.emailHelp")}</small>
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                      Số điện thoại
+                      {t("checkout.phone")} <span className='text-danger'>*</span>
                     </label>
                     <input
                       className='form-control tw-h-14'
@@ -177,32 +262,38 @@ export default function CheckoutForm({
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                      Quốc gia
+                      {t("checkout.country")} <span className='text-danger'>*</span>
                     </label>
                     <input
                       className='form-control tw-h-14'
                       maxLength={80}
                       name='country'
+                      required
                       type='text'
                     />
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                      Phương thức thanh toán
+                      {t("checkout.paymentMethod")} <span className='text-danger'>*</span>
                     </label>
                     <select
                       className='form-select tw-h-14'
                       defaultValue='pay_at_hotel'
                       name='payment_method'
                     >
-                      <option value='pay_at_hotel'>Thanh toán tại khách sạn</option>
-                      <option value='bank_transfer'>Chuyển khoản ngân hàng</option>
-                      <option value='card'>Thẻ</option>
+                      <option value='pay_at_hotel'>{t("checkout.payAtHotel")}</option>
+                      <option value='bank_transfer'>{t("checkout.bankTransfer")}</option>
+                      <option value='card'>{t("checkout.card")}</option>
                     </select>
                   </div>
                   <div className='col-12'>
+                    <hr className='tw-my-4 text-neutral' />
+                    <h3 className='tw-text-lg fw-bold tw-mb-4'>{t("checkout.specialRequests")}</h3>
+                    <p className='tw-text-sm tw-mb-3'>
+                      {t("checkout.specialRequestsDesc")}
+                    </p>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                      Yêu cầu đặc biệt
+                      {t("checkout.specialRequestsLabel")}
                     </label>
                     <textarea
                       className='form-control'
@@ -212,76 +303,28 @@ export default function CheckoutForm({
                     />
                   </div>
                   <div className='col-12'>
-                    <label className='form-check-label d-flex align-items-start tw-gap-3'>
+                    <label className='form-check-label d-flex align-items-start tw-gap-3 tw-mt-4'>
                       <input className='form-check-input mt-1' required type='checkbox' />
-                      <span>
-                        Tôi xác nhận chi tiết thông tin khách hàng là chính xác và hiểu rằng tổng số tiền cuối cùng sẽ được tính bởi hệ thống của khách sạn.
+                      <span className='tw-text-sm'>
+                        {t("checkout.confirmDetails")}
                       </span>
                     </label>
                   </div>
-                  <div className='col-12'>
+                  <div className='col-12 text-end tw-mt-6'>
                     <button
-                      className='tw-btn-hover-black bg-main-600 tw-py-5 tw-px-12 text-heading font-heading d-inline-flex align-items-center justify-content-center tw-gap-2 tw-rounded-lg w-100'
+                      className='tw-btn-hover-black bg-main-600 tw-py-4 tw-px-8 text-heading font-heading d-inline-flex align-items-center justify-content-center tw-gap-2 tw-rounded-lg'
                       disabled={submitting}
                       type='submit'
                     >
-                      {submitting ? "Creating booking..." : "Confirm booking"}
+                      {submitting ? t("checkout.creatingBooking") : t("checkout.nextFinalDetails")}
                       <span className='d-inline-block lh-1 tw-text-lg'>
-                        <i className='ph ph-arrow-up-right' />
+                        <i className='ph-bold ph-caret-right' />
                       </span>
                     </button>
                   </div>
                 </div>
               </form>
             </div>
-          </div>
-
-          <div className='col-xl-5'>
-            <aside className='bg-white tw-rounded-lg tw-p-8'>
-              <Image
-                alt={hotel.name}
-                className='tw-rounded-lg w-100 object-fit-cover tw-mb-6'
-                height={300}
-                src={hotel.thumbnail}
-                width={520}
-              />
-              <h2 className='tw-text-8 fw-normal tw-mb-3'>{hotel.name}</h2>
-              <p className='tw-mb-6'>{hotel.address}</p>
-
-              <div className='border-top border-bottom tw-py-5 tw-mb-5'>
-                <div className='d-flex justify-content-between tw-mb-3'>
-                  <span>Check-in</span>
-                  <strong>{selection.check_in}</strong>
-                </div>
-                <div className='d-flex justify-content-between tw-mb-3'>
-                  <span>Check-out</span>
-                  <strong>{selection.check_out}</strong>
-                </div>
-                <div className='d-flex justify-content-between'>
-                  <span>Số lượng</span>
-                  <strong>
-                    {selection.guests.adults} người lớn, {selection.guests.children}{" "}
-                    trẻ em, {selection.guests.rooms} phòng
-                  </strong>
-                </div>
-              </div>
-
-              <div className='d-flex justify-content-between tw-mb-3'>
-                <span>
-                  {moneyFormatter.format(price.nightly_rate)} x {price.nights}{" "}
-                  nights x {price.rooms} rooms
-                </span>
-                <strong>{moneyFormatter.format(price.subtotal)}</strong>
-              </div>
-              <div className='d-flex justify-content-between tw-mb-4'>
-                <span>Thuế và phí</span>
-                <strong>{moneyFormatter.format(price.taxes_and_fees)}</strong>
-              </div>
-              <div className='d-flex justify-content-between tw-text-6 text-heading'>
-                <span>Tổng tiền</span>
-                <strong>{moneyFormatter.format(price.total)}</strong>
-              </div>
-            </aside>
           </div>
         </div>
       </div>

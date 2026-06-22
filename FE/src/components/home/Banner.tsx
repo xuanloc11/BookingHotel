@@ -4,19 +4,23 @@ import Link from "next/link";
 import { FC } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
-const Banner: FC = () => {
+interface BannerProps {
+  imageUrl?: string;
+}
+
+const Banner: FC<BannerProps> = ({ imageUrl }) => {
   const { t } = useLanguage();
 
   return (
     <section className='banner-area background-img position-relative overflow-hidden'>
       <Image
-        src='/assets/images/thumbs/banner-bg.jpg'
+        src={imageUrl || 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1920&h=960&fit=crop&q=80'}
         alt='Banner background'
         fill
         style={{ objectFit: "cover" }}
         priority
       />
-      <div className='container'>
+      <div className='container position-relative z-2'>
         <div className='row align-items-center justify-content-between'>
           <div className='col-xl-8 col-lg-8'>
             <div className='position-relative z-2'>

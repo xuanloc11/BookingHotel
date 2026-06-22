@@ -11,7 +11,12 @@ export default function ExtranetFinance() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
 
+  const [currency, setCurrency] = useState("VND");
+
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCurrency(localStorage.getItem("app_currency") || "VND");
+    }
     Promise.all([getExtranetDashboard(), getVendorBookings()])
       .then(([dashData, bookData]) => {
         setStats(dashData);
@@ -25,18 +30,39 @@ export default function ExtranetFinance() {
   const commission = Math.round(totalRevenue * COMMISSION_RATE);
   const netBalance = totalRevenue - commission;
 
+  const formatMoney = (amount: number, bCurr: string = "VND") => {
+    let finalAmount = amount;
+    if (bCurr === "USD" && currency === "VND") {
+      finalAmount = amount * 25300;
+    } else if (bCurr === "VND" && currency === "USD") {
+      finalAmount = amount / 25300;
+    }
+    return new Intl.NumberFormat("vi-VN", { style: "currency", currency: currency }).format(finalAmount);
+  };
+
   // Lịch sử lọc theo tab
-  const completedBookings = bookings.filter((b) => b.status === "completed");
+  const isCompleted = (s: string) => s === "completed" || s === "hoàn thành" || s === "hoàn tất";
+  const isPending = (s: string) => s === "pending" || s === "đang chờ" || s === "chờ duyệt";
+  const isConfirmed = (s: string) => s === "confirmed" || s === "đã xác nhận";
+  const isCancelled = (s: string) => s === "cancelled" || s === "đã hủy";
+
   const filteredBookings =
     activeTab === "all"
       ? bookings
-      : bookings.filter((b) => b.status === activeTab);
+      : bookings.filter((b) => {
+          const s = (b.status || "").toLowerCase();
+          if (activeTab === "completed") return isCompleted(s);
+          if (activeTab === "pending") return isPending(s);
+          if (activeTab === "confirmed") return isConfirmed(s);
+          if (activeTab === "cancelled") return isCancelled(s);
+          return s === activeTab;
+        });
 
   // Tháng này
   const now = new Date();
   const thisMonthRevenue = bookings
     .filter((b) => {
-      if (b.status !== "completed") return false;
+      if (!isCompleted((b.status || "").toLowerCase())) return false;
       const d = new Date(b.created_at);
       return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
     })
@@ -44,7 +70,7 @@ export default function ExtranetFinance() {
 
   const lastMonthRevenue = bookings
     .filter((b) => {
-      if (b.status !== "completed") return false;
+      if (!isCompleted((b.status || "").toLowerCase())) return false;
       const d = new Date(b.created_at);
       const last = new Date(now.getFullYear(), now.getMonth() - 1, 1);
       return d.getMonth() === last.getMonth() && d.getFullYear() === last.getFullYear();
@@ -86,7 +112,7 @@ export default function ExtranetFinance() {
               <i className="ri-wallet-3-line fs-1 mb-2"></i>
               <h4 className="font-weight-normal mt-0 text-white">Số dư khả dụng</h4>
               <h2 className="text-white mt-2 mb-3">
-                {netBalance.toLocaleString("vi-VN")} ₫
+                {formatMoney(netBalance, "VND")}
               </h2>
               <button className="btn btn-light btn-rounded">Rút tiền về Ngân hàng</button>
             </div>
@@ -99,7 +125,7 @@ export default function ExtranetFinance() {
             <div className="card-body">
               <i className="ri-line-chart-line text-muted float-end fs-3"></i>
               <h6 className="text-uppercase mt-0">Tổng doanh thu (Tháng này)</h6>
-              <h2 className="my-2">{thisMonthRevenue.toLocaleString("vi-VN")} ₫</h2>
+              <h2 className="my-2">{formatMoney(thisMonthRevenue, "VND")}</h2>
               <p className="mb-0 text-muted">
                 {growthPct !== null ? (
                   <span className={`me-2 ${growthPct >= 0 ? "text-success" : "text-danger"}`}>
@@ -122,7 +148,7 @@ export default function ExtranetFinance() {
               <i className="ri-money-dollar-circle-line text-muted float-end fs-3"></i>
               <h6 className="text-uppercase mt-0">Hoa hồng nền tảng ({Math.round(COMMISSION_RATE * 100)}%)</h6>
               <h2 className="my-2 text-danger">
-                {commission > 0 ? `- ${commission.toLocaleString("vi-VN")} ₫` : "0 ₫"}
+                {commission > 0 ? `- ${formatMoney(commission, "VND")}` : "0 ₫"}
               </h2>
               <p className="mb-0 text-muted">
                 <span className="text-nowrap">Đã tự động cấn trừ</span>
@@ -144,6 +170,7 @@ export default function ExtranetFinance() {
                 {[
                   { key: "all", label: "Tất cả" },
                   { key: "completed", label: "Thành công" },
+                  { key: "confirmed", label: "Đã xác nhận" },
                   { key: "pending", label: "Đang xử lý" },
                   { key: "cancelled", label: "Đã hủy" },
                 ].map((tab) => (
@@ -180,29 +207,32 @@ export default function ExtranetFinance() {
                       </tr>
                     ) : (
                       filteredBookings.map((b) => {
-                        const fee = b.status === "completed" ? Math.round(b.total * COMMISSION_RATE) : 0;
-                        const net = b.status === "completed" ? b.total - fee : 0;
+                        const stat = (b.status || "").toLowerCase();
+                        const completed = isCompleted(stat);
+                        const fee = completed ? Math.round(b.total * COMMISSION_RATE) : 0;
+                        const net = completed ? b.total - fee : 0;
                         return (
                           <tr key={b.booking_id}>
                             <td><b>#{b.booking_id}</b></td>
                             <td>{new Date(b.created_at).toLocaleDateString("vi-VN")}</td>
                             <td>{b.check_in} → {b.check_out}</td>
-                            <td>{b.total?.toLocaleString("vi-VN")} ₫</td>
+                            <td>{formatMoney(b.total || 0, b.currency)}</td>
                             <td className="text-danger">
-                              {fee > 0 ? `- ${fee.toLocaleString("vi-VN")} ₫` : "—"}
+                              {fee > 0 ? `- ${formatMoney(fee, b.currency)}` : "—"}
                             </td>
                             <td className="text-success fw-bold">
-                              {net > 0 ? `${net.toLocaleString("vi-VN")} ₫` : "—"}
+                              {net > 0 ? formatMoney(net, b.currency) : "—"}
                             </td>
                             <td>
                               <span className={`badge ${
-                                b.status === "completed" ? "bg-success" :
-                                b.status === "confirmed" ? "bg-info" :
-                                b.status === "pending" ? "bg-warning text-dark" : "bg-danger"
+                                completed ? "bg-success" :
+                                isConfirmed(stat) ? "bg-info" :
+                                isPending(stat) ? "bg-warning text-dark" : "bg-danger"
                               }`}>
-                                {b.status === "completed" ? "Thành công" :
-                                 b.status === "confirmed" ? "Đã xác nhận" :
-                                 b.status === "pending" ? "Đang xử lý" : "Đã hủy"}
+                                {completed ? "Thành công" :
+                                 isConfirmed(stat) ? "Đã xác nhận" :
+                                 isPending(stat) ? "Đang xử lý" :
+                                 isCancelled(stat) ? "Đã hủy" : b.status}
                               </span>
                             </td>
                           </tr>

@@ -6,6 +6,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { ProvinceData } from "@/lib/api/hotelApi";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface QuickPlannerProps {
   provinces: ProvinceData[];
@@ -13,9 +14,9 @@ interface QuickPlannerProps {
 
 const getCityImage = (name: string) => {
   const images: Record<string, string> = {
-    'hà nội': 'https://images.unsplash.com/photo-1627905646134-7f5df6a1e2f1?w=400&auto=format&fit=crop&q=80',
-    'đà nẵng': 'https://images.unsplash.com/photo-1686303561693-0f0befe60bb3?w=400&auto=format&fit=crop&q=80',
-    'vũng tàu': 'https://images.unsplash.com/photo-1697029455783-1c63c8c50059?w=400&auto=format&fit=crop&q=80',
+    'hà nội': 'https://images.unsplash.com/photo-1598935898639-81586f7d2129?w=400&auto=format&fit=crop&q=80',
+    'đà nẵng': 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=400&auto=format&fit=crop&q=80',
+    'vũng tàu': 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=400&auto=format&fit=crop&q=80',
     'đà lạt': 'https://images.unsplash.com/photo-1697030817096-73f658acd5a5?w=400&auto=format&fit=crop&q=80',
     'nha trang': 'https://images.unsplash.com/photo-1598935898639-81586f7d2129?w=400&auto=format&fit=crop&q=80',
     'hồ chí minh': 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=400&auto=format&fit=crop&q=80',
@@ -34,12 +35,14 @@ const getCityImage = (name: string) => {
 };
 
 const QuickPlanner: FC<QuickPlannerProps> = ({ provinces }) => {
+  const { t } = useLanguage();
+
   return (
     <section className='tw-my-16'>
       <div className='container'>
         <div className='tw-mb-6'>
-          <h2 className='tw-text-2xl fw-bold tw-mb-2'>Khám phá Việt Nam</h2>
-          <p className='text-neutral-500'>Các điểm đến phổ biến này có nhiều điều chờ đón bạn</p>
+          <h2 className='tw-text-2xl fw-bold tw-mb-2'>{t("home.exploreVietnam")}</h2>
+          <p className='text-neutral-500'>{t("home.exploreSubtitle")}</p>
         </div>
 
         <Swiper
@@ -65,7 +68,7 @@ const QuickPlanner: FC<QuickPlannerProps> = ({ provinces }) => {
                   />
                 </div>
                 <h3 className='tw-text-lg fw-bold text-dark tw-mb-1'>{province.name}</h3>
-                <p className='text-neutral-500 tw-text-sm'>{province.hotel_count} chỗ nghỉ</p>
+                <p className='text-neutral-500 tw-text-sm'>{province.hotel_count} {t("home.propertiesCount")}</p>
               </Link>
             </SwiperSlide>
           ))}

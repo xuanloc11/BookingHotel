@@ -1,7 +1,8 @@
 import type { BookingGuestCounts, BookingPriceBreakdown } from "@/types/booking";
 
 const DAY_IN_MS = 86_400_000;
-const DEFAULT_TAX_RATE = 0.1;
+const VAT_RATE = 0.08;
+const SERVICE_FEE_RATE = 0.05;
 
 function parseDateOnly(value: string): number {
   const [year, month, day] = value.split("-").map(Number);
@@ -20,7 +21,9 @@ export function calculateBookingPrice(input: {
     Math.round((parseDateOnly(input.checkOut) - parseDateOnly(input.checkIn)) / DAY_IN_MS),
   );
   const subtotal = input.nightlyRate * nights * input.guests.rooms;
-  const taxesAndFees = Math.round(subtotal * DEFAULT_TAX_RATE);
+  const vat = Math.round(subtotal * VAT_RATE);
+  const serviceFee = Math.round(subtotal * SERVICE_FEE_RATE);
+  const taxesAndFees = vat + serviceFee;
 
   return {
     currency: input.currency ?? "VND",

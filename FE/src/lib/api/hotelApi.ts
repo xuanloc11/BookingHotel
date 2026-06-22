@@ -155,9 +155,9 @@ function toHotelDetails(hotel: Hotel): HotelDetails {
     ...hotel,
     images: [
       hotel.thumbnail,
-      "/assets/images/thumbs/room-details-thumb1.jpg",
-      "/assets/images/thumbs/room-details-thumb2.jpg",
-      "/assets/images/thumbs/room-details-thumb3.jpg",
+      "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000&auto=format&fit=crop",
     ],
   };
 }

@@ -8,12 +8,8 @@ import { UserProfile } from "@/types/user";
 import { BookingSummary } from "@/types/booking";
 import { updateCurrentUser } from "@/lib/api/userApi";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 import toast from "react-hot-toast";
-
-const moneyFormatter = new Intl.NumberFormat("vi-VN", {
-  style: "currency",
-  currency: "VND",
-});
 
 interface ProfileDashboardProps {
   user: UserProfile;
@@ -22,9 +18,29 @@ interface ProfileDashboardProps {
 
 export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboardProps) {
   const { handleLogout, setUser } = useAuth();
+  const { language, t } = useLanguage();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
   const [activeTab, setActiveTab] = useState<"profile" | "bookings">(tabParam === "bookings" ? "bookings" : "profile");
+  const [appCurrency, setAppCurrency] = useState("VND");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setAppCurrency(localStorage.getItem("app_currency") || "VND");
+    }
+  }, []);
+
+  const formatMoney = (amount: number, bCurr: string = "VND") => {
+    let finalAmount = amount;
+    if (bCurr === "USD" && appCurrency === "VND") {
+      finalAmount = amount * 25300;
+    } else if (bCurr === "VND" && appCurrency === "USD") {
+      finalAmount = amount / 25300;
+    }
+    return new Intl.NumberFormat(language === "vi" ? "vi-VN" : "en-US", {
+      style: "currency",
+      currency: appCurrency,
+    }).format(finalAmount);
+  };
 
   useEffect(() => {
     if (tabParam === "bookings") {
@@ -48,9 +64,9 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
         phone: formData.phone,
       });
       setUser(updatedUser); // Update AuthContext state
-      toast.success("Cập nhật hồ sơ thành công!");
+      toast.success(t("profile.updateSuccess"));
     } catch (error: any) {
-      toast.error(error.message || "Cập nhật hồ sơ thất bại");
+      toast.error(error.message || t("profile.updateError"));
     } finally {
       setLoading(false);
     }
@@ -67,7 +83,7 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
                 className={`nav-link tw-rounded-t-lg tw-px-6 tw-py-3 fw-medium ${activeTab === 'profile' ? 'active bg-white text-main-600 border-bottom-0 shadow-sm' : 'text-neutral-500 bg-neutral-100 border-0'}`} 
                 onClick={() => setActiveTab('profile')}
               >
-                Hồ sơ cá nhân
+                {t("profile.tabProfile")}
               </button>
             </li>
             <li className="nav-item">
@@ -75,7 +91,7 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
                 className={`nav-link tw-rounded-t-lg tw-px-6 tw-py-3 fw-medium ${activeTab === 'bookings' ? 'active bg-white text-main-600 border-bottom-0 shadow-sm' : 'text-neutral-500 bg-neutral-100 border-0'}`} 
                 onClick={() => setActiveTab('bookings')}
               >
-                Đơn đặt của tôi
+                {t("profile.tabBookings")}
               </button>
             </li>
           </ul>
@@ -85,7 +101,7 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
               
               {activeTab === 'profile' && (
                 <>
-                  <h3 className="tw-mb-6">Thông tin tài khoản</h3>
+                  <h3 className="tw-mb-6">{t("profile.accountInfo")}</h3>
                   
                   <div className="d-flex align-items-center tw-gap-4 tw-mb-8">
                     <div 
@@ -103,39 +119,39 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
 
                   <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                      <label className="form-label fw-semibold">Email (Không thể thay đổi)</label>
+                      <label className="form-label fw-semibold">{t("profile.emailLocked")}</label>
                       <input type="email" className="form-control bg-light" value={user.email} disabled />
                     </div>
                     
                     <div className="mb-4">
-                      <label className="form-label fw-semibold">Họ và Tên</label>
+                      <label className="form-label fw-semibold">{t("profile.fullName")}</label>
                       <input 
                         type="text" 
                         className="form-control" 
                         value={formData.full_name}
                         onChange={(e) => setFormData({...formData, full_name: e.target.value})}
-                        placeholder="Nhập họ và tên của bạn"
+                        placeholder={t("profile.fullNamePlaceholder")}
                         required
                       />
                     </div>
 
                     <div className="mb-4">
-                      <label className="form-label fw-semibold">Số điện thoại</label>
+                      <label className="form-label fw-semibold">{t("profile.phone")}</label>
                       <input 
                         type="text" 
                         className="form-control" 
                         value={formData.phone}
                         onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        placeholder="Nhập số điện thoại"
+                        placeholder={t("profile.phonePlaceholder")}
                       />
                     </div>
 
                     <div className="d-flex align-items-center justify-content-between tw-mt-8 pt-4 border-top">
                       <button type="button" onClick={handleLogout} className="btn btn-outline-danger">
-                        Đăng xuất
+                        {t("profile.logout")}
                       </button>
                       <button type="submit" disabled={loading} className="btn btn-main">
-                        {loading ? "Đang lưu..." : "Lưu thay đổi"}
+                        {loading ? t("profile.saving") : t("profile.save")}
                       </button>
                     </div>
                   </form>
@@ -145,20 +161,20 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
               {activeTab === 'bookings' && (
                 <>
                   <div className="d-flex justify-content-between align-items-center tw-mb-6">
-                    <h3 className="mb-0">Lịch sử đặt phòng</h3>
+                    <h3 className="mb-0">{t("profile.bookingHistory")}</h3>
                     <Link className="btn btn-outline-main" href="/room">
-                      Đặt phòng mới
+                      {t("profile.bookNow")}
                     </Link>
                   </div>
 
                   {bookings.length === 0 ? (
                     <div className='bg-neutral-100 tw-rounded-lg tw-p-10 text-center'>
-                      <h4 className='fw-normal tw-mb-3'>Chưa có đơn đặt phòng</h4>
+                      <h4 className='fw-normal tw-mb-3'>{t("profile.noBookings")}</h4>
                       <p className='tw-mb-6'>
-                        Các đơn đặt phòng đã xác nhận và chờ xử lý sẽ xuất hiện ở đây sau khi thanh toán.
+                        {t("profile.noBookingsDesc")}
                       </p>
                       <Link className='text-main-600 fw-bold hover-text-main-800' href='/room'>
-                        Duyệt khách sạn ngay
+                        {t("profile.browseHotels")}
                       </Link>
                     </div>
                   ) : (
@@ -191,18 +207,18 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
                               {booking.check_in} — {booking.check_out}
                             </p>
                             <p className='mb-0 text-neutral-500'>
-                              Mã đơn: <strong className="text-dark">{booking.booking_id}</strong>
+                              {t("profile.bookingCode")}: <strong className="text-dark">{booking.booking_id}</strong>
                             </p>
                           </div>
                           <div className='text-xl-end d-flex flex-column justify-content-between h-100 align-items-end'>
                             <strong className='tw-text-xl text-main-600 d-block tw-mb-3'>
-                              {moneyFormatter.format(booking.total)}
+                              {formatMoney(booking.total || 0, booking.currency)}
                             </strong>
                             <Link
                               className='font-heading text-heading hover-text-main-600 d-flex align-items-center tw-gap-1'
                               href={`/hotel/${booking.hotel_id}`}
                             >
-                              Xem khách sạn <i className='ph ph-arrow-up-right' />
+                              {t("profile.viewHotel")} <i className='ph ph-arrow-up-right' />
                             </Link>
                           </div>
                         </article>

@@ -46,7 +46,7 @@ export default async function HotelDetailsPage({
       <AOSWrap>
         <Preloader />
         <Header />
-        <Breadcrumb title={hotel.name} sub_title='Chi tiết khách sạn' />
+        <Breadcrumb title={hotel.name} sub_title='Chi tiết khách sạn' subTitleKey='breadcrumb.hotelDetails' imageUrl={hotel.thumbnail} />
         <HotelDetails availability={availability} hotel={hotel} />
         <Footer />
       </AOSWrap>

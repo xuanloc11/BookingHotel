@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 import type { BookingGuestCounts } from "@/types/booking";
 import type { HotelAvailabilityDay } from "@/types/hotel";
@@ -39,6 +40,7 @@ export default function AvailabilityCalendar({
   hotelId,
   availability,
 }: AvailabilityCalendarProps) {
+  const { t } = useLanguage();
   const firstAvailable = availability.find((day) => day.is_available);
   const availableDateSet = useMemo(
     () => new Set(availability.filter((day) => day.is_available).map((day) => day.date)),
@@ -60,11 +62,11 @@ export default function AvailabilityCalendar({
   const canContinue = Boolean(checkIn && checkOut && checkInAvailable && checkOutAfterCheckIn);
 
   const statusMessage = !checkIn || !checkOut
-    ? "Vui lòng chọn ngày nhận và trả phòng."
+    ? t("calendar.error.selectDates")
     : !checkInAvailable
-      ? "Ngày nhận phòng đã chọn hiện không còn phòng. Vui lòng chọn ngày khác."
+      ? t("calendar.error.unavailable")
       : !checkOutAfterCheckIn
-        ? "Ngày trả phòng phải sau ngày nhận phòng ít nhất 1 đêm."
+        ? t("calendar.error.invalidCheckout")
         : null;
 
   const checkoutHref = useMemo(
@@ -107,12 +109,12 @@ export default function AvailabilityCalendar({
 
   return (
     <div className='bg-white tw-rounded-lg tw-p-8'>
-      <h3 className='tw-text-8 fw-normal tw-mb-6'>Lịch trống phòng</h3>
+      <h3 className='tw-text-8 fw-normal tw-mb-6'>{t("calendar.title")}</h3>
 
       <div className='row row-gap-4 tw-mb-8'>
         <div className='col-md-6'>
           <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-            Nhận phòng
+            {t("calendar.checkIn")}
           </label>
           <input
             className='form-control tw-h-14'
@@ -125,7 +127,7 @@ export default function AvailabilityCalendar({
 
         <div className='col-md-6'>
           <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-            Trả phòng
+            {t("calendar.checkOut")}
           </label>
           <input
             className='form-control tw-h-14'
@@ -154,8 +156,8 @@ export default function AvailabilityCalendar({
             <span className='d-block fw-bold'>{day.date.slice(5)}</span>
             <span className={day.is_available ? "text-success" : "text-muted"}>
               {day.is_available
-                ? `${day.available_rooms} phòng`
-                : "Hết phòng"}
+                ? `${day.available_rooms} ${t("calendar.roomsCount")}`
+                : t("calendar.soldOut")}
             </span>
           </button>
         ))}
@@ -164,7 +166,7 @@ export default function AvailabilityCalendar({
       <div className='row row-gap-4 tw-mb-8'>
         <div className='col-md-4'>
           <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-            Người lớn
+            {t("calendar.adults")}
           </label>
           <input
             className='form-control tw-h-14'
@@ -177,7 +179,7 @@ export default function AvailabilityCalendar({
         </div>
         <div className='col-md-4'>
           <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-            Trẻ em
+            {t("calendar.children")}
           </label>
           <input
             className='form-control tw-h-14'
@@ -192,7 +194,7 @@ export default function AvailabilityCalendar({
         </div>
         <div className='col-md-4'>
           <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-            Số phòng
+            {t("calendar.rooms")}
           </label>
           <input
             className='form-control tw-h-14'
@@ -216,7 +218,7 @@ export default function AvailabilityCalendar({
           className='tw-btn-hover-black bg-main-600 tw-py-5 tw-px-12 text-heading font-heading d-inline-flex align-items-center justify-content-center tw-gap-2 tw-rounded-lg w-100'
           href={checkoutHref}
         >
-          Đặt phòng ngay
+          {t("calendar.bookNow")}
           <span className='d-inline-block lh-1 tw-text-lg'>
             <i className='ph ph-arrow-up-right' />
           </span>
@@ -227,7 +229,7 @@ export default function AvailabilityCalendar({
           disabled
           type='button'
         >
-          Chọn ngày hợp lệ
+          {t("calendar.selectDates")}
         </button>
       )}
     </div>

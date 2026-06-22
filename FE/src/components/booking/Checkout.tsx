@@ -11,14 +11,16 @@ import Select from "react-select";
 import DatePicker from "react-datepicker";
 import GuestRoomSelector from "@/components/room/GuestRoomSelector";
 import { fetchProvinces } from "@/lib/api/locationApi";
+import { useRouter } from "next/navigation";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface OptionType {
   value: string;
   label: string;
 }
 
-const roomOptions: OptionType[] = [
-  { value: "rooms", label: "Phòng" },
+const roomOptions = (t: (key: string) => string): OptionType[] => [
+  { value: "rooms", label: t("checkout.roomPlaceholder") },
   { value: "01", label: "01" },
   { value: "02", label: "02" },
   { value: "03", label: "03" },
@@ -36,13 +38,13 @@ const CustomDateInput = forwardRef<
 >(({ value, onClick, placeholder }, ref) => (
   <div
     ref={ref}
-    className='custom-date-input tw-flex tw-items-center tw-justify-between tw-p-2 tw-border tw-border-gray-300 tw-rounded-lg tw-cursor-pointer tw-bg-white tw-w-full'
+    className='custom-date-input tw-flex tw-items-center tw-justify-between tw-px-3 tw-py-[7px] tw-border tw-border-gray-300 tw-rounded-lg tw-cursor-pointer tw-bg-white tw-w-full'
     onClick={onClick}
   >
     <div className='d-flex gap-2 tw-items-center justify-content-center align-items-center'>
       <i className='ph ph-check'></i>
       <span className={`${value ? "tw-text-gray-800" : "tw-text-gray-400"}`}>
-        {value || placeholder || "Chọn ngày"}
+        {value || placeholder}
       </span>
     </div>
   </div>
@@ -50,12 +52,25 @@ const CustomDateInput = forwardRef<
 CustomDateInput.displayName = 'CustomDateInput';
 
 const Checkout: FC = () => {
-  const [selectedRoom, setSelectedRoom] = useState(roomOptions[0]);
+  const { t } = useLanguage();
+  const [selectedRoom, setSelectedRoom] = useState(roomOptions(t)[0]);
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
   const [locations, setLocations] = useState<OptionType[]>([]);
   const [selectedLocation, setSelectedLocation] =
     useState<OptionType | null>(null);
+  const router = useRouter();
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (selectedLocation?.value) {
+      params.append("location", selectedLocation.value);
+    }
+    // Mở rộng thêm tham số ở đây nếu backend hỗ trợ:
+    // params.append("checkIn", checkInDate?.toISOString()); ...
+
+    router.push(`/room?${params.toString()}`);
+  };
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -94,7 +109,7 @@ const Checkout: FC = () => {
                         alt='icon'
                       />
                     </span>
-                    Vị trí
+                    {t("checkout.location")}
                   </label>
                   <Select
                     instanceId='location-select-instance'
@@ -104,7 +119,7 @@ const Checkout: FC = () => {
                     onChange={(option) => setSelectedLocation(option)}
                     className='custom-select-container'
                     classNamePrefix='custom-select'
-                    placeholder="Chọn địa điểm..."
+                    placeholder={t("checkout.locationPlaceholder")}
                   />
                 </div>
 
@@ -118,7 +133,7 @@ const Checkout: FC = () => {
                         alt='icon'
                       />
                     </span>
-                    Ngày nhận phòng
+                    {t("checkout.checkIn")}
                   </label>
                   <DatePicker
                     selected={checkInDate}
@@ -126,7 +141,7 @@ const Checkout: FC = () => {
                       setCheckInDate(date)
                     }
                     customInput={
-                      <CustomDateInput placeholder='Chọn ngày nhận phòng' />
+                      <CustomDateInput placeholder={t("checkout.selectCheckIn")} />
                     }
                     dateFormat='MMM d, yyyy'
                     wrapperClassName='tw-w-full'
@@ -149,7 +164,7 @@ const Checkout: FC = () => {
                         alt='icon'
                       />
                     </span>
-                    Ngày trả phòng
+                    {t("checkout.checkOut")}
                   </label>
                   <DatePicker
                     selected={checkOutDate}
@@ -157,7 +172,7 @@ const Checkout: FC = () => {
                       setCheckOutDate(date)
                     }
                     customInput={
-                      <CustomDateInput placeholder='Chọn ngày trả phòng' />
+                      <CustomDateInput placeholder={t("checkout.selectCheckOut")} />
                     }
                     dateFormat='MMM d, yyyy'
                     wrapperClassName='tw-w-full'
@@ -179,12 +194,12 @@ const Checkout: FC = () => {
                         alt='icon'
                       />
                     </span>
-                    Chọn phòng
+                    {t("checkout.room")}
                   </label>
                   <Select
                     instanceId='checkout-select-instance'
                     inputId='checkout-select'
-                    options={roomOptions}
+                    options={roomOptions(t)}
                     value={selectedRoom}
                     onChange={(option) => option && setSelectedRoom(option)}
                     className='custom-select-container'
@@ -201,14 +216,17 @@ const Checkout: FC = () => {
                         alt='icon'
                       />
                     </span>{" "}
-                    Khách & Phòng
+                    {t("checkout.guestsRooms")}
                   </label>
                   <GuestRoomSelector />
                 </div>
                 <div className='checkout-wrapper z-0'>
                   <div className='checkout-button common-hover-yellow'>
-                    <button className='tw-btn-hover-black bg-main-600 tw-py-5 tw-px-7 text-uppercase text-heading font-heading d-inline-flex align-items-center tw-gap-2 tw-rounded-lg'>
-                      TÌM KIẾM{" "}
+                    <button 
+                      onClick={handleSearch}
+                      className='tw-btn-hover-black bg-main-600 tw-py-5 tw-px-7 text-uppercase text-heading font-heading d-inline-flex align-items-center tw-gap-2 tw-rounded-lg'
+                    >
+                      {t("checkout.search")}{" "}
                       <span className='d-inline-block lh-1 tw-text-lg'>
                         <i className='ph ph-arrow-up-right' />
                       </span>
