@@ -85,16 +85,22 @@ def hotel_list(request):
 	limit_value = int(limit) if limit and limit.isdigit() else None
 	price_min = int(request.GET['priceMin']) if request.GET.get('priceMin', '').isdigit() else None
 	price_max = int(request.GET['priceMax']) if request.GET.get('priceMax', '').isdigit() else None
-	star_rating = int(request.GET['starRating']) if request.GET.get('starRating', '').isdigit() else None
+	star_rating_str = request.GET.get('starRating', '')
+	star_rating = float(star_rating_str) if star_rating_str.replace('.', '', 1).isdigit() else None
+	stars_str = request.GET.get('stars', '')
+	stars = int(stars_str) if stars_str.isdigit() else None
 	location = request.GET.get('location') or None
 	amenities = request.GET.getlist('amenities')
+	sort_by = request.GET.get('sortBy') or None
 	hotels = hotel_service.list_hotels(
 		limit=limit_value,
 		location=location,
 		price_min=price_min,
 		price_max=price_max,
 		star_rating=star_rating,
+		stars=stars,
 		amenities=amenities,
+		sort_by=sort_by,
 	)
 	return JsonResponse({'results': hotels})
 

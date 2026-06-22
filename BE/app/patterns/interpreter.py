@@ -40,13 +40,24 @@ class PriceRangeExpression(HotelExpression):
 
 @dataclass(frozen=True)
 class StarRatingExpression(HotelExpression):
-    star_rating: int | None
+    stars: int | None
 
     def interpret(self, hotel: dict) -> bool:
-        if self.star_rating is None:
+        if self.stars is None:
             return True
 
-        return float(hotel.get('rating', 0)) >= float(self.star_rating)
+        return int(hotel.get('stars', 5)) >= int(self.stars)
+
+
+@dataclass(frozen=True)
+class ReviewScoreExpression(HotelExpression):
+    min_rating: float | None
+
+    def interpret(self, hotel: dict) -> bool:
+        if self.min_rating is None:
+            return True
+
+        return float(hotel.get('rating', 0)) >= float(self.min_rating)
 
 
 @dataclass(frozen=True)

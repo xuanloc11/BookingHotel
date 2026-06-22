@@ -39,6 +39,7 @@ export function parseHotelSearchParams(
   const priceMin = getPositiveNumber(params, "priceMin");
   const priceMax = getPositiveNumber(params, "priceMax");
   const starRating = getPositiveNumber(params, "starRating");
+  const stars = getPositiveNumber(params, "stars");
 
   return {
     location: getFirstValue(params, "location")?.trim() || undefined,
@@ -51,7 +52,12 @@ export function parseHotelSearchParams(
       starRating !== undefined && starRating >= 1 && starRating <= 5
         ? starRating
         : undefined,
+    stars:
+      stars !== undefined && stars >= 1 && stars <= 5
+        ? stars
+        : undefined,
     amenities: getStringList(params, "amenities"),
+    sortBy: getFirstValue(params, "sortBy"),
   };
 }
 
@@ -61,6 +67,8 @@ export function hasHotelFilters(filters: HotelSearchFilters): boolean {
       filters.priceMin !== undefined ||
       filters.priceMax !== undefined ||
       filters.starRating !== undefined ||
-      (filters.amenities && filters.amenities.length > 0),
+      filters.stars !== undefined ||
+      (filters.amenities && filters.amenities.length > 0) ||
+      filters.sortBy,
   );
 }

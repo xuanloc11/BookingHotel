@@ -69,7 +69,14 @@ const FeaturedHotelsCarousel: FC<FeaturedHotelsCarouselProps> = ({ title, subtit
                 
                 <div className='card-body p-3 d-flex flex-column flex-grow-1'>
                   <Link href={`/hotel/${hotel.id}`} className='text-decoration-none text-dark'>
-                    <h3 className='tw-text-lg fw-bold tw-mb-1 text-truncate'>{hotel.name}</h3>
+                    <h3 className='tw-text-lg fw-bold tw-mb-1 text-truncate d-flex align-items-center flex-wrap tw-gap-2'>
+                      {hotel.name}
+                      <span className='d-flex align-items-center tw-gap-1 tw-text-sm' style={{ color: "#fbb03b" }}>
+                        {Array.from({ length: hotel.stars || 0 }).map((_, i) => (
+                          <i key={i} className='ph-fill ph-star' />
+                        ))}
+                      </span>
+                    </h3>
                   </Link>
                   <p className='text-neutral-500 tw-text-sm tw-mb-3'>
                     <a href={`/room?location=${encodeURIComponent(hotel.province)}`} className='text-neutral-500 text-decoration-none hover-text-main-600'>

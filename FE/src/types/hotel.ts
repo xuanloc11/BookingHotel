@@ -4,6 +4,7 @@ export interface Hotel {
   province: string;
   address: string;
   price_per_night: number;
+  stars: number;
   rating: number;
   reviews_count: number;
   amenities: string[];
@@ -35,6 +36,8 @@ export interface HotelSearchFilters {
   priceMin?: number;
   priceMax?: number;
   starRating?: number;
+  stars?: number;
   amenities?: string[];
   limit?: number;
+  sortBy?: string;
 }

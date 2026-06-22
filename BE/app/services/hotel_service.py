@@ -8,6 +8,7 @@ from app.patterns.interpreter import (
     LocationExpression,
     PriceRangeExpression,
     StarRatingExpression,
+    ReviewScoreExpression,
 )
 from app.models import Booking
 
@@ -22,8 +23,10 @@ class HotelService:
         location: str | None = None,
         price_min: int | None = None,
         price_max: int | None = None,
-        star_rating: int | None = None,
+        star_rating: float | None = None,
+        stars: int | None = None,
         amenities: list[str] | None = None,
+        sort_by: str | None = None,
     ) -> list[dict]:
         hotels = self._apply_filters(
             self.repository.list_all(),
@@ -31,14 +34,27 @@ class HotelService:
             price_min=price_min,
             price_max=price_max,
             star_rating=star_rating,
+            stars=stars,
             amenities=amenities,
         )
 
-        hotels = sorted(
-            hotels,
-            key=lambda hotel: (hotel.get('rating', 0), hotel.get('reviews_count', 0)),
-            reverse=True,
-        )
+        if sort_by == 'price_asc':
+            hotels = sorted(hotels, key=lambda hotel: hotel.get('price_per_night', 0))
+        elif sort_by == 'price_desc':
+            hotels = sorted(hotels, key=lambda hotel: hotel.get('price_per_night', 0), reverse=True)
+        elif sort_by == 'rating_desc':
+            hotels = sorted(
+                hotels,
+                key=lambda hotel: (hotel.get('rating', 0), hotel.get('reviews_count', 0)),
+                reverse=True,
+            )
+        else:
+            # Default sorting: highest rating first
+            hotels = sorted(
+                hotels,
+                key=lambda hotel: (hotel.get('rating', 0), hotel.get('reviews_count', 0)),
+                reverse=True,
+            )
 
         if limit is not None:
             return hotels[:limit]
@@ -125,13 +141,15 @@ class HotelService:
         location: str | None = None,
         price_min: int | None = None,
         price_max: int | None = None,
-        star_rating: int | None = None,
+        star_rating: float | None = None,
+        stars: int | None = None,
         amenities: list[str] | None = None,
     ) -> list[dict]:
-        expression = AndExpression(
+        filter_expression = AndExpression(
             LocationExpression(location),
-            PriceRangeExpression(price_min=price_min, price_max=price_max),
-            StarRatingExpression(star_rating),
+            PriceRangeExpression(price_min, price_max),
+            ReviewScoreExpression(star_rating),
+            StarRatingExpression(stars),
             AmenitiesExpression(amenities),
         )
-        return [hotel for hotel in hotels if expression.interpret(hotel)]
+        return [hotel for hotel in hotels if filter_expression.interpret(hotel)]

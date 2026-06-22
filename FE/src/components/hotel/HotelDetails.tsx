@@ -47,8 +47,13 @@ export default function HotelDetails({ hotel, availability }: HotelDetailsProps)
                   <span className='bg-main-600 fw-normal tw-px-6 tw-rounded-md text-heading tw-py-1'>
                     {hotel.province}
                   </span>
-                  <h1 className='room-details-title tw-text-16 fw-normal tw-mt-5 tw-mb-4'>
+                  <h1 className='room-details-title tw-text-16 fw-normal tw-mt-5 tw-mb-4 d-flex align-items-center flex-wrap tw-gap-3'>
                     {hotel.name}
+                    <span className='d-flex align-items-center tw-gap-1 tw-text-lg' style={{ color: "#fbb03b" }}>
+                      {Array.from({ length: hotel.stars || 0 }).map((_, i) => (
+                        <i key={i} className='ph-fill ph-star' />
+                      ))}
+                    </span>
                   </h1>
                   <p className='mb-0'>
                     <i className='ph ph-map-pin' /> {hotel.address}

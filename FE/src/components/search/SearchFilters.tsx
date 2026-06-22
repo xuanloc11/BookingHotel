@@ -19,7 +19,7 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
           method='get'
         >
           <div className='row row-gap-4 align-items-end'>
-            <div className='col-xl-3 col-lg-6'>
+            <div className='col-xl-3 col-lg-12'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
                 Vị trí
               </label>
@@ -32,7 +32,7 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
               />
             </div>
 
-            <div className='col-xl-2 col-lg-3 col-md-6'>
+            <div className='col-xl-3 col-lg-6 col-md-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
                 Giá tối thiểu
               </label>
@@ -46,7 +46,7 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
               />
             </div>
 
-            <div className='col-xl-2 col-lg-3 col-md-6'>
+            <div className='col-xl-3 col-lg-6 col-md-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
                 Giá tối đa
               </label>
@@ -60,14 +60,14 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
               />
             </div>
 
-            <div className='col-xl-2 col-lg-4 col-md-6'>
+            <div className='col-xl-3 col-lg-4 col-md-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
                 Hạng sao
               </label>
               <select
                 className='form-select tw-h-14'
-                defaultValue={filters.starRating ?? ""}
-                name='starRating'
+                defaultValue={filters.stars ?? ""}
+                name='stars'
               >
                 <option value=''>Mọi hạng sao</option>
                 <option value='5'>5 sao</option>
@@ -76,7 +76,40 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
               </select>
             </div>
 
-            <div className='col-xl-3 col-lg-8 col-md-6'>
+            <div className='col-xl-4 col-lg-4 col-md-6'>
+              <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
+                Điểm đánh giá
+              </label>
+              <select
+                className='form-select tw-h-14'
+                defaultValue={filters.starRating ?? ""}
+                name='starRating'
+              >
+                <option value=''>Mọi đánh giá</option>
+                <option value='4.5'>Tuyệt hảo: Từ 4.5</option>
+                <option value='4'>Rất tốt: Từ 4.0</option>
+                <option value='3.5'>Tốt: Từ 3.5</option>
+                <option value='3'>Khá: Từ 3.0</option>
+              </select>
+            </div>
+
+            <div className='col-xl-4 col-lg-4 col-md-6'>
+              <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
+                Sắp xếp theo
+              </label>
+              <select
+                className='form-select tw-h-14'
+                defaultValue={filters.sortBy ?? ""}
+                name='sortBy'
+              >
+                <option value=''>Đề xuất hàng đầu</option>
+                <option value='price_asc'>Giá (Ưu tiên thấp nhất)</option>
+                <option value='price_desc'>Giá (Ưu tiên cao nhất)</option>
+                <option value='rating_desc'>Đánh giá tốt nhất</option>
+              </select>
+            </div>
+
+            <div className='col-xl-4 col-lg-4 col-md-12'>
               <div className='d-flex tw-gap-3'>
                 <button
                   className='tw-btn-hover-black bg-main-600 tw-py-4 tw-px-8 text-heading font-heading tw-rounded-lg flex-grow-1'

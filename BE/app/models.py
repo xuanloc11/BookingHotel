@@ -39,6 +39,7 @@ class Hotel(models.Model):
 	province = models.CharField(max_length=255, default='')
 	address = models.CharField(max_length=255)
 	price_per_night = models.PositiveIntegerField(default=0)
+	stars = models.PositiveIntegerField(default=5)
 	rating = models.FloatField(default=0.0)
 	reviews_count = models.PositiveIntegerField(default=0)
 	amenities = models.JSONField(default=list)
