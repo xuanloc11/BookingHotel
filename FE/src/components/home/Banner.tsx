@@ -22,14 +22,15 @@ const Banner: FC<BannerProps> = ({ imageUrl }) => {
       />
       <div className='container position-relative z-2'>
         <div className='row align-items-center justify-content-between'>
-          <div className='col-xl-8 col-lg-8'>
+          <div className='col-xl-10 col-lg-10'>
             <div className='position-relative z-2'>
               <h6 className='banner-subtitle tw-text-xl text-uppercase text-white tw-mb-9'>
                 {t("banner.subtitle")}
               </h6>
-              <h1 className='banner-title tw-text-29 text-white fw-normal tw-mb-10 tw-char-animation'>
-                {t("banner.title")}
-              </h1>
+              <h1 
+                className='banner-title tw-text-29 text-white fw-normal tw-mb-10 tw-char-animation'
+                dangerouslySetInnerHTML={{ __html: t("banner.title") }}
+              />
               <div className='d-flex align-items-center flex-wrap row-gap-3 tw-gap-13'>
                 <div>
                   <Link

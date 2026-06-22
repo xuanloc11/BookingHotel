@@ -53,7 +53,7 @@ export const dictionaries = {
     "menu.account": "Tài khoản",
 
     "banner.subtitle": "Tìm kiếm ngôi nhà độc đáo ở những vùng đất sôi động.",
-    "banner.title": "Khách Sạn Uy Tín, Đặt Phòng Dễ Dàng",
+    "banner.title": "Khách Sạn Uy Tín,<br/>Đặt Phòng Dễ Dàng",
     "banner.bookNow": "Đặt phòng ngay",
     "banner.reviews": "Từ hơn 2,000+ đánh giá",
 
@@ -219,7 +219,7 @@ export const dictionaries = {
     "menu.account": "Account",
 
     "banner.subtitle": "Find unique homes in vibrant places.",
-    "banner.title": "Trusted Hotels, Seamless Booking",
+    "banner.title": "Trusted Hotels,<br/>Seamless Booking",
     "banner.bookNow": "Booking today",
     "banner.reviews": "From 2,000+ reviews",
 
