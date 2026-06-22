@@ -32,7 +32,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
     <AOSWrap>
       <Preloader />
       <Header />
-      <Breadcrumb title='Register' sub_title='Account' />
+      <Breadcrumb title='Đăng ký' sub_title='Tài khoản' />
       <AuthForm mode='register' nextPath={firstValue(params, "next")} />
       <Footer />
     </AOSWrap>

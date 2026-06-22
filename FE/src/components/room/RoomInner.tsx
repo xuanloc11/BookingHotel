@@ -356,7 +356,7 @@ const RoomInner: FC = () => {
       <section
         className='bg_2 background-img position-relative z-1 tw-pt-25 tw-pb-23 tw_fade_anim'
         style={{
-          backgroundImage: "url('assets/images/thumbs/cta-three-bg2.jpg')",
+          backgroundImage: "url('/assets/images/thumbs/cta-three-bg2.jpg')",
         }}
       >
         <div className='container'>

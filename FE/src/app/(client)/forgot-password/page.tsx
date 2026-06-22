@@ -17,7 +17,7 @@ export default function ForgotPasswordPage() {
     <AOSWrap>
       <Preloader />
       <Header />
-      <Breadcrumb title='Forgot Password' sub_title='Account' />
+      <Breadcrumb title='Quên mật khẩu' sub_title='Tài khoản' />
       <AuthForm mode='forgot-password' />
       <Footer />
     </AOSWrap>

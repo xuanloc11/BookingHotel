@@ -8,6 +8,20 @@ import type {
   HotelSearchFilters,
 } from "@/types/hotel";
 
+export interface ProvinceData {
+  name: string;
+  hotel_count: number;
+}
+
+export interface ProvinceResponse {
+  results: ProvinceData[];
+}
+
+export async function fetchProvinces(): Promise<ProvinceData[]> {
+  const response = await fetchBackendJson<ProvinceResponse>(`/provinces/`);
+  return response.results;
+}
+
 export async function fetchFeaturedHotels(limit = 3): Promise<Hotel[]> {
   const response = await fetchBackendJson<HotelListResponse>(`/hotels/?limit=${limit}`);
   return response.results;

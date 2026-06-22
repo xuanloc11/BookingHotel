@@ -13,15 +13,13 @@ const ContactInner: FC = () => {
                 <div className='tw_fade_anim' data-delay='.3'>
                   <div className='section-two-wrapper tw-mb-14'>
                     <h6 className='section-two-subtitle tw-text-xl text-uppercase text-main-three-800 tw-mb-4'>
-                      Get In Touch
+                      Liên hệ
                     </h6>
                     <h2 className='section-two-title tw-text-16 fw-normal tw-mb-6 tw-char-animation'>
-                      Contact Us
+                      Kết nối với chúng tôi
                     </h2>
                     <p className='fw-medium tw-text-lg'>
-                      Sed ut perspiciatis unde omnis iste natus error sit
-                      voluptatem accusantium doloremque laudantium, totam rem
-                      aperiam, eaque inventore
+                      Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Mọi ý kiến đóng góp hoặc thắc mắc sẽ được giải đáp trong thời gian sớm nhất.
                     </p>
                   </div>
                   <div className='row'>
@@ -34,7 +32,7 @@ const ContactInner: FC = () => {
                         </div>
                         <div>
                           <h4 className='tw-text-2xl fw-normal tw-mb-3'>
-                            Location
+                            Vị trí
                           </h4>
                           <p>
                             55 Main street, 2nd block, <br /> Melbourne,
@@ -52,7 +50,7 @@ const ContactInner: FC = () => {
                         </div>
                         <div>
                           <h4 className='tw-text-2xl fw-normal tw-mb-3'>
-                            Phone
+                            Điện thoại
                           </h4>
                           <Link
                             className='fw-medium text-body d-block hover-text-main-600'
@@ -104,7 +102,7 @@ const ContactInner: FC = () => {
                         </div>
                         <div>
                           <h4 className='tw-text-2xl fw-normal tw-mb-4'>
-                            Social
+                            Mạng xã hội
                           </h4>
                           <ul className='d-flex align-items-center tw-gap-2'>
                             <li>
@@ -161,11 +159,10 @@ const ContactInner: FC = () => {
                 >
                   <div className='tw-mb-10'>
                     <h2 className='tw-text-12 fw-normal tw-mb-4 tw-char-animation'>
-                      Fill Up The Form
+                      Gửi tin nhắn
                     </h2>
                     <p className='tw-text-lg fw-medium'>
-                      Your email address will not be published. Required fields
-                      are marked *
+                      Địa chỉ email của bạn sẽ không được công khai. Các trường bắt buộc được đánh dấu *
                     </p>
                   </div>
                   <form action='#'>
@@ -178,7 +175,7 @@ const ContactInner: FC = () => {
                           <input
                             type='text'
                             className='form-control rounded-0 bg-white shadow-none border-none border-bottom border-bottom-neutral text-heading tw-ps-8 tw-pe-13 focus-border-main-600 tw-h-14 tw-placeholder-text-neutral-700 focus-tw-placeholder-text-hidden tw-placeholder-transition-2'
-                            placeholder='Your Name*'
+                            placeholder='Tên của bạn*'
                           />
                         </div>
                       </div>
@@ -190,7 +187,7 @@ const ContactInner: FC = () => {
                           <input
                             type='email'
                             className='form-control rounded-0 bg-white shadow-none border-none border-bottom border-bottom-neutral text-heading tw-ps-8 tw-pe-13 focus-border-main-600 tw-h-14 tw-placeholder-text-neutral-700 focus-tw-placeholder-text-hidden tw-placeholder-transition-2'
-                            placeholder='Email Address**'
+                            placeholder='Địa chỉ email*'
                           />
                         </div>
                       </div>
@@ -201,7 +198,7 @@ const ContactInner: FC = () => {
                           </span>
                           <textarea
                             className='form-control rounded-0 tw-h-135-px bg-white shadow-none border-none border-bottom border-bottom-neutral text-heading tw-ps-8 tw-pe-13 focus-border-main-600 tw-placeholder-text-neutral-700 focus-tw-placeholder-text-hidden tw-placeholder-transition-2'
-                            placeholder='Enter Your Message here'
+                            placeholder='Nhập nội dung tin nhắn của bạn tại đây'
                             defaultValue={""}
                           />
                         </div>
@@ -209,7 +206,7 @@ const ContactInner: FC = () => {
                       <div className='col-xl-12'>
                         <div>
                           <button className='tw-btn-hover-black bg-main-600 tw-py-5 tw-px-14 text-capitalize text-heading font-heading d-inline-flex align-items-center tw-gap-2 tw-rounded-lg'>
-                            Send us Mesaage{" "}
+                            Gửi tin nhắn {" "}
                             <span className='d-inline-block lh-1 tw-text-lg'>
                               <i className='ph ph-arrow-up-right' />
                             </span>

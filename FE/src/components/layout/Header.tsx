@@ -34,53 +34,13 @@ const Header: FC = () => {
     window.location.reload();
   };
 
-  const dynamicDesktopMenu = getDesktopMenuData(language).map(item => {
-    if (item.label === "Tài khoản" || item.label === "Account") {
-      if (user) {
-        return {
-          ...item,
-          subMenu: [
-            { label: t("header.profile"), link: "#" },
-            { label: t("header.myBookings"), link: "/my-bookings" },
-            { label: t("header.logout"), link: "/logout" }
-          ]
-        };
-      } else {
-        return {
-          ...item,
-          subMenu: [
-            { label: t("header.login"), link: "/login" },
-            { label: t("header.register"), link: "/register" }
-          ]
-        };
-      }
-    }
-    return item;
-  });
+  const dynamicDesktopMenu = getDesktopMenuData(language)
+    .filter(item => item.label !== "Tài khoản" && item.label !== "Account")
+    .map(item => item);
 
-  const dynamicMobileMenu = getMenuData(language).map(item => {
-    if (item.label === "Tài khoản" || item.label === "Account") {
-      if (user) {
-        return {
-          ...item,
-          subMenu: [
-            { label: t("header.profile"), link: "#" },
-            { label: t("header.myBookings"), link: "/my-bookings" },
-            { label: t("header.logout"), link: "/logout" }
-          ]
-        };
-      } else {
-        return {
-          ...item,
-          subMenu: [
-            { label: t("header.login"), link: "/login" },
-            { label: t("header.register"), link: "/register" }
-          ]
-        };
-      }
-    }
-    return item;
-  });
+  const dynamicMobileMenu = getMenuData(language)
+    .filter(item => item.label !== "Tài khoản" && item.label !== "Account")
+    .map(item => item);
 
   /* Close user dropdown when clicking outside */
   useEffect(() => {
@@ -137,13 +97,10 @@ const Header: FC = () => {
             {/* Logo Start */}
             <div className='logo'>
               <Link href='/' className='link'>
-                <Image
-                  width={202}
-                  height={65}
-                  src='/assets/images/logo/logo.png'
-                  alt='Logo'
-                  className='max-w-200-px'
-                />
+                <div className='d-flex align-items-center gap-2'>
+                  <i className='ph-fill ph-buildings tw-text-4xl text-main-600'></i>
+                  <span className='fw-bold tw-text-3xl text-white' style={{ textShadow: '0px 2px 4px rgba(0,0,0,0.3)' }}>VPL Hotel</span>
+                </div>
               </Link>
             </div>
             {/* Logo End  */}
@@ -365,7 +322,7 @@ const Header: FC = () => {
                         </li>
                         <li>
                           <Link
-                            href='/my-bookings'
+                            href='/profile?tab=bookings'
                             onClick={() => setUserMenuOpen(false)}
                             className='d-flex align-items-center tw-gap-2 tw-px-4 tw-py-2 text-heading hover-bg-neutral-200 tw-rounded'
                           >
@@ -444,12 +401,10 @@ const Header: FC = () => {
 
         <div className='mobile-menu__inner'>
           <Link href='/' className='mobile-menu__logo'>
-            <Image
-              width={202}
-              height={65}
-              src='/assets/images/logo/logo.png'
-              alt='Logo'
-            />
+            <div className='d-flex align-items-center gap-2'>
+              <i className='ph-fill ph-buildings tw-text-3xl text-main-600'></i>
+              <span className='fw-bold tw-text-2xl text-dark'>VPL Hotel</span>
+            </div>
           </Link>
 
           <div className='mobile-menu__menu'>
@@ -537,7 +492,7 @@ const Header: FC = () => {
                   {t("header.profile")}
                 </Link>
                 <Link
-                  href='/my-bookings'
+                  href='/profile?tab=bookings'
                   onClick={() => setActive(false)}
                   className='d-flex align-items-center tw-gap-2 tw-py-2 text-heading hover-text-main-600'
                 >
@@ -593,12 +548,10 @@ const Header: FC = () => {
                   <div className='search_top d-flex justify-content-between align-items-center'>
                     <div className='search_logo'>
                       <Link href='/'>
-                        <Image
-                          width={202}
-                          height={65}
-                          src='/assets/images/logo/logo.png'
-                          alt='Logo'
-                        />
+                        <div className='d-flex align-items-center gap-2'>
+                          <i className='ph-fill ph-buildings tw-text-4xl text-main-600'></i>
+                          <span className='fw-bold tw-text-3xl text-dark'>VPL Hotel</span>
+                        </div>
                       </Link>
                     </div>
                     <div

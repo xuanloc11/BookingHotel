@@ -67,7 +67,7 @@ export default async function Page({ searchParams }: RoomPageProps) {
       <Header />
 
       {/* Breadcrumb */}
-      <Breadcrumb title='Room' sub_title='Experience the Story' />
+      <Breadcrumb title='Phòng nghỉ' sub_title='Danh sách phòng' />
 
       <SearchFilters amenities={amenities} filters={filters} />
 

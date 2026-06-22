@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { UserProfile } from "@/types/user";
 import { BookingSummary } from "@/types/booking";
 import { updateCurrentUser } from "@/lib/api/userApi";
@@ -21,7 +22,17 @@ interface ProfileDashboardProps {
 
 export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboardProps) {
   const { handleLogout, setUser } = useAuth();
-  const [activeTab, setActiveTab] = useState<"profile" | "bookings">("profile");
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const [activeTab, setActiveTab] = useState<"profile" | "bookings">(tabParam === "bookings" ? "bookings" : "profile");
+
+  useEffect(() => {
+    if (tabParam === "bookings") {
+      setActiveTab("bookings");
+    } else if (tabParam === "profile") {
+      setActiveTab("profile");
+    }
+  }, [tabParam]);
   const [formData, setFormData] = useState({
     full_name: user.full_name || "",
     phone: user.phone || "",

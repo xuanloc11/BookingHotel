@@ -11,6 +11,8 @@ import Preloader from "@/helper/Preloader";
 import { AUTH_ACCESS_TOKEN_COOKIE } from "@/lib/api/authApi";
 import { fetchCurrentUser } from "@/lib/api/userApi";
 import { fetchMyBookings } from "@/lib/api/bookingApi";
+import { Suspense } from "react";
+
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
@@ -51,7 +53,9 @@ export default async function ProfilePage() {
       <Preloader />
       <Header />
       <Breadcrumb title='Hồ sơ cá nhân' sub_title='Tài khoản' />
-      <ProfileDashboard user={user} bookings={bookings} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProfileDashboard user={user} bookings={bookings} />
+      </Suspense>
       <Footer />
     </AOSWrap>
   );

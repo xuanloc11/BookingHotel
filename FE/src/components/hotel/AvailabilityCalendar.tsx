@@ -68,12 +68,12 @@ export default function AvailabilityCalendar({
 
   return (
     <div className='bg-white tw-rounded-lg tw-p-8'>
-      <h3 className='tw-text-8 fw-normal tw-mb-6'>Availability</h3>
+      <h3 className='tw-text-8 fw-normal tw-mb-6'>Lịch trống phòng</h3>
 
       <div className='row row-gap-4 tw-mb-8'>
         <div className='col-md-6'>
           <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-            Check-in
+            Nhận phòng
           </label>
           <input
             className='form-control tw-h-14'
@@ -91,7 +91,7 @@ export default function AvailabilityCalendar({
 
         <div className='col-md-6'>
           <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-            Check-out
+            Trả phòng
           </label>
           <input
             className='form-control tw-h-14'
@@ -120,8 +120,8 @@ export default function AvailabilityCalendar({
             <span className='d-block fw-bold'>{day.date.slice(5)}</span>
             <span className={day.is_available ? "text-success" : "text-muted"}>
               {day.is_available
-                ? `${day.available_rooms} rooms`
-                : "Unavailable"}
+                ? `${day.available_rooms} phòng`
+                : "Hết phòng"}
             </span>
           </button>
         ))}
@@ -130,7 +130,7 @@ export default function AvailabilityCalendar({
       <div className='row row-gap-4 tw-mb-8'>
         <div className='col-md-4'>
           <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-            Adults
+            Người lớn
           </label>
           <input
             className='form-control tw-h-14'
@@ -143,7 +143,7 @@ export default function AvailabilityCalendar({
         </div>
         <div className='col-md-4'>
           <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-            Children
+            Trẻ em
           </label>
           <input
             className='form-control tw-h-14'
@@ -158,7 +158,7 @@ export default function AvailabilityCalendar({
         </div>
         <div className='col-md-4'>
           <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-            Rooms
+            Số phòng
           </label>
           <input
             className='form-control tw-h-14'
@@ -176,7 +176,7 @@ export default function AvailabilityCalendar({
           className='tw-btn-hover-black bg-main-600 tw-py-5 tw-px-12 text-heading font-heading d-inline-flex align-items-center justify-content-center tw-gap-2 tw-rounded-lg w-100'
           href={checkoutHref}
         >
-          Reserve now
+          Đặt phòng ngay
           <span className='d-inline-block lh-1 tw-text-lg'>
             <i className='ph ph-arrow-up-right' />
           </span>
@@ -187,7 +187,7 @@ export default function AvailabilityCalendar({
           disabled
           type='button'
         >
-          Select valid dates
+          Chọn ngày hợp lệ
         </button>
       )}
     </div>

@@ -1,5 +1,4 @@
 "use client";
-import VideoPopup from "@/helper/PopupVideoOne";
 import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
@@ -72,8 +71,7 @@ const Banner: FC = () => {
             </div>
           </div>
           <div className='col-xl-3 col-lg-3'>
-            {/* PopupVideoOne */}
-            <VideoPopup />
+            {/* Xóa VideoPopup theo yêu cầu */}
           </div>
         </div>
       </div>

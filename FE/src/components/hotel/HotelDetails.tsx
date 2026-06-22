@@ -57,24 +57,24 @@ export default function HotelDetails({ hotel, availability }: HotelDetailsProps)
                 <div className='text-xl-end'>
                   <div className='tw-mb-3'>
                     <i className='text-main-600 ph-bold ph-star' />{" "}
-                    {hotel.rating.toFixed(1)} ({hotel.reviews_count} reviews)
+                    {hotel.rating.toFixed(1)} ({hotel.reviews_count} đánh giá)
                   </div>
                   <h2 className='tw-text-8 fw-normal'>
                     {moneyFormatter.format(hotel.price_per_night)}
                   </h2>
-                  <p className='mb-0'>per night</p>
+                  <p className='mb-0'>mỗi đêm</p>
                 </div>
               </div>
 
               <div className='tw-mb-12'>
-                <h2 className='tw-text-8 fw-normal tw-mb-5'>Description</h2>
+                <h2 className='tw-text-8 fw-normal tw-mb-5'>Mô tả</h2>
                 <p className='font-heading fw-normal tw-lh-212'>
                   {hotel.description}
                 </p>
               </div>
 
               <div className='tw-mb-12'>
-                <h2 className='tw-text-8 fw-normal tw-mb-5'>Amenities</h2>
+                <h2 className='tw-text-8 fw-normal tw-mb-5'>Tiện ích</h2>
                 <div className='row row-gap-3'>
                   {hotel.amenities.map((amenity) => (
                     <div className='col-md-6' key={amenity}>

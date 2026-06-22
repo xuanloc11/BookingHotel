@@ -9,7 +9,30 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 
 const font = Plus_Jakarta_Sans({ subsets: ["latin", "vietnamese"] });
 
+function useAdminStyles() {
+  useEffect(() => {
+    const links = [
+      "/admin-assets/css/app.min.css",
+      "/admin-assets/css/icons.min.css",
+    ];
+    const addedLinks: HTMLLinkElement[] = [];
+    links.forEach((href) => {
+      if (!document.querySelector(`link[href="${href}"]`)) {
+        const el = document.createElement("link");
+        el.rel = "stylesheet";
+        el.href = href;
+        document.head.appendChild(el);
+        addedLinks.push(el);
+      }
+    });
+    return () => {
+      addedLinks.forEach((el) => el.parentNode?.removeChild(el));
+    };
+  }, []);
+}
+
 export default function AdminLayout({ children }: { children: ReactNode }) {
+  useAdminStyles();
   const { user, loading, handleLogout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -45,17 +68,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <head>
-        {/* Template CSS */}
-        <link href="/admin-assets/css/app.min.css" rel="stylesheet" type="text/css" />
-        <link href="/admin-assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-        <Script src="/admin-assets/js/config.js" strategy="beforeInteractive" />
-        <style dangerouslySetInnerHTML={{ __html: `
-          body, .wrapper, h1, h2, h3, h4, h5, h6, p, span, a, div, button, input, select, textarea {
-            font-family: ${font.style.fontFamily} !important;
-          }
-        `}} />
-      </head>
+      <Script src="/admin-assets/js/config.js" strategy="afterInteractive" />
       {/* Wrapper */}
       <div className="wrapper">
         {/* Topbar */}

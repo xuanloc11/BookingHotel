@@ -21,20 +21,20 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
           <div className='row row-gap-4 align-items-end'>
             <div className='col-xl-3 col-lg-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                Location
+                Vị trí
               </label>
               <input
                 className='form-control tw-h-14'
                 defaultValue={filters.location ?? ""}
                 name='location'
-                placeholder='Hanoi, Da Nang, beach...'
+                placeholder='Hà Nội, Đà Nẵng, bãi biển...'
                 type='search'
               />
             </div>
 
             <div className='col-xl-2 col-lg-3 col-md-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                Min price
+                Giá tối thiểu
               </label>
               <input
                 className='form-control tw-h-14'
@@ -48,7 +48,7 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
 
             <div className='col-xl-2 col-lg-3 col-md-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                Max price
+                Giá tối đa
               </label>
               <input
                 className='form-control tw-h-14'
@@ -62,17 +62,17 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
 
             <div className='col-xl-2 col-lg-4 col-md-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                Star rating
+                Hạng sao
               </label>
               <select
                 className='form-select tw-h-14'
                 defaultValue={filters.starRating ?? ""}
                 name='starRating'
               >
-                <option value=''>Any rating</option>
-                <option value='5'>5 stars</option>
-                <option value='4'>4+ stars</option>
-                <option value='3'>3+ stars</option>
+                <option value=''>Mọi hạng sao</option>
+                <option value='5'>5 sao</option>
+                <option value='4'>Từ 4 sao</option>
+                <option value='3'>Từ 3 sao</option>
               </select>
             </div>
 
@@ -82,13 +82,13 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
                   className='tw-btn-hover-black bg-main-600 tw-py-4 tw-px-8 text-heading font-heading tw-rounded-lg flex-grow-1'
                   type='submit'
                 >
-                  Search
+                  Tìm kiếm
                 </button>
                 <Link
                   className='btn btn-outline-secondary d-inline-flex align-items-center justify-content-center tw-px-5'
                   href='/room'
                 >
-                  Clear
+                  Xóa lọc
                 </Link>
               </div>
             </div>
@@ -97,7 +97,7 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
           {amenities.length > 0 ? (
             <div className='tw-mt-8'>
               <span className='tw-text-sm fw-bold text-heading tw-mb-3 d-block'>
-                Amenities
+                Tiện nghi
               </span>
               <div className='d-flex flex-wrap tw-gap-3'>
                 {amenities.slice(0, 14).map((amenity) => (

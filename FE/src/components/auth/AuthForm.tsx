@@ -74,7 +74,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
         persistAuthSession(regResponse);
         setUser(regResponse.user);
         toast.success("Đăng ký thành công!");
-        router.push(nextPath || "/my-bookings");
+        router.push(nextPath || "/profile");
         router.refresh();
         return;
       }
@@ -86,7 +86,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
       persistAuthSession(loginResponse);
       setUser(loginResponse.user);
       toast.success("Đăng nhập thành công!");
-      router.push(nextPath || "/my-bookings");
+      router.push(nextPath || "/profile");
       router.refresh();
     } catch (requestError) {
       toast.error(

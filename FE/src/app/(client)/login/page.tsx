@@ -32,7 +32,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     <AOSWrap>
       <Preloader />
       <Header />
-      <Breadcrumb title='Login' sub_title='Account' />
+      <Breadcrumb title='Đăng nhập' sub_title='Tài khoản' />
       <AuthForm mode='login' nextPath={firstValue(params, "next")} />
       <Footer />
     </AOSWrap>

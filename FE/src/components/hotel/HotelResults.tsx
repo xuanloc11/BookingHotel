@@ -12,17 +12,17 @@ export default function HotelResults({ hotels }: HotelResultsProps) {
         <div className='d-flex justify-content-between align-items-end flex-wrap row-gap-3 tw-mb-10'>
           <div>
             <h2 className='section-title fw-normal tw-mb-3'>
-              Available Hotels
+              Khách sạn hiện có
             </h2>
-            <p className='mb-0'>{hotels.length} stays match your search.</p>
+            <p className='mb-0'>Tìm thấy {hotels.length} chỗ nghỉ phù hợp với tìm kiếm của bạn.</p>
           </div>
         </div>
 
         {hotels.length === 0 ? (
           <div className='bg-white tw-rounded-lg tw-p-10 text-center'>
-            <h3 className='tw-text-8 fw-normal tw-mb-3'>No hotels found</h3>
+            <h3 className='tw-text-8 fw-normal tw-mb-3'>Không tìm thấy khách sạn</h3>
             <p className='mb-0'>
-              Adjust the dates, budget, location, or amenities and search again.
+              Vui lòng điều chỉnh ngày, ngân sách, vị trí hoặc tiện nghi và thử lại.
             </p>
           </div>
         ) : (

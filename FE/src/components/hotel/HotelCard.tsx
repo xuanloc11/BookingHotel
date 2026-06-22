@@ -59,13 +59,13 @@ export default function HotelCard({ hotel }: HotelCardProps) {
               <h6 className='fw-normal'>
                 {moneyFormatter.format(hotel.price_per_night)}
               </h6>
-              <p>/ Per Night</p>
+              <p>/ Đêm</p>
             </div>
             <Link
               className='font-heading tw-text-sm text-uppercase text-heading fw-normal hover-text-main-600'
               href={`/hotel/${hotel.id}`}
             >
-              View details <i className='tw-text-base ph ph-arrow-up-right' />
+              Xem chi tiết <i className='tw-text-base ph ph-arrow-up-right' />
             </Link>
           </div>
         </div>

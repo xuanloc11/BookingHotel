@@ -1149,7 +1149,7 @@ const RoomDetailsInner: FC = () => {
       <section
         className='background-img position-relative z-1 tw-pt-25 tw-pb-23 bg_2'
         style={{
-          backgroundImage: "url('assets/images/thumbs/cta-three-bg2.jpg')",
+          backgroundImage: "url('/assets/images/thumbs/cta-three-bg2.jpg')",
         }}
       >
         <div className='container'>

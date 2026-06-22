@@ -10,7 +10,7 @@ const Breadcrumb: FC<BreadcrumbProps> = ({ title, sub_title }) => {
     <section
       className='breadcrumb-area background-img position-relative z-1'
       style={{
-        backgroundImage: "url('assets/images/thumbs/breadcrumb-bg.jpg')",
+        backgroundImage: "url('/assets/images/thumbs/breadcrumb-bg.jpg')",
         padding: "110px 0 100px 0",
         minHeight: "unset"
       }}

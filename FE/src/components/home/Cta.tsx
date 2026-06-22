@@ -5,7 +5,7 @@ const Cta: FC = () => {
     <section
       className='cta-area py-120 background-img position-relative z-1 tw-mx-11 tw-rounded-3xl overflow-hidden'
       style={{
-        backgroundImage: "url('assets/images/thumbs/call-to-action-bg.jpg')",
+        backgroundImage: "url('/assets/images/thumbs/call-to-action-bg.jpg')",
       }}
     >
       <div className='container-fluid'>

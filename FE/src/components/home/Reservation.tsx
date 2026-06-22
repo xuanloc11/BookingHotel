@@ -6,7 +6,7 @@ const Reservation: FC = () => {
     <section
       className='background-img position-relative z-1 tw-pt-25 tw-pb-23'
       style={{
-        backgroundImage: "url('assets/images/thumbs/cta-three-bg.jpg')",
+        backgroundImage: "url('/assets/images/thumbs/cta-three-bg.jpg')",
       }}
     >
       <div className='container'>

@@ -18,7 +18,7 @@ interface OptionType {
 }
 
 const roomOptions: OptionType[] = [
-  { value: "rooms", label: "Rooms" },
+  { value: "rooms", label: "Phòng" },
   { value: "01", label: "01" },
   { value: "02", label: "02" },
   { value: "03", label: "03" },
@@ -42,7 +42,7 @@ const CustomDateInput = forwardRef<
     <div className='d-flex gap-2 tw-items-center justify-content-center align-items-center'>
       <i className='ph ph-check'></i>
       <span className={`${value ? "tw-text-gray-800" : "tw-text-gray-400"}`}>
-        {value || placeholder || "Select date"}
+        {value || placeholder || "Chọn ngày"}
       </span>
     </div>
   </div>
@@ -118,7 +118,7 @@ const Checkout: FC = () => {
                         alt='icon'
                       />
                     </span>
-                    Check-in Date
+                    Ngày nhận phòng
                   </label>
                   <DatePicker
                     selected={checkInDate}
@@ -126,7 +126,7 @@ const Checkout: FC = () => {
                       setCheckInDate(date)
                     }
                     customInput={
-                      <CustomDateInput placeholder='Select check-in date' />
+                      <CustomDateInput placeholder='Chọn ngày nhận phòng' />
                     }
                     dateFormat='MMM d, yyyy'
                     wrapperClassName='tw-w-full'
@@ -149,7 +149,7 @@ const Checkout: FC = () => {
                         alt='icon'
                       />
                     </span>
-                    Check-out Date
+                    Ngày trả phòng
                   </label>
                   <DatePicker
                     selected={checkOutDate}
@@ -157,7 +157,7 @@ const Checkout: FC = () => {
                       setCheckOutDate(date)
                     }
                     customInput={
-                      <CustomDateInput placeholder='Select check-out date' />
+                      <CustomDateInput placeholder='Chọn ngày trả phòng' />
                     }
                     dateFormat='MMM d, yyyy'
                     wrapperClassName='tw-w-full'
@@ -208,7 +208,7 @@ const Checkout: FC = () => {
                 <div className='checkout-wrapper z-0'>
                   <div className='checkout-button common-hover-yellow'>
                     <button className='tw-btn-hover-black bg-main-600 tw-py-5 tw-px-7 text-uppercase text-heading font-heading d-inline-flex align-items-center tw-gap-2 tw-rounded-lg'>
-                      EXPLORE MORE{" "}
+                      TÌM KIẾM{" "}
                       <span className='d-inline-block lh-1 tw-text-lg'>
                         <i className='ph ph-arrow-up-right' />
                       </span>

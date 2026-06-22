@@ -59,7 +59,7 @@ export default function BookingSuccessDetails({
               <div className='d-flex justify-content-center flex-wrap tw-gap-3'>
                 <Link
                   className='tw-btn-hover-black bg-main-600 tw-py-4 tw-px-8 text-heading font-heading tw-rounded-lg'
-                  href='/my-bookings'
+                  href='/profile/?tab=bookings'
                 >
                   Xem các đơn đặt phòng
                 </Link>

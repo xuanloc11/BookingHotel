@@ -47,7 +47,7 @@ const Page: React.FC = () => {
       <Header />
 
       {/* Breadcrumb */}
-      <Breadcrumb title='About Us' sub_title='Experience the Story' />
+      <Breadcrumb title='Về chúng tôi' sub_title='Khám phá câu chuyện' />
 
       {/* Checkout */}
       <section className='checkout-area_bg'>

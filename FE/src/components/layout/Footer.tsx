@@ -8,17 +8,7 @@ const Footer: FC = () => {
       className='footer background-img position-relative z-1 overflow-hidden '
       data-background-image='assets/images/thumbs/footer-bg.jpg'
     >
-      <div className='container'>
-        <div className='row justify-content-center'>
-          <div className='col-xl-8'>
-            <div className='cursor-content tp-cursor-point-area_ pt-120 tw-pb-18 tw_fade_anim'>
-              <h2 className='cursor-text text-center tw-text-15 fw-normal text-white'>
-                Trải nghiệm sự thanh lịch. Đặt kỳ nghỉ của bạn ngay hôm nay.
-              </h2>
-            </div>
-          </div>
-        </div>
-      </div>
+
       <div className='footer-center-space position-relative z-1'>
         <div className='container container-two'>
           <div className='footer-center-border tw-pt-4'>
@@ -249,13 +239,11 @@ const Footer: FC = () => {
           <div className='container container-two'>
             <div className='footer-bottom-wrap d-flex align-items-center justify-content-between tw-gap-4 flex-wrap'>
               <div className='mb-0 aos-init tw_fade_anim' data-delay='.3'>
-                <Link href='/' className=''>
-                  <Image
-                    width={202}
-                    height={65}
-                    src='/assets/images/logo/logo.png'
-                    alt='Logo'
-                  />
+                <Link href='/'>
+                  <div className='d-flex align-items-center gap-2'>
+                    <i className='ph-fill ph-buildings tw-text-4xl text-main-600'></i>
+                    <span className='fw-bold tw-text-3xl text-white'>VPL Hotel</span>
+                  </div>
                 </Link>
               </div>
               <ul
