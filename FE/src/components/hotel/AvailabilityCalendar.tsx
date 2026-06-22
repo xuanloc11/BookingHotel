@@ -13,8 +13,8 @@ interface AvailabilityCalendarProps {
 }
 
 function addDays(dateValue: string, days: number): string {
-  const date = new Date(`${dateValue}T00:00:00`);
-  date.setDate(date.getDate() + days);
+  const [year, month, day] = dateValue.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day + days));
   return date.toISOString().slice(0, 10);
 }
 
@@ -51,6 +51,7 @@ export default function AvailabilityCalendar({
   const [checkOut, setCheckOut] = useState(
     firstAvailable ? addDays(firstAvailable.date, 1) : "",
   );
+  const [selectingMode, setSelectingMode] = useState<"checkIn" | "checkOut">("checkIn");
   const [guests, setGuests] = useState<BookingGuestCounts>({
     adults: 2,
     children: 0,
@@ -59,7 +60,30 @@ export default function AvailabilityCalendar({
 
   const checkInAvailable = checkIn ? availableDateSet.has(checkIn) : false;
   const checkOutAfterCheckIn = checkIn && checkOut ? checkOut > checkIn : false;
-  const canContinue = Boolean(checkIn && checkOut && checkInAvailable && checkOutAfterCheckIn);
+  
+  const availableRoomsInRange = useMemo(() => {
+    if (!checkIn || !checkOut || checkOut <= checkIn) return 0;
+
+    let minRooms = Infinity;
+    let currentDate = checkIn;
+    
+    while (currentDate < checkOut) {
+      const dayData = availability.find((day) => day.date === currentDate);
+      if (!dayData || !dayData.is_available) {
+        return 0;
+      }
+      if (dayData.available_rooms < minRooms) {
+        minRooms = dayData.available_rooms;
+      }
+      currentDate = addDays(currentDate, 1);
+    }
+    
+    return minRooms === Infinity ? 0 : minRooms;
+  }, [checkIn, checkOut, availability]);
+
+  const hasEnoughRooms = Boolean(guests.rooms > 0 && guests.rooms <= availableRoomsInRange);
+
+  const canContinue = Boolean(checkIn && checkOut && checkInAvailable && checkOutAfterCheckIn && hasEnoughRooms);
 
   const statusMessage = !checkIn || !checkOut
     ? t("calendar.error.selectDates")
@@ -67,7 +91,9 @@ export default function AvailabilityCalendar({
       ? t("calendar.error.unavailable")
       : !checkOutAfterCheckIn
         ? t("calendar.error.invalidCheckout")
-        : null;
+        : !hasEnoughRooms
+          ? t("calendar.error.notEnoughRooms")
+          : null;
 
   const checkoutHref = useMemo(
     () =>
@@ -77,11 +103,28 @@ export default function AvailabilityCalendar({
     [canContinue, checkIn, checkOut, guests, hotelId],
   );
 
-  const updateGuests = (key: keyof BookingGuestCounts, value: number) => {
+  const updateGuests = (key: keyof BookingGuestCounts, value: string) => {
+    if (value === "") {
+      setGuests((current) => ({
+        ...current,
+        [key]: "" as any,
+      }));
+      return;
+    }
+    
+    const num = Number(value);
+    if (isNaN(num)) return;
+
     setGuests((current) => ({
       ...current,
-      [key]: Math.max(key === "children" ? 0 : 1, value),
+      [key]: Math.max(key === "children" ? 0 : 1, num),
     }));
+  };
+
+  const handleGuestBlur = (key: keyof BookingGuestCounts) => {
+    if (guests[key] === ("" as any) || guests[key] === null || guests[key] === undefined) {
+      updateGuests(key, key === "children" ? "0" : "1");
+    }
   };
 
   const handleCheckInChange = (value: string) => {
@@ -120,6 +163,7 @@ export default function AvailabilityCalendar({
             className='form-control tw-h-14'
             min={firstAvailable?.date}
             onChange={(event) => handleCheckInChange(event.target.value)}
+            onFocus={() => setSelectingMode("checkIn")}
             type='date'
             value={checkIn}
           />
@@ -133,6 +177,7 @@ export default function AvailabilityCalendar({
             className='form-control tw-h-14'
             min={checkIn ? addDays(checkIn, 1) : firstAvailable?.date}
             onChange={(event) => handleCheckOutChange(event.target.value)}
+            onFocus={() => setSelectingMode("checkOut")}
             type='date'
             value={checkOut}
           />
@@ -140,27 +185,50 @@ export default function AvailabilityCalendar({
       </div>
 
       <div className='d-flex flex-wrap tw-gap-3 tw-mb-8'>
-        {availability.slice(0, 14).map((day) => (
-          <button
-            className={`border tw-rounded-lg tw-py-3 tw-px-4 bg-white ${
-              checkIn === day.date ? "border-dark" : ""
-            }`}
-            disabled={!day.is_available}
-            key={day.date}
-            onClick={() => {
-              setCheckIn(day.date);
-              setCheckOut(addDays(day.date, 1));
-            }}
-            type='button'
-          >
-            <span className='d-block fw-bold'>{day.date.slice(5)}</span>
-            <span className={day.is_available ? "text-success" : "text-muted"}>
-              {day.is_available
-                ? `${day.available_rooms} ${t("calendar.roomsCount")}`
-                : t("calendar.soldOut")}
-            </span>
-          </button>
-        ))}
+        {availability.slice(0, 14).map((day) => {
+          const isCheckIn = day.date === checkIn;
+          const isCheckOut = day.date === checkOut;
+          const inRange = checkIn && checkOut && day.date > checkIn && day.date < checkOut;
+
+          return (
+            <button
+              className={`border tw-rounded-lg tw-py-3 tw-px-4 ${
+                isCheckIn || isCheckOut 
+                  ? "border-dark bg-white" 
+                  : inRange 
+                    ? "bg-light border-light" 
+                    : "bg-white"
+              }`}
+              disabled={!day.is_available}
+              key={day.date}
+              onClick={() => {
+                if (selectingMode === "checkOut") {
+                  if (day.date > checkIn) {
+                    setCheckOut(day.date);
+                    setSelectingMode("checkIn"); // complete
+                  } else {
+                    setCheckIn(day.date);
+                    setCheckOut(checkIn); // shift
+                  }
+                } else {
+                  setCheckIn(day.date);
+                  if (!checkOut || day.date >= checkOut) {
+                    setCheckOut(addDays(day.date, 1));
+                  }
+                  setSelectingMode("checkOut"); // automatically advance
+                }
+              }}
+              type='button'
+            >
+              <span className='d-block fw-bold'>{day.date.slice(5)}</span>
+              <span className={day.is_available ? "text-success" : "text-muted"}>
+                {day.is_available
+                  ? `${day.available_rooms} ${t("calendar.roomsCount")}`
+                  : t("calendar.soldOut")}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       <div className='row row-gap-4 tw-mb-8'>
@@ -172,7 +240,8 @@ export default function AvailabilityCalendar({
             className='form-control tw-h-14'
             max='12'
             min='1'
-            onChange={(event) => updateGuests("adults", Number(event.target.value))}
+            onChange={(event) => updateGuests("adults", event.target.value)}
+            onBlur={() => handleGuestBlur("adults")}
             type='number'
             value={guests.adults}
           />
@@ -186,8 +255,9 @@ export default function AvailabilityCalendar({
             max='12'
             min='0'
             onChange={(event) =>
-              updateGuests("children", Number(event.target.value))
+              updateGuests("children", event.target.value)
             }
+            onBlur={() => handleGuestBlur("children")}
             type='number'
             value={guests.children}
           />
@@ -200,7 +270,8 @@ export default function AvailabilityCalendar({
             className='form-control tw-h-14'
             max='6'
             min='1'
-            onChange={(event) => updateGuests("rooms", Number(event.target.value))}
+            onChange={(event) => updateGuests("rooms", event.target.value)}
+            onBlur={() => handleGuestBlur("rooms")}
             type='number'
             value={guests.rooms}
           />

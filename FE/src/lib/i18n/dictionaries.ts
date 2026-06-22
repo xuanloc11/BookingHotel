@@ -53,7 +53,7 @@ export const dictionaries = {
     "menu.account": "Tài khoản",
 
     "banner.subtitle": "Tìm kiếm ngôi nhà độc đáo ở những vùng đất sôi động.",
-    "banner.title": "Khách Sạn Uy Tín,<br/>Đặt Phòng Dễ Dàng",
+    "banner.title": "Khách Sạn Uy Tín,<br/><span class='text-nowrap'>Đặt Phòng Dễ Dàng</span>",
     "banner.bookNow": "Đặt phòng ngay",
     "banner.reviews": "Từ hơn 2,000+ đánh giá",
 
@@ -70,6 +70,7 @@ export const dictionaries = {
     "calendar.error.selectDates": "Vui lòng chọn ngày nhận và trả phòng.",
     "calendar.error.unavailable": "Ngày nhận phòng đã chọn hiện không còn phòng. Vui lòng chọn ngày khác.",
     "calendar.error.invalidCheckout": "Ngày trả phòng phải sau ngày nhận phòng ít nhất 1 đêm.",
+    "calendar.error.notEnoughRooms": "Không đủ số phòng trống trong giai đoạn này.",
     
     "checkout.location": "Vị trí",
     "checkout.locationPlaceholder": "Chọn địa điểm...",
@@ -219,7 +220,7 @@ export const dictionaries = {
     "menu.account": "Account",
 
     "banner.subtitle": "Find unique homes in vibrant places.",
-    "banner.title": "Trusted Hotels,<br/>Seamless Booking",
+    "banner.title": "Trusted Hotels,<br/><span class='text-nowrap'>Seamless Booking</span>",
     "banner.bookNow": "Booking today",
     "banner.reviews": "From 2,000+ reviews",
 
@@ -236,6 +237,7 @@ export const dictionaries = {
     "calendar.error.selectDates": "Please select check-in and check-out dates.",
     "calendar.error.unavailable": "The selected check-in date is no longer available. Please select another date.",
     "calendar.error.invalidCheckout": "Check-out date must be at least 1 night after check-in.",
+    "calendar.error.notEnoughRooms": "Not enough rooms available for these dates.",
 
     "checkout.location": "Location",
     "checkout.locationPlaceholder": "Select location...",
