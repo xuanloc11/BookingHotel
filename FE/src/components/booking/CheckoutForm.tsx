@@ -8,6 +8,7 @@ import { ZodError } from "zod";
 import { createBooking } from "@/lib/api/bookingApi";
 import { readStoredAccessToken } from "@/lib/api/authApi";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { useCurrency } from "@/lib/currency/CurrencyContext";
 import type {
   BookingPriceBreakdown,
   CheckoutSelection,
