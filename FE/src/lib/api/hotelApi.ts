@@ -42,7 +42,15 @@ export async function fetchHotels(
 export async function fetchHotelSearchResults(
   filters: HotelSearchFilters = {},
 ): Promise<{ hotels: Hotel[]; amenities: string[] }> {
-  const response = await fetchBackendJson<HotelListResponse>("/hotels/");
+  const params = new URLSearchParams();
+  if (filters.checkIn) params.append("checkIn", filters.checkIn);
+  if (filters.checkOut) params.append("checkOut", filters.checkOut);
+  if (filters.rooms !== undefined) params.append("rooms", filters.rooms.toString());
+
+  const queryString = params.toString();
+  const response = await fetchBackendJson<HotelListResponse>(
+    queryString ? `/hotels/?${queryString}` : "/hotels/"
+  );
 
   return {
     hotels: applyHotelFilters(response.results, filters),
@@ -95,6 +103,14 @@ function buildHotelQuery(filters: HotelSearchFilters): string {
     params.set("starRating", String(filters.starRating));
   }
 
+  if (filters.stars !== undefined) {
+    params.set("stars", String(filters.stars));
+  }
+
+  if (filters.sortBy) {
+    params.set("sortBy", filters.sortBy);
+  }
+
   filters.amenities?.forEach((amenity) => params.append("amenities", amenity));
 
   return params.toString();
@@ -111,7 +127,7 @@ function applyHotelFilters(
   const location = filters.location ? normalize(filters.location) : null;
   const amenities = filters.amenities?.map(normalize).filter(Boolean) ?? [];
 
-  return hotels.filter((hotel) => {
+  const filtered = hotels.filter((hotel) => {
     const matchesLocation = location
       ? normalize(`${hotel.province} ${hotel.address}`).includes(location)
       : true;
@@ -123,8 +139,10 @@ function applyHotelFilters(
       filters.priceMax !== undefined
         ? hotel.price_per_night <= filters.priceMax
         : true;
-    const matchesStars =
+    const matchesReviewScore =
       filters.starRating !== undefined ? hotel.rating >= filters.starRating : true;
+    const matchesStars =
+      filters.stars !== undefined ? (hotel.stars || 5) >= filters.stars : true;
     const hotelAmenities = hotel.amenities.map(normalize);
     const matchesAmenities = amenities.every((amenity) =>
       hotelAmenities.some((hotelAmenity) => hotelAmenity.includes(amenity)),
@@ -134,10 +152,21 @@ function applyHotelFilters(
       matchesLocation &&
       matchesMinPrice &&
       matchesMaxPrice &&
+      matchesReviewScore &&
       matchesStars &&
       matchesAmenities
     );
   });
+
+  if (filters.sortBy === "price_asc") {
+    filtered.sort((a, b) => a.price_per_night - b.price_per_night);
+  } else if (filters.sortBy === "price_desc") {
+    filtered.sort((a, b) => b.price_per_night - a.price_per_night);
+  } else if (filters.sortBy === "rating_desc") {
+    filtered.sort((a, b) => b.rating - a.rating || b.reviews_count - a.reviews_count);
+  }
+
+  return filtered;
 }
 
 function collectAmenities(hotels: Hotel[]): string[] {

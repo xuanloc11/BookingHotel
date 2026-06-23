@@ -1,19 +1,30 @@
-import json
-from pathlib import Path
+from app.models import Hotel
 
 
 class HotelRepository:
-    def __init__(self, data_file: Path | None = None) -> None:
-        root_path = Path(__file__).resolve().parents[3]
-        self.data_file = data_file or root_path / 'FE' / 'public' / 'data' / 'hotels_vietnam.json'
+    def _hotel_to_dict(self, hotel: Hotel) -> dict:
+        return {
+            'id': hotel.id,
+            'name': hotel.name,
+            'province': hotel.province,
+            'address': hotel.address,
+            'price_per_night': hotel.price_per_night,
+            'stars': hotel.stars,
+            'rating': hotel.rating,
+            'reviews_count': hotel.reviews_count,
+            'amenities': hotel.amenities,
+            'thumbnail': hotel.thumbnail,
+            'description': hotel.description,
+            'status': hotel.status,
+        }
 
     def list_all(self) -> list[dict]:
-        with self.data_file.open('r', encoding='utf-8') as file_handle:
-            return json.load(file_handle)
+        hotels = Hotel.objects.filter(status=Hotel.STATUS_APPROVED)
+        return [self._hotel_to_dict(hotel) for hotel in hotels]
 
     def get_by_id(self, hotel_id: int) -> dict | None:
-        for hotel in self.list_all():
-            if hotel.get('id') == hotel_id:
-                return hotel
-
-        return None
+        try:
+            hotel = Hotel.objects.get(id=hotel_id, status=Hotel.STATUS_APPROVED)
+            return self._hotel_to_dict(hotel)
+        except Hotel.DoesNotExist:
+            return None

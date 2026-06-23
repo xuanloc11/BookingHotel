@@ -8,7 +8,7 @@ from django.db import transaction
 
 from app.models import Booking
 from app.repositories.hotel_repository import HotelRepository
-from app.patterns.observer import (
+from app.services.booking_events import (
     BookingAuditObserver,
     BookingConfirmationObserver,
     BookingEventContext,

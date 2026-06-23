@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 import type { HotelSearchFilters } from "@/types/hotel";
 
@@ -8,6 +11,7 @@ interface SearchFiltersProps {
 }
 
 export default function SearchFilters({ filters, amenities }: SearchFiltersProps) {
+  const { t } = useLanguage();
   const selectedAmenities = new Set(filters.amenities ?? []);
 
   return (
@@ -21,20 +25,20 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
           <div className='row row-gap-4 align-items-end'>
             <div className='col-xl-3 col-lg-12'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                Vị trí
+                {t("search.location")}
               </label>
               <input
                 className='form-control tw-h-14'
                 defaultValue={filters.location ?? ""}
                 name='location'
-                placeholder='Hà Nội, Đà Nẵng, bãi biển...'
+                placeholder={t("search.locationPlaceholder")}
                 type='search'
               />
             </div>
 
             <div className='col-xl-3 col-lg-6 col-md-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                Giá tối thiểu
+                {t("search.minPrice")}
               </label>
               <input
                 className='form-control tw-h-14'
@@ -48,7 +52,7 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
 
             <div className='col-xl-3 col-lg-6 col-md-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                Giá tối đa
+                {t("search.maxPrice")}
               </label>
               <input
                 className='form-control tw-h-14'
@@ -62,50 +66,50 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
 
             <div className='col-xl-3 col-lg-4 col-md-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                Hạng sao
+                {t("search.stars")}
               </label>
               <select
                 className='form-select tw-h-14'
                 defaultValue={filters.stars ?? ""}
                 name='stars'
               >
-                <option value=''>Mọi hạng sao</option>
-                <option value='5'>5 sao</option>
-                <option value='4'>Từ 4 sao</option>
-                <option value='3'>Từ 3 sao</option>
+                <option value=''>{t("search.allStars")}</option>
+                <option value='5'>{t("search.5stars")}</option>
+                <option value='4'>{t("search.from4stars")}</option>
+                <option value='3'>{t("search.from3stars")}</option>
               </select>
             </div>
 
             <div className='col-xl-4 col-lg-4 col-md-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                Điểm đánh giá
+                {t("search.guestRating")}
               </label>
               <select
                 className='form-select tw-h-14'
                 defaultValue={filters.starRating ?? ""}
                 name='starRating'
               >
-                <option value=''>Mọi đánh giá</option>
-                <option value='4.5'>Tuyệt hảo: Từ 4.5</option>
-                <option value='4'>Rất tốt: Từ 4.0</option>
-                <option value='3.5'>Tốt: Từ 3.5</option>
-                <option value='3'>Khá: Từ 3.0</option>
+                <option value=''>{t("search.allRatings")}</option>
+                <option value='4.5'>{t("search.rating45")}</option>
+                <option value='4'>{t("search.rating40")}</option>
+                <option value='3.5'>{t("search.rating35")}</option>
+                <option value='3'>{t("search.rating30")}</option>
               </select>
             </div>
 
             <div className='col-xl-4 col-lg-4 col-md-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
-                Sắp xếp theo
+                {t("search.sortBy")}
               </label>
               <select
                 className='form-select tw-h-14'
                 defaultValue={filters.sortBy ?? ""}
                 name='sortBy'
               >
-                <option value=''>Đề xuất hàng đầu</option>
-                <option value='price_asc'>Giá (Ưu tiên thấp nhất)</option>
-                <option value='price_desc'>Giá (Ưu tiên cao nhất)</option>
-                <option value='rating_desc'>Đánh giá tốt nhất</option>
+                <option value=''>{t("search.sortTop")}</option>
+                <option value='price_asc'>{t("search.sortPriceAsc")}</option>
+                <option value='price_desc'>{t("search.sortPriceDesc")}</option>
+                <option value='rating_desc'>{t("search.sortRatingDesc")}</option>
               </select>
             </div>
 
@@ -115,13 +119,13 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
                   className='tw-btn-hover-black bg-main-600 tw-py-4 tw-px-8 text-heading font-heading tw-rounded-lg flex-grow-1'
                   type='submit'
                 >
-                  Tìm kiếm
+                  {t("search.searchBtn")}
                 </button>
                 <Link
                   className='btn btn-outline-secondary d-inline-flex align-items-center justify-content-center tw-px-5'
                   href='/room'
                 >
-                  Xóa lọc
+                  {t("search.clearBtn")}
                 </Link>
               </div>
             </div>
@@ -130,7 +134,7 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
           {amenities.length > 0 ? (
             <div className='tw-mt-8'>
               <span className='tw-text-sm fw-bold text-heading tw-mb-3 d-block'>
-                Tiện nghi
+                {t("search.amenities")}
               </span>
               <div className='d-flex flex-wrap tw-gap-3'>
                 {amenities.slice(0, 14).map((amenity) => (

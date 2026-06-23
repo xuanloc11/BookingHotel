@@ -1,28 +1,26 @@
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
+import { useCurrency } from "@/lib/currency/CurrencyContext";
 
 import type { Hotel } from "@/types/hotel";
-
-const moneyFormatter = new Intl.NumberFormat("vi-VN", {
-  style: "currency",
-  currency: "VND",
-});
 
 interface HotelCardProps {
   hotel: Hotel;
 }
 
 export default function HotelCard({ hotel }: HotelCardProps) {
+  const { formatMoney } = useCurrency();
+
   return (
-    <article className='service-wrapper bg-white tw-p-4 tw-rounded-xl tw-mb-8 h-100'>
+    <article className='service-wrapper bg-white tw-p-4 tw-rounded-xl tw-mb-8 h-100 d-flex flex-column'>
       <div className='service-thumb tw-mb-5 position-relative z-1 overflow-hidden'>
         <Link href={`/hotel/${hotel.id}`}>
-          <Image
+          <img
             alt={hotel.name}
             className='tw-rounded-xl w-100 object-fit-cover hover-scale-2 tw-duration-500'
-            height={308}
+            style={{ height: '308px' }}
             src={hotel.thumbnail}
-            width={423}
           />
         </Link>
         <div className='service-tag position-absolute start-0 top-0 tw-mt-2 tw-ms-2'>
@@ -32,7 +30,7 @@ export default function HotelCard({ hotel }: HotelCardProps) {
         </div>
       </div>
 
-      <div className='service-content tw-px-2 tw-mb-2'>
+      <div className='service-content tw-px-2 tw-mb-2 d-flex flex-column flex-grow-1'>
         <span className='service-location'>
           <i className='ph ph-map-pin' /> {hotel.address}
         </span>
@@ -48,7 +46,7 @@ export default function HotelCard({ hotel }: HotelCardProps) {
         </h3>
         <p className='service-paragraph tw-mb-5'>{hotel.description}</p>
 
-        <div className='service-wrap tw-rounded-xl tw-py-4 tw-px-6'>
+        <div className='service-wrap tw-rounded-xl tw-py-4 tw-px-6 mt-auto'>
           <div className='service-star d-flex tw-gap-6 tw-pb-4 tw-mb-6 flex-wrap'>
             <span className='text-heading fw-normal d-flex tw-gap-2'>
               <i className='ph ph-star' /> {hotel.rating.toFixed(1)} (
@@ -59,10 +57,17 @@ export default function HotelCard({ hotel }: HotelCardProps) {
             </span>
           </div>
 
+          {hotel.available_rooms !== undefined && (
+            <div className='tw-mb-4 tw-px-3 tw-py-2 tw-bg-green-50 tw-text-green-700 tw-rounded-lg tw-text-sm d-flex align-items-center tw-gap-2'>
+              <i className='ph ph-check-circle tw-text-lg' />
+              <span>Còn <strong>{hotel.available_rooms}</strong> phòng trống phù hợp</span>
+            </div>
+          )}
+
           <div className='d-flex align-items-center justify-content-between flex-wrap row-gap-3'>
             <div className='service-price'>
               <h6 className='fw-normal'>
-                {moneyFormatter.format(hotel.price_per_night)}
+                {formatMoney(hotel.price_per_night)}
               </h6>
               <p>/ Đêm</p>
             </div>

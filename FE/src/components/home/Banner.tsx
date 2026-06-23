@@ -31,48 +31,7 @@ const Banner: FC<BannerProps> = ({ imageUrl }) => {
                 className='banner-title tw-text-29 text-white fw-normal tw-mb-10 tw-char-animation'
                 dangerouslySetInnerHTML={{ __html: t("banner.title") }}
               />
-              <div className='d-flex align-items-center flex-wrap row-gap-3 tw-gap-13'>
-                <div>
-                  <Link
-                    className='tw-btn-hover-white bg-main-600 tw-py-5 tw-px-12 text-heading font-heading d-inline-flex align-items-center tw-gap-3 tw-rounded-lg'
-                    href='/contact'
-                  >
-                    {t("banner.bookNow")}{" "}
-                    <span className='d-inline-block lh-1 tw-text-lg'>
-                      <i className='ph ph-arrow-up-right' />
-                    </span>
-                  </Link>
-                </div>
-                <div className=''>
-                  <div className='d-flex align-items-center tw-gap-2'>
-                    <span className='tw-text-xl text-white font-heading'>
-                      5.0
-                    </span>
-                    <ul className='d-flex tw-gap-1'>
-                      <li className='text-white'>
-                        <i className='ph-bold ph-star' />
-                      </li>
-                      <li className='text-white'>
-                        <i className='ph-bold ph-star' />
-                      </li>
-                      <li className='text-white'>
-                        <i className='ph-bold ph-star' />
-                      </li>
-                      <li className='text-white'>
-                        <i className='ph-bold ph-star' />
-                      </li>
-                      <li className='text-white'>
-                        <i className='ph-bold ph-star' />
-                      </li>
-                    </ul>
-                  </div>
-                  <div>
-                    <p className='tw-text-xl text-white font-heading'>
-                      {t("banner.reviews")}
-                    </p>
-                  </div>
-                </div>
-              </div>
+
             </div>
           </div>
           <div className='col-xl-3 col-lg-3'>

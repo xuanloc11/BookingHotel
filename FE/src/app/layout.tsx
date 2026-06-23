@@ -1,5 +1,6 @@
 import { AuthProvider } from "@/lib/auth/AuthContext";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
+import { CurrencyProvider } from "@/lib/currency/CurrencyContext";
 import { Toaster } from "react-hot-toast";
 import { Inter, Outfit } from "next/font/google";
 
@@ -29,8 +30,12 @@ export default function RootLayout({
     <html lang='vi' className={`${inter.variable} ${outfit.variable}`}>
       <body>
         <LanguageProvider>
-          <AuthProvider>{children}</AuthProvider>
-          <Toaster position="top-right" />
+          <CurrencyProvider>
+            <AuthProvider>
+              {children}
+              <Toaster position="top-right" />
+            </AuthProvider>
+          </CurrencyProvider>
         </LanguageProvider>
       </body>
     </html>

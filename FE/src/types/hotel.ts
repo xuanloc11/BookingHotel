@@ -10,6 +10,7 @@ export interface Hotel {
   amenities: string[];
   thumbnail: string;
   description: string;
+  available_rooms?: number;
 }
 
 export interface HotelDetails extends Hotel {
@@ -40,4 +41,9 @@ export interface HotelSearchFilters {
   amenities?: string[];
   limit?: number;
   sortBy?: string;
+  checkIn?: string;
+  checkOut?: string;
+  rooms?: number;
+  adults?: number;
+  children?: number;
 }

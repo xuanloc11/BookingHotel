@@ -7,9 +7,16 @@
     "price_per_night": 9500000,
     "rating": 4.9,
     "reviews_count": 1250,
-    "amenities": ["Hồ bơi vô cực", "Spa", "Bãi biển riêng", "Nhà hàng 5 sao", "Gym"],
+    "amenities": [
+      "Hồ bơi vô cực",
+      "Spa",
+      "Bãi biển riêng",
+      "Nhà hàng 5 sao",
+      "Gym"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=1000&auto=format&fit=crop",
-    "description": "Khu nghỉ dưỡng sang trọng bậc nhất với tầm nhìn toàn cảnh ra biển Đông, được thiết kế bởi kiến trúc sư lừng danh Bill Bensley."
+    "description": "Khu nghỉ dưỡng sang trọng bậc nhất với tầm nhìn toàn cảnh ra biển Đông, được thiết kế bởi kiến trúc sư lừng danh Bill Bensley.",
+    "stars": 5
   },
   {
     "id": 2,
@@ -19,9 +26,16 @@
     "price_per_night": 4500000,
     "rating": 4.8,
     "reviews_count": 3200,
-    "amenities": ["Hồ bơi trong nhà", "Jazz Club", "Spa", "Phòng họp lớn", "Đưa đón sân bay"],
+    "amenities": [
+      "Hồ bơi trong nhà",
+      "Jazz Club",
+      "Spa",
+      "Phòng họp lớn",
+      "Đưa đón sân bay"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=1000&auto=format&fit=crop",
-    "description": "Khách sạn có thiết kế hình con rồng độc đáo, nằm kề Trung tâm Hội nghị Quốc gia, phù hợp cho doanh nhân và khách du lịch nghỉ dưỡng."
+    "description": "Khách sạn có thiết kế hình con rồng độc đáo, nằm kề Trung tâm Hội nghị Quốc gia, phù hợp cho doanh nhân và khách du lịch nghỉ dưỡng.",
+    "stars": 4
   },
   {
     "id": 3,
@@ -31,9 +45,16 @@
     "price_per_night": 3200000,
     "rating": 4.7,
     "reviews_count": 4100,
-    "amenities": ["Bãi biển riêng", "VinWonders", "Sân Golf", "Công viên nước", "Buffet hải sản"],
+    "amenities": [
+      "Bãi biển riêng",
+      "VinWonders",
+      "Sân Golf",
+      "Công viên nước",
+      "Buffet hải sản"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000&auto=format&fit=crop",
-    "description": "Tọa lạc tại Bãi Dài hoang sơ, mang đậm phong cách kiến trúc Á Đông với hồ bơi rộng lớn và nhiều khu vui chơi."
+    "description": "Tọa lạc tại Bãi Dài hoang sơ, mang đậm phong cách kiến trúc Á Đông với hồ bơi rộng lớn và nhiều khu vui chơi.",
+    "stars": 5
   },
   {
     "id": 4,
@@ -43,9 +64,16 @@
     "price_per_night": 8800000,
     "rating": 4.9,
     "reviews_count": 980,
-    "amenities": ["Nội thất hoàng gia", "Hồ bơi ngoài trời", "Spa cao cấp", "Nhà hàng Ý", "Quầy Bar tầm nhìn Panorama"],
+    "amenities": [
+      "Nội thất hoàng gia",
+      "Hồ bơi ngoài trời",
+      "Spa cao cấp",
+      "Nhà hàng Ý",
+      "Quầy Bar tầm nhìn Panorama"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1000&auto=format&fit=crop",
-    "description": "Khách sạn chuẩn 6 sao duy nhất tại TPHCM, nằm ngay trên phố đi bộ Nguyễn Huệ với thiết kế vương giả, xa hoa mang phong cách Ý."
+    "description": "Khách sạn chuẩn 6 sao duy nhất tại TPHCM, nằm ngay trên phố đi bộ Nguyễn Huệ với thiết kế vương giả, xa hoa mang phong cách Ý.",
+    "stars": 5
   },
   {
     "id": 5,
@@ -55,9 +83,16 @@
     "price_per_night": 25000000,
     "rating": 5.0,
     "reviews_count": 150,
-    "amenities": ["Villa riêng", "Quản gia cá nhân", "Spa trên hồ", "Câu lạc bộ bãi biển", "Lớp học Yoga"],
+    "amenities": [
+      "Villa riêng",
+      "Quản gia cá nhân",
+      "Spa trên hồ",
+      "Câu lạc bộ bãi biển",
+      "Lớp học Yoga"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=1000&auto=format&fit=crop",
-    "description": "Một trong những khu nghỉ dưỡng đắt đỏ và biệt lập nhất Việt Nam, nơi giao hòa giữa núi rừng hoang sơ và biển xanh trong vắt."
+    "description": "Một trong những khu nghỉ dưỡng đắt đỏ và biệt lập nhất Việt Nam, nơi giao hòa giữa núi rừng hoang sơ và biển xanh trong vắt.",
+    "stars": 3
   },
   {
     "id": 6,
@@ -67,9 +102,16 @@
     "price_per_night": 2100000,
     "rating": 4.6,
     "reviews_count": 2800,
-    "amenities": ["Hồ bơi ngoài trời", "View sông Hàn", "Kids Club", "Gym", "Đưa đón sân bay"],
+    "amenities": [
+      "Hồ bơi ngoài trời",
+      "View sông Hàn",
+      "Kids Club",
+      "Gym",
+      "Đưa đón sân bay"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000&auto=format&fit=crop",
-    "description": "Khách sạn căn hộ mang tầm nhìn trọn vẹn ra sông Hàn và những cây cầu biểu tượng của Đà Nẵng."
+    "description": "Khách sạn căn hộ mang tầm nhìn trọn vẹn ra sông Hàn và những cây cầu biểu tượng của Đà Nẵng.",
+    "stars": 4
   },
   {
     "id": 7,
@@ -79,9 +121,16 @@
     "price_per_night": 6500000,
     "rating": 4.8,
     "reviews_count": 4500,
-    "amenities": ["Kiến trúc Pháp cổ", "Hồ bơi sưởi ấm", "Nhà hàng Le Beaulieu", "Spa", "Tour hầm trú ẩn"],
+    "amenities": [
+      "Kiến trúc Pháp cổ",
+      "Hồ bơi sưởi ấm",
+      "Nhà hàng Le Beaulieu",
+      "Spa",
+      "Tour hầm trú ẩn"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1000&auto=format&fit=crop",
-    "description": "Khách sạn lịch sử trăm năm tuổi mang nét quyến rũ của kiến trúc thuộc địa Pháp ngay giữa trung tâm thủ đô."
+    "description": "Khách sạn lịch sử trăm năm tuổi mang nét quyến rũ của kiến trúc thuộc địa Pháp ngay giữa trung tâm thủ đô.",
+    "stars": 5
   },
   {
     "id": 8,
@@ -91,9 +140,16 @@
     "price_per_night": 18000000,
     "rating": 4.9,
     "reviews_count": 620,
-    "amenities": ["3 Hồ bơi vô cực", "Sân Tennis", "Lớp học nấu ăn", "Trị liệu pha lê", "Kid's club"],
+    "amenities": [
+      "3 Hồ bơi vô cực",
+      "Sân Tennis",
+      "Lớp học nấu ăn",
+      "Trị liệu pha lê",
+      "Kid's club"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=1000&auto=format&fit=crop",
-    "description": "Tọa lạc trên bãi biển hoang sơ gần phố cổ Hội An, khu nghỉ dưỡng là bản hòa ca của kiến trúc Đông Dương và văn hóa địa phương."
+    "description": "Tọa lạc trên bãi biển hoang sơ gần phố cổ Hội An, khu nghỉ dưỡng là bản hòa ca của kiến trúc Đông Dương và văn hóa địa phương.",
+    "stars": 4
   },
   {
     "id": 9,
@@ -103,9 +159,16 @@
     "price_per_night": 1500000,
     "rating": 4.5,
     "reviews_count": 5200,
-    "amenities": ["Bãi đỗ xe", "View biển", "Phòng Gym", "Hồ bơi tầng thượng", "Phòng hát Karaoke"],
+    "amenities": [
+      "Bãi đỗ xe",
+      "View biển",
+      "Phòng Gym",
+      "Hồ bơi tầng thượng",
+      "Phòng hát Karaoke"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=1000&auto=format&fit=crop",
-    "description": "Nằm ngay trung tâm đường Trần Phú, cung cấp không gian nghỉ dưỡng tiện nghi với giá cả phải chăng, tầm nhìn trực diện biển Nha Trang."
+    "description": "Nằm ngay trung tâm đường Trần Phú, cung cấp không gian nghỉ dưỡng tiện nghi với giá cả phải chăng, tầm nhìn trực diện biển Nha Trang.",
+    "stars": 5
   },
   {
     "id": 10,
@@ -115,9 +178,16 @@
     "price_per_night": 3800000,
     "rating": 4.7,
     "reviews_count": 2100,
-    "amenities": ["Kiến trúc Haute Couture", "Hồ bơi nước nóng", "Gần ga tàu hỏa leo núi", "Nhà hàng Pháp", "View thung lũng"],
+    "amenities": [
+      "Kiến trúc Haute Couture",
+      "Hồ bơi nước nóng",
+      "Gần ga tàu hỏa leo núi",
+      "Nhà hàng Pháp",
+      "View thung lũng"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1517840901100-8179e982acb7?q=80&w=1000&auto=format&fit=crop",
-    "description": "Tuyệt tác kiến trúc của Bill Bensley giữa thị trấn mù sương Sapa, lấy cảm hứng từ những bộ trang phục thời trang Pháp và họa tiết bản địa."
+    "description": "Tuyệt tác kiến trúc của Bill Bensley giữa thị trấn mù sương Sapa, lấy cảm hứng từ những bộ trang phục thời trang Pháp và họa tiết bản địa.",
+    "stars": 5
   },
   {
     "id": 11,
@@ -127,9 +197,16 @@
     "price_per_night": 4200000,
     "rating": 4.8,
     "reviews_count": 1800,
-    "amenities": ["Bãi biển riêng", "Hồ bơi lọc muối", "Spa trị liệu Thái", "Bữa sáng sâm panh", "Sân vườn nhiệt đới"],
+    "amenities": [
+      "Bãi biển riêng",
+      "Hồ bơi lọc muối",
+      "Spa trị liệu Thái",
+      "Bữa sáng sâm panh",
+      "Sân vườn nhiệt đới"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1610641818989-c2051b5e2cfd?q=80&w=1000&auto=format&fit=crop",
-    "description": "Khu nghỉ dưỡng boutique mang phong cách kiến trúc đương đại kết hợp nghệ thuật thủ công Việt Nam, cực kỳ yên tĩnh và lãng mạn."
+    "description": "Khu nghỉ dưỡng boutique mang phong cách kiến trúc đương đại kết hợp nghệ thuật thủ công Việt Nam, cực kỳ yên tĩnh và lãng mạn.",
+    "stars": 4
   },
   {
     "id": 12,
@@ -139,9 +216,16 @@
     "price_per_night": 3500000,
     "rating": 4.6,
     "reviews_count": 3900,
-    "amenities": ["View Nhà hát lớn", "Rooftop Bar Saigon Saigon", "Hồ bơi ngoài trời", "Casino", "Phòng họp"],
+    "amenities": [
+      "View Nhà hát lớn",
+      "Rooftop Bar Saigon Saigon",
+      "Hồ bơi ngoài trời",
+      "Casino",
+      "Phòng họp"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=1000&auto=format&fit=crop",
-    "description": "Biểu tượng lịch sử của Sài Gòn từ năm 1959, nằm ngay cạnh Nhà hát Thành phố, là điểm giao thoa giữa nét cổ điển và sự nhộn nhịp hiện đại."
+    "description": "Biểu tượng lịch sử của Sài Gòn từ năm 1959, nằm ngay cạnh Nhà hát Thành phố, là điểm giao thoa giữa nét cổ điển và sự nhộn nhịp hiện đại.",
+    "stars": 3
   },
   {
     "id": 13,
@@ -151,9 +235,16 @@
     "price_per_night": 2800000,
     "rating": 4.4,
     "reviews_count": 6500,
-    "amenities": ["Kiến trúc xanh", "Biệt thự trong rừng", "Bể bơi 4 mùa", "VR Game Park", "Sân Golf"],
+    "amenities": [
+      "Kiến trúc xanh",
+      "Biệt thự trong rừng",
+      "Bể bơi 4 mùa",
+      "VR Game Park",
+      "Sân Golf"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1000&auto=format&fit=crop",
-    "description": "Khu nghỉ dưỡng sinh thái rợp bóng cây xanh khổng lồ, nổi tiếng với các công trình kiến trúc đạt giải thưởng quốc tế, thích hợp đi cuối tuần từ Hà Nội."
+    "description": "Khu nghỉ dưỡng sinh thái rợp bóng cây xanh khổng lồ, nổi tiếng với các công trình kiến trúc đạt giải thưởng quốc tế, thích hợp đi cuối tuần từ Hà Nội.",
+    "stars": 4
   },
   {
     "id": 14,
@@ -163,9 +254,16 @@
     "price_per_night": 16500000,
     "rating": 4.9,
     "reviews_count": 480,
-    "amenities": ["Vật liệu thân thiện môi trường", "Hồ bơi riêng từng villa", "Xem rùa đẻ trứng", "Rạp chiếu phim ngoài trời", "Spa hữu cơ"],
+    "amenities": [
+      "Vật liệu thân thiện môi trường",
+      "Hồ bơi riêng từng villa",
+      "Xem rùa đẻ trứng",
+      "Rạp chiếu phim ngoài trời",
+      "Spa hữu cơ"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1000&auto=format&fit=crop",
-    "description": "Khu nghỉ dưỡng sang trọng bậc nhất Côn Đảo, hoàn toàn ẩn mình giữa thiên nhiên hoang sơ, mang lại sự riêng tư tuyệt đối."
+    "description": "Khu nghỉ dưỡng sang trọng bậc nhất Côn Đảo, hoàn toàn ẩn mình giữa thiên nhiên hoang sơ, mang lại sự riêng tư tuyệt đối.",
+    "stars": 3
   },
   {
     "id": 15,
@@ -175,8 +273,15 @@
     "price_per_night": 2900000,
     "rating": 4.6,
     "reviews_count": 2200,
-    "amenities": ["Biệt thự cổ Pháp", "Lò sưởi củi", "Hồ bơi nước ấm", "Spa ngoài trời", "Trà chiều"],
+    "amenities": [
+      "Biệt thự cổ Pháp",
+      "Lò sưởi củi",
+      "Hồ bơi nước ấm",
+      "Spa ngoài trời",
+      "Trà chiều"
+    ],
     "thumbnail": "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1000&auto=format&fit=crop",
-    "description": "Quần thể 17 ngôi biệt thự cổ xây dựng từ những năm 1920 được bảo tồn hoàn hảo giữa những đồi thông mộng mơ của Đà Lạt."
+    "description": "Quần thể 17 ngôi biệt thự cổ xây dựng từ những năm 1920 được bảo tồn hoàn hảo giữa những đồi thông mộng mơ của Đà Lạt.",
+    "stars": 5
   }
 ]

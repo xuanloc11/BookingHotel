@@ -19,6 +19,11 @@ export default function ApprovalsPage() {
   const [approvals, setApprovals] = useState<ApprovalItem[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // States for search, pagination
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   const fetchApprovals = async () => {
     try {
       const res = await fetch("http://localhost:8000/api/system-admin/approvals/", {
@@ -42,6 +47,28 @@ export default function ApprovalsPage() {
       fetchApprovals();
     }
   }, [user]);
+
+  // Reset page when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  // Derived state for filtering and pagination
+  const filteredApprovals = approvals.filter((item) => {
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matchName = item.name?.toLowerCase().includes(q);
+      const matchCompany = item.company_name?.toLowerCase().includes(q);
+      const matchOwner = item.owner_name?.toLowerCase().includes(q);
+      const matchEmail = item.owner_email?.toLowerCase().includes(q);
+      return matchName || matchCompany || matchOwner || matchEmail;
+    }
+    return true;
+  });
+
+  const totalPages = Math.ceil(filteredApprovals.length / itemsPerPage) || 1;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentApprovals = filteredApprovals.slice(startIndex, startIndex + itemsPerPage);
 
   const handleUpdateStatus = async (hotelId: number, status: "approved" | "rejected") => {
     const confirmMessage = status === "approved" 
@@ -75,7 +102,7 @@ export default function ApprovalsPage() {
 
   return (
     <>
-      <div className="row">
+      <div className="row mt-4">
         <div className="col-12">
           <div className="page-title-box">
             <h4 className="page-title">Kiểm duyệt Khách sạn & KYC</h4>
@@ -83,9 +110,25 @@ export default function ApprovalsPage() {
         </div>
       </div>
 
+      {/* Toolbar: Search */}
+      <div className="row mb-4">
+        <div className="col-12 col-md-6 mb-3 mb-md-0">
+          <div className="input-group shadow-sm">
+            <span className="input-group-text bg-white border-end-0 text-muted"><i className="mdi mdi-magnify"></i></span>
+            <input 
+              type="text" 
+              className="form-control border-start-0 ps-0" 
+              placeholder="Tìm theo Khách sạn, Công ty, Người đăng ký..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="row">
         <div className="col-12">
-          <div className="card">
+          <div className="card border-0 shadow-sm">
             <div className="card-body">
               <h4 className="header-title mb-4">Danh sách Đối tác chờ duyệt</h4>
               
@@ -93,9 +136,9 @@ export default function ApprovalsPage() {
                 <div className="text-center p-4">
                   <div className="spinner-border text-primary" role="status"></div>
                 </div>
-              ) : approvals.length === 0 ? (
+              ) : filteredApprovals.length === 0 ? (
                 <div className="alert alert-info text-center">
-                  Hiện không có hồ sơ khách sạn nào đang chờ phê duyệt.
+                  Không tìm thấy hồ sơ nào khớp với tìm kiếm của bạn.
                 </div>
               ) : (
                 <div className="table-responsive">
@@ -112,7 +155,7 @@ export default function ApprovalsPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {approvals.map((item) => (
+                      {currentApprovals.map((item) => (
                         <tr key={item.id}>
                           <td>
                             <h5 className="m-0 font-14 text-dark">{item.name}</h5>
@@ -154,6 +197,25 @@ export default function ApprovalsPage() {
                       ))}
                     </tbody>
                   </table>
+                </div>
+              )}
+              
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="card-footer bg-white border-top mt-3 pt-3">
+                  <ul className="pagination justify-content-end mb-0">
+                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                      <button className="page-link" onClick={() => setCurrentPage(p => Math.max(1, p - 1))}>Trước</button>
+                    </li>
+                    {Array.from({length: totalPages}, (_, i) => i + 1).map(page => (
+                      <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
+                        <button className="page-link" onClick={() => setCurrentPage(page)}>{page}</button>
+                      </li>
+                    ))}
+                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                      <button className="page-link" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}>Sau</button>
+                    </li>
+                  </ul>
                 </div>
               )}
             </div>

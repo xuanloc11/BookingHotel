@@ -1,1 +1,0 @@
-"""Design pattern helpers for the BookingHotel backend."""

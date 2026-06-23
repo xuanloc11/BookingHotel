@@ -20,6 +20,12 @@ export default function AdminUsersManage() {
     role: "customer"
   });
 
+  // States for search, filter, pagination
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterRole, setFilterRole] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   const fetchUsers = () => {
     setLoading(true);
     getAdminUsers()
@@ -31,6 +37,29 @@ export default function AdminUsersManage() {
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  // Reset page when filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, filterRole]);
+
+  // Derived state for filtering and pagination
+  const filteredUsers = users.filter((u) => {
+    if (filterRole !== "all" && u.role !== filterRole) return false;
+    
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matchId = String(u.id).toLowerCase().includes(q);
+      const matchEmail = u.email?.toLowerCase().includes(q);
+      const matchName = u.full_name?.toLowerCase().includes(q);
+      return matchId || matchEmail || matchName;
+    }
+    return true;
+  });
+
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage) || 1;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
 
   const handleOpenCreateModal = () => {
     setIsEditMode(false);
@@ -148,6 +177,34 @@ export default function AdminUsersManage() {
           </div>
         </div>
       </div>
+
+      {/* Toolbar: Search & Filter */}
+      <div className="row mb-4">
+        <div className="col-12 col-md-6 mb-3 mb-md-0">
+          <div className="input-group shadow-sm">
+            <span className="input-group-text bg-white border-end-0 text-muted"><i className="ri-search-line"></i></span>
+            <input 
+              type="text" 
+              className="form-control border-start-0 ps-0" 
+              placeholder="Tìm theo ID, Tên, Email..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="col-12 col-md-3">
+          <select 
+            className="form-select shadow-sm"
+            value={filterRole}
+            onChange={(e) => setFilterRole(e.target.value)}
+          >
+            <option value="all">Tất cả vai trò</option>
+            <option value="customer">Khách hàng</option>
+            <option value="vendor">Chủ khách sạn</option>
+            <option value="admin">Quản trị viên</option>
+          </select>
+        </div>
+      </div>
       
       <div className="row">
         <div className="col-12">
@@ -181,13 +238,13 @@ export default function AdminUsersManage() {
                         <td colSpan={7} className="text-center py-5">
                           <div className="text-muted">
                             <i className="ri-group-line display-4"></i>
-                            <h5 className="mt-3">Chưa có người dùng nào</h5>
-                            <p className="mb-0">Hệ thống hiện tại chưa ghi nhận người dùng nào tham gia.</p>
+                            <h5 className="mt-3">Không tìm thấy người dùng</h5>
+                            <p className="mb-0">Vui lòng thử lại với từ khóa hoặc bộ lọc khác.</p>
                           </div>
                         </td>
                       </tr>
                     ) : (
-                      users.map((u) => (
+                      currentUsers.map((u) => (
                         <tr key={u.id}>
                           <td className="px-4">
                             <span className="fw-bold">#{u.id}</span>
@@ -239,6 +296,25 @@ export default function AdminUsersManage() {
                   </tbody>
                 </table>
               </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="card-footer bg-white border-top py-3">
+                  <ul className="pagination justify-content-end mb-0">
+                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                      <button className="page-link" onClick={() => setCurrentPage(p => Math.max(1, p - 1))}>Trước</button>
+                    </li>
+                    {Array.from({length: totalPages}, (_, i) => i + 1).map(page => (
+                      <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
+                        <button className="page-link" onClick={() => setCurrentPage(page)}>{page}</button>
+                      </li>
+                    ))}
+                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                      <button className="page-link" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}>Sau</button>
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>

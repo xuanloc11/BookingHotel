@@ -92,6 +92,10 @@ def hotel_list(request):
 	location = request.GET.get('location') or None
 	amenities = request.GET.getlist('amenities')
 	sort_by = request.GET.get('sortBy') or None
+	check_in = request.GET.get('checkIn') or None
+	check_out = request.GET.get('checkOut') or None
+	rooms_str = request.GET.get('rooms', '')
+	rooms = int(rooms_str) if rooms_str.isdigit() else 1
 	hotels = hotel_service.list_hotels(
 		limit=limit_value,
 		location=location,
@@ -101,6 +105,9 @@ def hotel_list(request):
 		stars=stars,
 		amenities=amenities,
 		sort_by=sort_by,
+		check_in=check_in,
+		check_out=check_out,
+		rooms_needed=rooms,
 	)
 	return JsonResponse({'results': hotels})
 

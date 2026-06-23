@@ -1,12 +1,8 @@
-import Image from "next/image";
+"use client";
 
 import AvailabilityCalendar from "./AvailabilityCalendar";
+import { useCurrency } from "@/lib/currency/CurrencyContext";
 import type { HotelAvailabilityDay, HotelDetails as HotelDetailsType } from "@/types/hotel";
-
-const moneyFormatter = new Intl.NumberFormat("vi-VN", {
-  style: "currency",
-  currency: "VND",
-});
 
 interface HotelDetailsProps {
   hotel: HotelDetailsType;
@@ -14,6 +10,7 @@ interface HotelDetailsProps {
 }
 
 export default function HotelDetails({ hotel, availability }: HotelDetailsProps) {
+  const { formatMoney } = useCurrency();
   return (
     <>
       <section className='tw-py-14 bg_2'>
@@ -24,13 +21,11 @@ export default function HotelDetails({ hotel, availability }: HotelDetailsProps)
                 className={index === 0 ? "col-lg-6" : "col-lg-3 col-md-4"}
                 key={image}
               >
-                <Image
+                <img
                   alt={`${hotel.name} gallery ${index + 1}`}
                   className='tw-rounded-lg w-100 object-fit-cover'
-                  height={index === 0 ? 520 : 250}
-                  priority={index === 0}
+                  style={{ height: index === 0 ? '520px' : '250px' }}
                   src={image}
-                  width={index === 0 ? 760 : 380}
                 />
               </div>
             ))}
@@ -65,7 +60,7 @@ export default function HotelDetails({ hotel, availability }: HotelDetailsProps)
                     {hotel.rating.toFixed(1)} ({hotel.reviews_count} đánh giá)
                   </div>
                   <h2 className='tw-text-8 fw-normal'>
-                    {moneyFormatter.format(hotel.price_per_night)}
+                    {formatMoney(hotel.price_per_night)}
                   </h2>
                   <p className='mb-0'>mỗi đêm</p>
                 </div>

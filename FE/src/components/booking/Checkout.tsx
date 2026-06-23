@@ -34,17 +34,18 @@ const roomOptions = (t: (key: string) => string): OptionType[] => [
 
 const CustomDateInput = forwardRef<
   HTMLDivElement,
-  { value?: string; onClick?: () => void; placeholder?: string }
->(({ value, onClick, placeholder }, ref) => (
+  { value?: string; onClick?: () => void; customPlaceholder?: string }
+>(({ value, onClick, customPlaceholder }, ref) => (
   <div
     ref={ref}
-    className='custom-date-input tw-flex tw-items-center tw-justify-between tw-px-3 tw-py-[7px] tw-border tw-border-gray-300 tw-rounded-lg tw-cursor-pointer tw-bg-white tw-w-full'
+    className='custom-date-input d-flex align-items-center justify-content-between px-3 border bg-white w-100'
+    style={{ height: "42px", borderRadius: "0.375rem", borderColor: "#ced4da", cursor: "pointer" }}
     onClick={onClick}
   >
-    <div className='d-flex gap-2 tw-items-center justify-content-center align-items-center'>
-      <i className='ph ph-check'></i>
-      <span className={`${value ? "tw-text-gray-800" : "tw-text-gray-400"}`}>
-        {value || placeholder}
+    <div className='d-flex gap-2 align-items-center overflow-hidden'>
+      <i className='ph ph-calendar-blank text-muted'></i>
+      <span className={`${value ? "text-dark" : "text-muted"} text-nowrap text-truncate small`}>
+        {value || customPlaceholder}
       </span>
     </div>
   </div>
@@ -59,6 +60,7 @@ const Checkout: FC = () => {
   const [locations, setLocations] = useState<OptionType[]>([]);
   const [selectedLocation, setSelectedLocation] =
     useState<OptionType | null>(null);
+  const [guests, setGuests] = useState({ adults: 2, children: 0, rooms: 1 });
   const router = useRouter();
 
   const handleSearch = () => {
@@ -66,8 +68,15 @@ const Checkout: FC = () => {
     if (selectedLocation?.value) {
       params.append("location", selectedLocation.value);
     }
-    // Mở rộng thêm tham số ở đây nếu backend hỗ trợ:
-    // params.append("checkIn", checkInDate?.toISOString()); ...
+    if (checkInDate) {
+      params.append("checkIn", checkInDate.toISOString());
+    }
+    if (checkOutDate) {
+      params.append("checkOut", checkOutDate.toISOString());
+    }
+    params.append("adults", guests.adults.toString());
+    params.append("children", guests.children.toString());
+    params.append("rooms", guests.rooms.toString());
 
     router.push(`/room?${params.toString()}`);
   };
@@ -98,9 +107,8 @@ const Checkout: FC = () => {
           <div className='row'>
             <div className='col-xl-12'>
               <div className='checkout-main-wrapper'>
-                {/* Location Selector */}
-                <div className='checkout-wrapper d-flex flex-column'>
-                  <label className='tw-text-sm fw-normal font-body d-flex align-content-center tw-gap-4 tw-mb-2'>
+                <div className='checkout-wrapper flex-grow-1 d-flex flex-column justify-content-between h-100' style={{ maxWidth: "100%" }}>
+                  <label className='tw-text-sm fw-normal font-body d-flex align-items-center tw-gap-4 tw-mb-2 text-nowrap'>
                     <span>
                       <Image
                         width={21}
@@ -123,8 +131,8 @@ const Checkout: FC = () => {
                   />
                 </div>
 
-                <div className='checkout-wrapper d-flex flex-column'>
-                  <label className='tw-text-sm fw-normal font-body d-flex align-content-center tw-gap-4 tw-mb-2'>
+                <div className='checkout-wrapper flex-grow-1 d-flex flex-column justify-content-between h-100' style={{ maxWidth: "100%" }}>
+                  <label className='tw-text-sm fw-normal font-body d-flex align-items-center tw-gap-4 tw-mb-2 text-nowrap'>
                     <span>
                       <Image
                         width={21}
@@ -141,10 +149,10 @@ const Checkout: FC = () => {
                       setCheckInDate(date)
                     }
                     customInput={
-                      <CustomDateInput placeholder={t("checkout.selectCheckIn")} />
+                      <CustomDateInput customPlaceholder={t("checkout.selectCheckIn")} />
                     }
                     dateFormat='MMM d, yyyy'
-                    wrapperClassName='tw-w-full'
+                    wrapperClassName='w-100'
                     minDate={new Date()}
                     selectsStart
                     startDate={checkInDate}
@@ -154,8 +162,8 @@ const Checkout: FC = () => {
                 </div>
 
                 {/* Check-out Date Picker */}
-                <div className='checkout-wrapper d-flex flex-column'>
-                  <label className='tw-text-sm fw-normal font-body d-flex align-content-center tw-gap-4 tw-mb-2'>
+                <div className='checkout-wrapper flex-grow-1 d-flex flex-column justify-content-between h-100' style={{ maxWidth: "100%" }}>
+                  <label className='tw-text-sm fw-normal font-body d-flex align-items-center tw-gap-4 tw-mb-2 text-nowrap'>
                     <span>
                       <Image
                         width={21}
@@ -172,10 +180,10 @@ const Checkout: FC = () => {
                       setCheckOutDate(date)
                     }
                     customInput={
-                      <CustomDateInput placeholder={t("checkout.selectCheckOut")} />
+                      <CustomDateInput customPlaceholder={t("checkout.selectCheckOut")} />
                     }
                     dateFormat='MMM d, yyyy'
-                    wrapperClassName='tw-w-full'
+                    wrapperClassName='w-100'
                     minDate={checkInDate || new Date()}
                     selectsEnd
                     startDate={checkInDate}
@@ -184,30 +192,9 @@ const Checkout: FC = () => {
                     popperPlacement='bottom-start'
                   />
                 </div>
-                <div className='checkout-wrapper d-flex flex-column'>
-                  <label className='tw-text-sm fw-normal font-body d-flex align-content-center tw-gap-4 tw-mb-2'>
-                    <span>
-                      <Image
-                        width={20}
-                        height={20}
-                        src='/assets/images/icons/checkout-icon3.svg'
-                        alt='icon'
-                      />
-                    </span>
-                    {t("checkout.room")}
-                  </label>
-                  <Select
-                    instanceId='checkout-select-instance'
-                    inputId='checkout-select'
-                    options={roomOptions(t)}
-                    value={selectedRoom}
-                    onChange={(option) => option && setSelectedRoom(option)}
-                    className='custom-select-container'
-                    classNamePrefix='custom-select'
-                  />
-                </div>
-                <div className='checkout-wrapper d-flex flex-column'>
-                  <label className='tw-text-sm fw-normal font-body d-flex align-content-center tw-gap-4 tw-mb-2'>
+
+                <div className='checkout-wrapper flex-grow-1 d-flex flex-column justify-content-between h-100' style={{ maxWidth: "100%" }}>
+                  <label className='tw-text-sm fw-normal font-body d-flex align-items-center tw-gap-4 tw-mb-2 text-nowrap'>
                     <span>
                       <Image
                         width={20}
@@ -218,7 +205,7 @@ const Checkout: FC = () => {
                     </span>{" "}
                     {t("checkout.guestsRooms")}
                   </label>
-                  <GuestRoomSelector />
+                  <GuestRoomSelector onChange={setGuests} />
                 </div>
                 <div className='checkout-wrapper z-0'>
                   <div className='checkout-button common-hover-yellow'>

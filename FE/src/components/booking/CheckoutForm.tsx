@@ -17,11 +17,6 @@ import type {
 } from "@/types/booking";
 import type { HotelDetails } from "@/types/hotel";
 
-const moneyFormatter = new Intl.NumberFormat("vi-VN", {
-  style: "currency",
-  currency: "VND",
-});
-
 interface CheckoutFormProps {
   hotel: HotelDetails;
   selection: CheckoutSelection;
@@ -55,6 +50,7 @@ export default function CheckoutForm({
 }: CheckoutFormProps) {
   const router = useRouter();
   const { t } = useLanguage();
+  const { formatMoney } = useCurrency();
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -154,11 +150,11 @@ export default function CheckoutForm({
               <h3 className='tw-text-lg fw-bold tw-mb-4'>{t("checkout.totalAmount")}</h3>
               
               <div className='d-flex justify-content-between tw-mb-3 tw-text-sm'>
-                <span>
-                  {moneyFormatter.format(price.nightly_rate)} x {price.nights}{" "}
-                  {t("checkout.nightsCount")} x {price.rooms} {t("checkout.roomsCount")}
-                </span>
-                <strong>{moneyFormatter.format(price.subtotal)}</strong>
+                <p className='tw-text-sm text-neutral-500 mb-0'>
+                  {formatMoney(price.nightly_rate)} x {price.nights}{" "}
+                  {t("checkout.nights")}
+                </p>
+                <strong>{formatMoney(price.subtotal)}</strong>
               </div>
               
               <div className='border-top tw-pt-4 tw-mt-4 tw-mb-4'>
@@ -166,25 +162,25 @@ export default function CheckoutForm({
                 <div className='d-flex align-items-start tw-gap-3 tw-mb-2'>
                   <i className='ph-bold ph-money tw-text-xl'></i>
                   <div className='w-100'>
-                    <div className='tw-text-sm tw-mb-2'>
-                      {t("checkout.included")} {moneyFormatter.format(price.taxes_and_fees)} {t("checkout.includesTaxes")}
-                    </div>
+                    <p className='tw-text-sm text-neutral-500 mb-0'>
+                    {t("checkout.included")} {formatMoney(price.taxes_and_fees)} {t("checkout.includesTaxes")}
+                  </p>
                     <div className='d-flex justify-content-between tw-text-sm text-secondary tw-mb-1'>
                       <span>8% {t("checkout.vat")}</span>
-                      <span>{moneyFormatter.format(Math.round(price.subtotal * 0.08))}</span>
+                      <span>{formatMoney(Math.round(price.subtotal * 0.08))}</span>
                     </div>
                     <div className='d-flex justify-content-between tw-text-sm text-secondary'>
                       <span>5% {t("checkout.serviceFee")}</span>
-                      <span>{moneyFormatter.format(Math.round(price.subtotal * 0.05))}</span>
+                      <span>{formatMoney(Math.round(price.subtotal * 0.05))}</span>
                     </div>
                   </div>
                 </div>
               </div>
               
               <div className='bg-main-50 tw-p-4 tw-rounded-md tw-mb-4'>
-                <div className='d-flex justify-content-between tw-text-xl fw-bold text-main-600'>
-                  <span>{t("checkout.totalAmount")}</span>
-                  <span>{moneyFormatter.format(price.total)}</span>
+                <div className='d-flex justify-content-between align-items-center mb-0'>
+                  <strong className='tw-text-lg'>{t("checkout.total")}</strong>
+                  <span className='fw-bold tw-text-lg'>{formatMoney(price.total)}</span>
                 </div>
               </div>
             </aside>

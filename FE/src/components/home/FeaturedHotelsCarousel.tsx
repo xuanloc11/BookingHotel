@@ -7,17 +7,13 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Hotel } from "@/types/hotel";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { useCurrency } from "@/lib/currency/CurrencyContext";
 
 interface FeaturedHotelsCarouselProps {
   title: string;
   subtitle?: string;
   hotels: Hotel[];
 }
-
-const moneyFormatter = new Intl.NumberFormat("vi-VN", {
-  style: "currency",
-  currency: "VND",
-});
 
 const getRatingText = (rating: number, t: (key: string) => string) => {
   if (rating >= 9) return t("rating.excellent");
@@ -28,6 +24,7 @@ const getRatingText = (rating: number, t: (key: string) => string) => {
 
 const FeaturedHotelsCarousel: FC<FeaturedHotelsCarouselProps> = ({ title, subtitle, hotels }) => {
   const { t } = useLanguage();
+  const { formatMoney } = useCurrency();
   if (!hotels || hotels.length === 0) return null;
 
   return (
@@ -97,7 +94,7 @@ const FeaturedHotelsCarousel: FC<FeaturedHotelsCarouselProps> = ({ title, subtit
 
                   <div className='mt-auto text-end'>
                     <span className='text-neutral-500 tw-text-sm d-block'>{t("hotel.startingFrom")}</span>
-                    <strong className='tw-text-lg text-dark'>{moneyFormatter.format(hotel.price_per_night)}</strong>
+                    <strong className='tw-text-lg text-dark'>{formatMoney(hotel.price_per_night)}</strong>
                   </div>
                 </div>
               </div>

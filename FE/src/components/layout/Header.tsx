@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { useCurrency } from "@/lib/currency/CurrencyContext";
 
 const Header: FC = () => {
   const pathname = usePathname();
@@ -19,20 +20,8 @@ const Header: FC = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   
-  const [currency, setCurrency] = useState("VND");
+  const { currency, toggleCurrency } = useCurrency();
   const { language, toggleLanguage, t } = useLanguage();
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setCurrency(localStorage.getItem("app_currency") || "VND");
-    }
-  }, []);
-
-  const toggleCurrency = () => {
-    const newCurr = currency === "VND" ? "USD" : "VND";
-    localStorage.setItem("app_currency", newCurr);
-    window.location.reload();
-  };
 
   const dynamicDesktopMenu = getDesktopMenuData(language)
     .filter(item => item.label !== "Tài khoản" && item.label !== "Account")
@@ -136,7 +125,8 @@ const Header: FC = () => {
               {/* Auth Section */}
               <div className='header-button header-two-button d-flex align-items-center tw-gap-4'>
                 <Link
-                  className='tw-btn-hover-white bg-main-600 tw-py-5 tw-px-7 text-capitalize text-heading font-heading d-lg-inline-flex d-none align-items-center tw-gap-2 tw-rounded-lg'
+                  className='tw-btn-hover-white bg-main-600 tw-py-5 tw-px-7 text-capitalize text-heading font-heading d-lg-inline-flex d-none align-items-center justify-content-center tw-gap-2 tw-rounded-lg'
+                  style={{ minWidth: "230px" }}
                   href='/room'
                 >
                   {t("header.bookNow")}
@@ -239,13 +229,15 @@ const Header: FC = () => {
                   <div className='d-flex align-items-center tw-gap-4 tw-ms-2'>
                     <Link
                       href='/login'
-                      className='text-white fw-medium hover-text-main-600'
+                      className='text-white fw-medium hover-text-main-600 d-inline-flex justify-content-center align-items-center'
+                      style={{ minWidth: "100px" }}
                     >
                       {t("header.login")}
                     </Link>
                     <Link
                       href='/register'
-                      className='tw-btn-hover-white bg-transparent border border-white tw-py-2 tw-px-5 text-white hover-text-heading fw-medium tw-rounded-lg d-none d-lg-block'
+                      className='tw-btn-hover-white bg-transparent border border-white tw-py-2 tw-px-5 text-white hover-text-heading fw-medium tw-rounded-lg d-none d-lg-inline-flex justify-content-center align-items-center'
+                      style={{ minWidth: "120px" }}
                     >
                       {t("header.register")}
                     </Link>

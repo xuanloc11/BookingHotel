@@ -2,13 +2,23 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
-const GuestRoomSelector = () => {
+export interface GuestRoomSelectorProps {
+  onChange?: (values: { adults: number; children: number; rooms: number }) => void;
+}
+
+const GuestRoomSelector: React.FC<GuestRoomSelectorProps> = ({ onChange }) => {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
   const [rooms, setRooms] = useState(1);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (onChange) {
+      onChange({ adults, children, rooms });
+    }
+  }, [adults, children, rooms, onChange]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -41,16 +51,17 @@ const GuestRoomSelector = () => {
   const displayText = `${adults} ${t("checkout.adultsCount")} · ${children} ${t("checkout.childrenCount")} · ${rooms} ${t("checkout.roomsCount")}`;
 
   return (
-    <div className='position-relative tw-w-full' ref={dropdownRef}>
+    <div className='position-relative w-100' ref={dropdownRef}>
       {/* Trigger Button */}
       <div
-        className='custom-date-input tw-flex tw-items-center tw-justify-between tw-px-3 tw-py-[7px] tw-border tw-border-gray-300 tw-rounded-lg tw-cursor-pointer tw-bg-white tw-w-full'
+        className='custom-date-input d-flex align-items-center justify-content-between px-3 border bg-white w-100'
+        style={{ height: "42px", borderRadius: "0.375rem", borderColor: "#ced4da", cursor: "pointer" }}
         onClick={handleToggle}
       >
-        <div className='d-flex gap-2 tw-items-center align-items-center'>
-          <span className='tw-text-gray-800 tw-text-sm'>{displayText}</span>
+        <div className='d-flex gap-2 align-items-center overflow-hidden'>
+          <span className='text-dark small text-nowrap text-truncate'>{displayText}</span>
         </div>
-        <i className='ph ph-caret-down tw-text-gray-500'></i>
+        <i className='ph ph-caret-down text-muted'></i>
       </div>
 
       {/* Dropdown Panel */}

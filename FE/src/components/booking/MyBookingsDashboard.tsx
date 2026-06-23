@@ -4,13 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { useCurrency } from "@/lib/currency/CurrencyContext";
 import type { BookingSummary } from "@/types/booking";
 import type { UserProfile } from "@/types/user";
-
-const moneyFormatter = new Intl.NumberFormat("vi-VN", {
-  style: "currency",
-  currency: "VND",
-});
 
 interface MyBookingsDashboardProps {
   bookings: BookingSummary[];
@@ -24,6 +20,7 @@ export default function MyBookingsDashboard({
   error,
 }: MyBookingsDashboardProps) {
   const { t } = useLanguage();
+  const { formatMoney } = useCurrency();
   return (
     <section className='bg_2 pt-120 pb-120'>
       <div className='container'>
@@ -92,7 +89,7 @@ export default function MyBookingsDashboard({
                 </div>
                 <div className='text-xl-end'>
                   <strong className='tw-text-6 text-heading d-block tw-mb-3'>
-                    {moneyFormatter.format(booking.total)}
+                    {formatMoney(booking.total)}
                   </strong>
                   <Link
                     className='font-heading text-heading hover-text-main-600'

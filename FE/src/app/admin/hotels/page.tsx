@@ -9,6 +9,12 @@ export default function AdminHotelsManage() {
   const [hotels, setHotels] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // States for search, filter, pagination
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterProvince, setFilterProvince] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   const fetchHotels = () => {
     setLoading(true);
     getAdminHotels()
@@ -20,6 +26,32 @@ export default function AdminHotelsManage() {
   useEffect(() => {
     fetchHotels();
   }, []);
+
+  // Reset page when filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, filterProvince]);
+
+  // Derived state for filtering and pagination
+  const filteredHotels = hotels.filter((h) => {
+    if (filterProvince !== "all" && h.province !== filterProvince) return false;
+    
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matchId = String(h.id).toLowerCase().includes(q);
+      const matchName = h.name?.toLowerCase().includes(q);
+      const matchOwner = h.owner_name?.toLowerCase().includes(q);
+      const matchOwnerEmail = h.owner_email?.toLowerCase().includes(q);
+      return matchId || matchName || matchOwner || matchOwnerEmail;
+    }
+    return true;
+  });
+
+  const totalPages = Math.ceil(filteredHotels.length / itemsPerPage) || 1;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentHotels = filteredHotels.slice(startIndex, startIndex + itemsPerPage);
+
+  const provinces = Array.from(new Set(hotels.map(h => h.province))).filter(Boolean);
 
   const handleDelete = async (hotelId: number, hotelName: string) => {
     const result = await Swal.fire({
@@ -52,6 +84,32 @@ export default function AdminHotelsManage() {
           <div className="page-title-box">
             <h4 className="page-title">Quản lý Khách sạn / Đối tác</h4>
           </div>
+        </div>
+      </div>
+
+      {/* Toolbar: Search & Filter */}
+      <div className="row mb-4">
+        <div className="col-12 col-md-6 mb-3 mb-md-0">
+          <div className="input-group shadow-sm">
+            <span className="input-group-text bg-white border-end-0 text-muted"><i className="ri-search-line"></i></span>
+            <input 
+              type="text" 
+              className="form-control border-start-0 ps-0" 
+              placeholder="Tìm theo ID, Tên KS, Tên/Email Chủ..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="col-12 col-md-3">
+          <select 
+            className="form-select shadow-sm"
+            value={filterProvince}
+            onChange={(e) => setFilterProvince(e.target.value)}
+          >
+            <option value="all">Tất cả khu vực</option>
+            {provinces.map((p: any) => <option key={p} value={p}>{p}</option>)}
+          </select>
         </div>
       </div>
       
@@ -87,13 +145,13 @@ export default function AdminHotelsManage() {
                         <td colSpan={7} className="text-center py-5">
                           <div className="text-muted">
                             <i className="ri-building-4-line display-4"></i>
-                            <h5 className="mt-3">Chưa có khách sạn nào</h5>
-                            <p className="mb-0">Hệ thống hiện tại chưa có đối tác khách sạn nào đăng tải.</p>
+                            <h5 className="mt-3">Không tìm thấy khách sạn</h5>
+                            <p className="mb-0">Vui lòng thử lại với từ khóa hoặc bộ lọc khác.</p>
                           </div>
                         </td>
                       </tr>
                     ) : (
-                      hotels.map((h) => (
+                      currentHotels.map((h) => (
                         <tr key={h.id}>
                           <td className="px-4">
                             <span className="fw-bold">#{h.id}</span>
@@ -132,6 +190,25 @@ export default function AdminHotelsManage() {
                   </tbody>
                 </table>
               </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="card-footer bg-white border-top py-3">
+                  <ul className="pagination justify-content-end mb-0">
+                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                      <button className="page-link" onClick={() => setCurrentPage(p => Math.max(1, p - 1))}>Trước</button>
+                    </li>
+                    {Array.from({length: totalPages}, (_, i) => i + 1).map(page => (
+                      <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
+                        <button className="page-link" onClick={() => setCurrentPage(page)}>{page}</button>
+                      </li>
+                    ))}
+                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                      <button className="page-link" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}>Sau</button>
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>
