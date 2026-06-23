@@ -69,10 +69,16 @@ const Checkout: FC = () => {
       params.append("location", selectedLocation.value);
     }
     if (checkInDate) {
-      params.append("checkIn", checkInDate.toISOString());
+      const year = checkInDate.getFullYear();
+      const month = String(checkInDate.getMonth() + 1).padStart(2, '0');
+      const day = String(checkInDate.getDate()).padStart(2, '0');
+      params.append("checkIn", `${year}-${month}-${day}`);
     }
     if (checkOutDate) {
-      params.append("checkOut", checkOutDate.toISOString());
+      const year = checkOutDate.getFullYear();
+      const month = String(checkOutDate.getMonth() + 1).padStart(2, '0');
+      const day = String(checkOutDate.getDate()).padStart(2, '0');
+      params.append("checkOut", `${year}-${month}-${day}`);
     }
     params.append("adults", guests.adults.toString());
     params.append("children", guests.children.toString());

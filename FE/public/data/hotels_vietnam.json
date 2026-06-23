@@ -3,7 +3,7 @@
     "id": 1,
     "name": "InterContinental Danang Sun Peninsula Resort",
     "province": "Thành phố Đà Nẵng",
-    "address": "Bãi Bắc, Bán Đảo Sơn Trà, Đà Nẵng",
+    "address": "Bãi Bắc, Bán Đảo Sơn Trà, Đà Nẵng (Chi nhánh mới)",
     "price_per_night": 9500000,
     "rating": 4.9,
     "reviews_count": 1250,
@@ -16,13 +16,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=1000&auto=format&fit=crop",
     "description": "Khu nghỉ dưỡng sang trọng bậc nhất với tầm nhìn toàn cảnh ra biển Đông, được thiết kế bởi kiến trúc sư lừng danh Bill Bensley.",
-    "stars": 5
+    "stars": 5,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 9500000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 14250000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 2,
     "name": "JW Marriott Hotel Hanoi",
     "province": "Thành phố Hà Nội",
-    "address": "Số 8 Đỗ Đức Dục, Mễ Trì, Nam Từ Liêm, Hà Nội",
+    "address": "Số 8 Đỗ Đức Dục, Mễ Trì, Nam Từ Liêm, Hà Nội (Chi nhánh mới)",
     "price_per_night": 4500000,
     "rating": 4.8,
     "reviews_count": 3200,
@@ -35,13 +63,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=1000&auto=format&fit=crop",
     "description": "Khách sạn có thiết kế hình con rồng độc đáo, nằm kề Trung tâm Hội nghị Quốc gia, phù hợp cho doanh nhân và khách du lịch nghỉ dưỡng.",
-    "stars": 4
+    "stars": 4,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 4500000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 6750000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 3,
     "name": "Vinpearl Resort & Spa Phú Quốc",
     "province": "Tỉnh Kiên Giang",
-    "address": "Khu bãi Dài, Xã Gành Dầu, Phú Quốc, Kiên Giang",
+    "address": "Khu bãi Dài, Xã Gành Dầu, Phú Quốc, Kiên Giang (Chi nhánh mới)",
     "price_per_night": 3200000,
     "rating": 4.7,
     "reviews_count": 4100,
@@ -54,13 +110,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000&auto=format&fit=crop",
     "description": "Tọa lạc tại Bãi Dài hoang sơ, mang đậm phong cách kiến trúc Á Đông với hồ bơi rộng lớn và nhiều khu vui chơi.",
-    "stars": 5
+    "stars": 5,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 3200000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 4800000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 4,
     "name": "The Reverie Saigon",
     "province": "Thành phố Hồ Chí Minh",
-    "address": "22-36 Nguyễn Huệ, Quận 1, Hồ Chí Minh",
+    "address": "22-36 Nguyễn Huệ, Quận 1, Hồ Chí Minh (Chi nhánh mới)",
     "price_per_night": 8800000,
     "rating": 4.9,
     "reviews_count": 980,
@@ -73,13 +157,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1000&auto=format&fit=crop",
     "description": "Khách sạn chuẩn 6 sao duy nhất tại TPHCM, nằm ngay trên phố đi bộ Nguyễn Huệ với thiết kế vương giả, xa hoa mang phong cách Ý.",
-    "stars": 5
+    "stars": 5,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 8800000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 13200000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 5,
     "name": "Amanoi Resort",
     "province": "Tỉnh Ninh Thuận",
-    "address": "Vịnh Vĩnh Hy, Vườn Quốc gia Núi Chúa, Ninh Thuận",
+    "address": "Vịnh Vĩnh Hy, Vườn Quốc gia Núi Chúa, Ninh Thuận (Chi nhánh mới)",
     "price_per_night": 25000000,
     "rating": 5.0,
     "reviews_count": 150,
@@ -92,13 +204,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=1000&auto=format&fit=crop",
     "description": "Một trong những khu nghỉ dưỡng đắt đỏ và biệt lập nhất Việt Nam, nơi giao hòa giữa núi rừng hoang sơ và biển xanh trong vắt.",
-    "stars": 3
+    "stars": 3,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 25000000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 37500000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 6,
     "name": "Melia Vinpearl Danang Riverfront",
     "province": "Thành phố Đà Nẵng",
-    "address": "342 Trần Hưng Đạo, An Hải Bắc, Sơn Trà, Đà Nẵng",
+    "address": "342 Trần Hưng Đạo, An Hải Bắc, Sơn Trà, Đà Nẵng (Chi nhánh mới)",
     "price_per_night": 2100000,
     "rating": 4.6,
     "reviews_count": 2800,
@@ -111,13 +251,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000&auto=format&fit=crop",
     "description": "Khách sạn căn hộ mang tầm nhìn trọn vẹn ra sông Hàn và những cây cầu biểu tượng của Đà Nẵng.",
-    "stars": 4
+    "stars": 4,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 2100000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 3150000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 7,
     "name": "Sofitel Legend Metropole Hanoi",
     "province": "Thành phố Hà Nội",
-    "address": "15 Ngô Quyền, Hoàn Kiếm, Hà Nội",
+    "address": "15 Ngô Quyền, Hoàn Kiếm, Hà Nội (Chi nhánh mới)",
     "price_per_night": 6500000,
     "rating": 4.8,
     "reviews_count": 4500,
@@ -130,13 +298,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1000&auto=format&fit=crop",
     "description": "Khách sạn lịch sử trăm năm tuổi mang nét quyến rũ của kiến trúc thuộc địa Pháp ngay giữa trung tâm thủ đô.",
-    "stars": 5
+    "stars": 5,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 6500000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 9750000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 8,
     "name": "Four Seasons Resort The Nam Hai",
     "province": "Tỉnh Quảng Nam",
-    "address": "Block Hà My, Điện Dương, Điện Bàn, Quảng Nam",
+    "address": "Block Hà My, Điện Dương, Điện Bàn, Quảng Nam (Chi nhánh mới)",
     "price_per_night": 18000000,
     "rating": 4.9,
     "reviews_count": 620,
@@ -149,13 +345,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=1000&auto=format&fit=crop",
     "description": "Tọa lạc trên bãi biển hoang sơ gần phố cổ Hội An, khu nghỉ dưỡng là bản hòa ca của kiến trúc Đông Dương và văn hóa địa phương.",
-    "stars": 4
+    "stars": 4,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 18000000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 27000000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 9,
     "name": "Muong Thanh Luxury Nha Trang Hotel",
     "province": "Tỉnh Khánh Hòa",
-    "address": "60 Trần Phú, Lộc Thọ, Nha Trang, Khánh Hòa",
+    "address": "60 Trần Phú, Lộc Thọ, Nha Trang, Khánh Hòa (Chi nhánh mới)",
     "price_per_night": 1500000,
     "rating": 4.5,
     "reviews_count": 5200,
@@ -168,13 +392,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=1000&auto=format&fit=crop",
     "description": "Nằm ngay trung tâm đường Trần Phú, cung cấp không gian nghỉ dưỡng tiện nghi với giá cả phải chăng, tầm nhìn trực diện biển Nha Trang.",
-    "stars": 5
+    "stars": 5,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 1500000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 2250000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 10,
     "name": "Hotel de la Coupole - MGallery",
     "province": "Tỉnh Lào Cai",
-    "address": "1 Hoàng Liên, Sapa, Lào Cai",
+    "address": "1 Hoàng Liên, Sapa, Lào Cai (Chi nhánh mới)",
     "price_per_night": 3800000,
     "rating": 4.7,
     "reviews_count": 2100,
@@ -187,13 +439,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1517840901100-8179e982acb7?q=80&w=1000&auto=format&fit=crop",
     "description": "Tuyệt tác kiến trúc của Bill Bensley giữa thị trấn mù sương Sapa, lấy cảm hứng từ những bộ trang phục thời trang Pháp và họa tiết bản địa.",
-    "stars": 5
+    "stars": 5,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 3800000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 5700000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 11,
     "name": "Salinda Resort Phu Quoc Island",
     "province": "Tỉnh Kiên Giang",
-    "address": "Ấp Cửa Lấp, Xã Dương Tơ, Phú Quốc",
+    "address": "Ấp Cửa Lấp, Xã Dương Tơ, Phú Quốc (Chi nhánh mới)",
     "price_per_night": 4200000,
     "rating": 4.8,
     "reviews_count": 1800,
@@ -206,13 +486,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1610641818989-c2051b5e2cfd?q=80&w=1000&auto=format&fit=crop",
     "description": "Khu nghỉ dưỡng boutique mang phong cách kiến trúc đương đại kết hợp nghệ thuật thủ công Việt Nam, cực kỳ yên tĩnh và lãng mạn.",
-    "stars": 4
+    "stars": 4,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 4200000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 6300000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 12,
     "name": "Caravelle Saigon",
     "province": "Thành phố Hồ Chí Minh",
-    "address": "19-23 Công Trường Lam Sơn, Quận 1, Hồ Chí Minh",
+    "address": "19-23 Công Trường Lam Sơn, Quận 1, Hồ Chí Minh (Chi nhánh mới)",
     "price_per_night": 3500000,
     "rating": 4.6,
     "reviews_count": 3900,
@@ -225,13 +533,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=1000&auto=format&fit=crop",
     "description": "Biểu tượng lịch sử của Sài Gòn từ năm 1959, nằm ngay cạnh Nhà hát Thành phố, là điểm giao thoa giữa nét cổ điển và sự nhộn nhịp hiện đại.",
-    "stars": 3
+    "stars": 3,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 3500000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 5250000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 13,
     "name": "Flamingo Dai Lai Resort",
     "province": "Tỉnh Vĩnh Phúc",
-    "address": "Ngọc Thanh, Phúc Yên, Vĩnh Phúc",
+    "address": "Ngọc Thanh, Phúc Yên, Vĩnh Phúc (Chi nhánh mới)",
     "price_per_night": 2800000,
     "rating": 4.4,
     "reviews_count": 6500,
@@ -244,13 +580,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1000&auto=format&fit=crop",
     "description": "Khu nghỉ dưỡng sinh thái rợp bóng cây xanh khổng lồ, nổi tiếng với các công trình kiến trúc đạt giải thưởng quốc tế, thích hợp đi cuối tuần từ Hà Nội.",
-    "stars": 4
+    "stars": 4,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 2800000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 4200000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 14,
     "name": "Six Senses Con Dao",
     "province": "Tỉnh Bà Rịa - Vũng Tàu",
-    "address": "Bãi Đất Dốc, Côn Đảo, Bà Rịa - Vũng Tàu",
+    "address": "Bãi Đất Dốc, Côn Đảo, Bà Rịa - Vũng Tàu (Chi nhánh mới)",
     "price_per_night": 16500000,
     "rating": 4.9,
     "reviews_count": 480,
@@ -263,13 +627,41 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1000&auto=format&fit=crop",
     "description": "Khu nghỉ dưỡng sang trọng bậc nhất Côn Đảo, hoàn toàn ẩn mình giữa thiên nhiên hoang sơ, mang lại sự riêng tư tuyệt đối.",
-    "stars": 3
+    "stars": 3,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 16500000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 24750000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
   },
   {
     "id": 15,
     "name": "Ana Mandara Villas Dalat Resort & Spa",
     "province": "Tỉnh Lâm Đồng",
-    "address": "Đường Lê Lai, Phường 5, Đà Lạt",
+    "address": "Đường Lê Lai, Phường 5, Đà Lạt (Chi nhánh mới)",
     "price_per_night": 2900000,
     "rating": 4.6,
     "reviews_count": 2200,
@@ -282,6 +674,451 @@
     ],
     "thumbnail": "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1000&auto=format&fit=crop",
     "description": "Quần thể 17 ngôi biệt thự cổ xây dựng từ những năm 1920 được bảo tồn hoàn hảo giữa những đồi thông mộng mơ của Đà Lạt.",
-    "stars": 5
+    "stars": 5,
+    "rooms": [
+      {
+        "name": "Standard Room",
+        "price": 2900000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar"
+        ]
+      },
+      {
+        "name": "Deluxe Room",
+        "price": 4350000.0,
+        "capacity": 3,
+        "available_rooms": 5,
+        "features": [
+          "Free Wi-Fi",
+          "Air Conditioning",
+          "TV",
+          "Minibar",
+          "Bathtub",
+          "Balcony"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Grand Palace Hotel Hà Nội",
+    "province": "Thành phố Hà Nội",
+    "address": "123 Phố Cổ, Hoàn Kiếm, Hà Nội (Chi nhánh mới)",
+    "price_per_night": 2500000,
+    "rating": 4.5,
+    "reviews_count": 850,
+    "amenities": [
+      "Hồ bơi",
+      "Spa",
+      "Nhà hàng",
+      "Gym",
+      "Quầy Bar"
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop",
+    "description": "Nằm ngay trung tâm Phố Cổ, thuận tiện đi lại và mua sắm.",
+    "stars": 4,
+    "rooms": [
+      {
+        "name": "Superior City View",
+        "price": 2500000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Wi-Fi",
+          "AC",
+          "TV"
+        ]
+      },
+      {
+        "name": "Suite Balcony",
+        "price": 4000000,
+        "capacity": 2,
+        "available_rooms": 3,
+        "features": [
+          "Wi-Fi",
+          "AC",
+          "TV",
+          "Balcony"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Sunrise Resort & Spa Phú Quốc",
+    "province": "Tỉnh Kiên Giang",
+    "address": "Bãi Trường, Dương Tơ, Phú Quốc (Chi nhánh mới)",
+    "price_per_night": 4500000,
+    "rating": 4.8,
+    "reviews_count": 1200,
+    "amenities": [
+      "Bãi biển riêng",
+      "Hồ bơi vô cực",
+      "Spa",
+      "Buffet",
+      "Đưa đón sân bay"
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000&auto=format&fit=crop",
+    "description": "Khu nghỉ dưỡng tuyệt đẹp với bãi biển cát trắng.",
+    "stars": 5,
+    "rooms": [
+      {
+        "name": "Ocean View Villa",
+        "price": 8000000,
+        "capacity": 4,
+        "available_rooms": 5,
+        "features": [
+          "Private Pool",
+          "Sea View"
+        ]
+      },
+      {
+        "name": "Deluxe Garden",
+        "price": 4500000,
+        "capacity": 2,
+        "available_rooms": 15,
+        "features": [
+          "Garden View",
+          "Bathtub"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Luxury Central Saigon",
+    "province": "Thành phố Hồ Chí Minh",
+    "address": "45 Lê Lợi, Quận 1, Hồ Chí Minh (Chi nhánh mới)",
+    "price_per_night": 3000000,
+    "rating": 4.6,
+    "reviews_count": 940,
+    "amenities": [
+      "Gym",
+      "Nhà hàng",
+      "Hồ bơi",
+      "Quầy Bar",
+      "Business Center"
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000&auto=format&fit=crop",
+    "description": "Phong cách sống thượng lưu tại trung tâm Sài Gòn.",
+    "stars": 5,
+    "rooms": [
+      {
+        "name": "Executive Suite",
+        "price": 5000000,
+        "capacity": 2,
+        "available_rooms": 8,
+        "features": [
+          "City View",
+          "Lounge Access"
+        ]
+      },
+      {
+        "name": "Standard Twin",
+        "price": 3000000,
+        "capacity": 2,
+        "available_rooms": 20,
+        "features": [
+          "Wi-Fi",
+          "AC"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Eco Lodge Sapa",
+    "province": "Tỉnh Lào Cai",
+    "address": "Bản Tả Van, Sapa, Lào Cai (Chi nhánh mới)",
+    "price_per_night": 1500000,
+    "rating": 4.7,
+    "reviews_count": 450,
+    "amenities": [
+      "Spa",
+      "Nhà hàng",
+      "Tour Trekking",
+      "Bãi đỗ xe",
+      "Cho thuê xe đạp"
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1542314831-c6a4d14d8351?q=80&w=1000&auto=format&fit=crop",
+    "description": "Trải nghiệm cuộc sống hòa mình vào thiên nhiên với view ruộng bậc thang tuyệt đẹp.",
+    "stars": 4,
+    "rooms": [
+      {
+        "name": "Bungalow View Núi",
+        "price": 1800000,
+        "capacity": 2,
+        "available_rooms": 12,
+        "features": [
+          "Mountain View",
+          "Balcony",
+          "Breakfast"
+        ]
+      },
+      {
+        "name": "Family Room",
+        "price": 2500000,
+        "capacity": 4,
+        "available_rooms": 5,
+        "features": [
+          "Mountain View",
+          "2 Beds"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Nha Trang Bay Hotel",
+    "province": "Tỉnh Khánh Hòa",
+    "address": "88 Trần Phú, Nha Trang (Chi nhánh mới)",
+    "price_per_night": 2200000,
+    "rating": 4.4,
+    "reviews_count": 1800,
+    "amenities": [
+      "Bãi biển riêng",
+      "Hồ bơi",
+      "Gym",
+      "Spa",
+      "Kids Club"
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1551882547-ff40eb0d1b73?q=80&w=1000&auto=format&fit=crop",
+    "description": "Khách sạn mặt biển dọc cung đường sầm uất nhất Nha Trang.",
+    "stars": 4,
+    "rooms": [
+      {
+        "name": "Ocean Premier",
+        "price": 3000000,
+        "capacity": 2,
+        "available_rooms": 10,
+        "features": [
+          "Ocean View",
+          "Balcony"
+        ]
+      },
+      {
+        "name": "City View Room",
+        "price": 2200000,
+        "capacity": 2,
+        "available_rooms": 30,
+        "features": [
+          "City View",
+          "AC"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Đà Lạt Pine Hill Resort",
+    "province": "Tỉnh Lâm Đồng",
+    "address": "Đồi Thông Hai Mộ, Phường 9, Đà Lạt (Chi nhánh mới)",
+    "price_per_night": 1800000,
+    "rating": 4.6,
+    "reviews_count": 670,
+    "amenities": [
+      "Nhà hàng",
+      "BBQ",
+      "Cho thuê xe",
+      "Sân vườn",
+      "Quầy Bar"
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=1000&auto=format&fit=crop",
+    "description": "Nằm gọn giữa đồi thông thơ mộng, không khí trong lành mát mẻ.",
+    "stars": 4,
+    "rooms": [
+      {
+        "name": "Pine Villa",
+        "price": 3500000,
+        "capacity": 4,
+        "available_rooms": 8,
+        "features": [
+          "Kitchen",
+          "BBQ",
+          "Garden View"
+        ]
+      },
+      {
+        "name": "Cozy Pine Room",
+        "price": 1800000,
+        "capacity": 2,
+        "available_rooms": 15,
+        "features": [
+          "Balcony",
+          "Heater"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Hoi An Heritage Boutique",
+    "province": "Tỉnh Quảng Nam",
+    "address": "15 Nguyễn Thái Học, Phố cổ Hội An (Chi nhánh mới)",
+    "price_per_night": 1200000,
+    "rating": 4.9,
+    "reviews_count": 2100,
+    "amenities": [
+      "Hồ bơi ngoài trời",
+      "Spa",
+      "Nhà hàng",
+      "Thuê xe đạp miễn phí",
+      "Lớp học nấu ăn"
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1587381420270-3e1a5b9e6904?q=80&w=1000&auto=format&fit=crop",
+    "description": "Khách sạn boutique mang đậm nét văn hóa đặc trưng của phố Hội.",
+    "stars": 4,
+    "rooms": [
+      {
+        "name": "Heritage Suite",
+        "price": 2500000,
+        "capacity": 2,
+        "available_rooms": 4,
+        "features": [
+          "Balcony",
+          "Bathtub",
+          "Antique Decor"
+        ]
+      },
+      {
+        "name": "Classic Room",
+        "price": 1200000,
+        "capacity": 2,
+        "available_rooms": 12,
+        "features": [
+          "AC",
+          "Free Bike"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Halong Bay Cruise Hotel",
+    "province": "Tỉnh Quảng Ninh",
+    "address": "Bến tàu du lịch Tuần Châu, Hạ Long (Chi nhánh mới)",
+    "price_per_night": 5500000,
+    "rating": 4.8,
+    "reviews_count": 530,
+    "amenities": [
+      "Nhà hàng",
+      "Quầy Bar",
+      "Boong tàu tắm nắng",
+      "Câu mực đêm",
+      "Lớp học Thái Cực Quyền"
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1596395819057-e37f55a8516d?q=80&w=1000&auto=format&fit=crop",
+    "description": "Khách sạn nổi trên vịnh Hạ Long, đem lại trải nghiệm sang trọng và độc đáo.",
+    "stars": 5,
+    "rooms": [
+      {
+        "name": "Royal Suite",
+        "price": 9000000,
+        "capacity": 2,
+        "available_rooms": 2,
+        "features": [
+          "Private Balcony",
+          "Jacuzzi",
+          "Ocean View"
+        ]
+      },
+      {
+        "name": "Deluxe Cabin",
+        "price": 5500000,
+        "capacity": 2,
+        "available_rooms": 18,
+        "features": [
+          "Ocean View",
+          "AC"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Mekong Delta Resort",
+    "province": "Thành phố Cần Thơ",
+    "address": "Cồn Ấu, Cái Răng, Cần Thơ (Chi nhánh mới)",
+    "price_per_night": 2800000,
+    "rating": 4.5,
+    "reviews_count": 320,
+    "amenities": [
+      "Hồ bơi",
+      "Spa",
+      "Tour chợ nổi",
+      "Nhà hàng",
+      "Gym"
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1549294413-26f195200c16?q=80&w=1000&auto=format&fit=crop",
+    "description": "Resort sinh thái ven sông Hậu, mang đậm vẻ đẹp vùng sông nước miền Tây.",
+    "stars": 4,
+    "rooms": [
+      {
+        "name": "River View Villa",
+        "price": 4000000,
+        "capacity": 2,
+        "available_rooms": 6,
+        "features": [
+          "River View",
+          "Private Pool"
+        ]
+      },
+      {
+        "name": "Garden Room",
+        "price": 2800000,
+        "capacity": 2,
+        "available_rooms": 20,
+        "features": [
+          "Garden View",
+          "AC"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Quy Nhon Beach Resort",
+    "province": "Tỉnh Bình Định",
+    "address": "Khu du lịch Kỳ Co, Nhơn Lý, Quy Nhơn (Chi nhánh mới)",
+    "price_per_night": 3200000,
+    "rating": 4.7,
+    "reviews_count": 890,
+    "amenities": [
+      "Bãi biển riêng",
+      "Hồ bơi",
+      "Spa",
+      "Nhà hàng hải sản",
+      "Sân Tennis"
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1596436889106-be35e843f974?q=80&w=1000&auto=format&fit=crop",
+    "description": "Nghỉ dưỡng tuyệt hảo bên bãi biển trong xanh như ngọc của Quy Nhơn.",
+    "stars": 5,
+    "rooms": [
+      {
+        "name": "Ocean Front Villa",
+        "price": 6500000,
+        "capacity": 4,
+        "available_rooms": 5,
+        "features": [
+          "Beach Access",
+          "Private Pool"
+        ]
+      },
+      {
+        "name": "Deluxe Ocean",
+        "price": 3200000,
+        "capacity": 2,
+        "available_rooms": 15,
+        "features": [
+          "Ocean View",
+          "Balcony"
+        ]
+      }
+    ]
   }
 ]

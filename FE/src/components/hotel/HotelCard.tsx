@@ -46,13 +46,16 @@ export default function HotelCard({ hotel }: HotelCardProps) {
         </h3>
         <p className='service-paragraph tw-mb-5'>{hotel.description}</p>
 
-        <div className='service-wrap tw-rounded-xl tw-py-4 tw-px-6 mt-auto'>
+        <div className='service-wrap tw-rounded-xl tw-py-4 tw-px-6 mt-auto d-flex flex-column'>
           <div className='service-star d-flex tw-gap-6 tw-pb-4 tw-mb-6 flex-wrap'>
             <span className='text-heading fw-normal d-flex tw-gap-2'>
               <i className='ph ph-star' /> {hotel.rating.toFixed(1)} (
               {hotel.reviews_count})
             </span>
-            <span className='text-heading fw-normal'>
+            <span 
+              className='text-heading fw-normal'
+              style={{ display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+            >
               {hotel.amenities.slice(0, 2).join(" / ")}
             </span>
           </div>
@@ -64,7 +67,7 @@ export default function HotelCard({ hotel }: HotelCardProps) {
             </div>
           )}
 
-          <div className='d-flex align-items-center justify-content-between flex-wrap row-gap-3'>
+          <div className='d-flex align-items-center justify-content-between flex-wrap row-gap-3 mt-auto'>
             <div className='service-price'>
               <h6 className='fw-normal'>
                 {formatMoney(hotel.price_per_night)}

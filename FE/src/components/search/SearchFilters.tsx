@@ -23,6 +23,14 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
           method='get'
         >
           <div className='row row-gap-4 align-items-end'>
+            {filters.rooms !== undefined && <input type='hidden' name='rooms' value={filters.rooms} />}
+            {filters.rooms !== undefined && <input type='hidden' name='rooms' value={filters.rooms} />}
+            {filters.adults !== undefined && <input type='hidden' name='adults' value={filters.adults} />}
+            {filters.children !== undefined && <input type='hidden' name='children' value={filters.children} />}
+            
+            {filters.adults !== undefined && <input type='hidden' name='adults' value={filters.adults} />}
+            {filters.children !== undefined && <input type='hidden' name='children' value={filters.children} />}
+            
             <div className='col-xl-3 col-lg-12'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
                 {t("search.location")}
@@ -33,6 +41,30 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
                 name='location'
                 placeholder={t("search.locationPlaceholder")}
                 type='search'
+              />
+            </div>
+
+            <div className='col-xl-3 col-lg-6 col-md-6'>
+              <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
+                {t("checkout.checkIn")}
+              </label>
+              <input
+                className='form-control tw-h-14'
+                defaultValue={filters.checkIn ?? ""}
+                name='checkIn'
+                type='date'
+              />
+            </div>
+
+            <div className='col-xl-3 col-lg-6 col-md-6'>
+              <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
+                {t("checkout.checkOut")}
+              </label>
+              <input
+                className='form-control tw-h-14'
+                defaultValue={filters.checkOut ?? ""}
+                name='checkOut'
+                type='date'
               />
             </div>
 

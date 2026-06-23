@@ -7,7 +7,7 @@ interface HotelResultsProps {
 
 export default function HotelResults({ hotels }: HotelResultsProps) {
   return (
-    <section className='py-120 bg_gray_1'>
+    <section className='tw-pt-8 tw-pb-24 bg_gray_1'>
       <div className='container'>
         <div className='d-flex justify-content-between align-items-end flex-wrap row-gap-3 tw-mb-10'>
           <div>

@@ -21,7 +21,7 @@ const Breadcrumb: FC<BreadcrumbProps> = ({ title, sub_title, imageUrl, titleKey,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        padding: "110px 0 100px 0",
+        padding: "60px 0 60px 0",
         minHeight: "unset"
       }}
     >

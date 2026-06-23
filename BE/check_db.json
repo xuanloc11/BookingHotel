@@ -1,0 +1,152 @@
+[
+  {
+    "name": "JW Marriott Hotel Hanoi",
+    "addr": "Số 8 Đỗ Đức Dục, Mễ Trì, Nam Từ Liêm, Hà Nội (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 4500000
+  },
+  {
+    "name": "Melia Vinpearl Danang Riverfront",
+    "addr": "342 Trần Hưng Đạo, An Hải Bắc, Sơn Trà, Đà Nẵng (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 2100000
+  },
+  {
+    "name": "Grand Palace Hotel Hà Nội",
+    "addr": "123 Phố Cổ, Hoàn Kiếm, Hà Nội (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 2500000
+  },
+  {
+    "name": "InterContinental Danang Sun Peninsula Resort",
+    "addr": "Bãi Bắc, Bán Đảo Sơn Trà, Đà Nẵng (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 9500000
+  },
+  {
+    "name": "Four Seasons Resort The Nam Hai",
+    "addr": "Block Hà My, Điện Dương, Điện Bàn, Quảng Nam (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 18000000
+  },
+  {
+    "name": "Muong Thanh Luxury Nha Trang Hotel",
+    "addr": "60 Trần Phú, Lộc Thọ, Nha Trang, Khánh Hòa (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 1500000
+  },
+  {
+    "name": "Hotel de la Coupole - MGallery",
+    "addr": "1 Hoàng Liên, Sapa, Lào Cai (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 3800000
+  },
+  {
+    "name": "Salinda Resort Phu Quoc Island",
+    "addr": "Ấp Cửa Lấp, Xã Dương Tơ, Phú Quốc (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 4200000
+  },
+  {
+    "name": "Ana Mandara Villas Dalat Resort & Spa",
+    "addr": "Đường Lê Lai, Phường 5, Đà Lạt (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 2900000
+  },
+  {
+    "name": "Six Senses Con Dao",
+    "addr": "Bãi Đất Dốc, Côn Đảo, Bà Rịa - Vũng Tàu (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 16500000
+  },
+  {
+    "name": "Sunrise Resort & Spa Phú Quốc",
+    "addr": "Bãi Trường, Dương Tơ, Phú Quốc (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 4500000
+  },
+  {
+    "name": "Luxury Central Saigon",
+    "addr": "45 Lê Lợi, Quận 1, Hồ Chí Minh (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 3000000
+  },
+  {
+    "name": "Eco Lodge Sapa",
+    "addr": "Bản Tả Van, Sapa, Lào Cai (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 1500000
+  },
+  {
+    "name": "Nha Trang Bay Hotel",
+    "addr": "88 Trần Phú, Nha Trang (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 2200000
+  },
+  {
+    "name": "Đà Lạt Pine Hill Resort",
+    "addr": "Đồi Thông Hai Mộ, Phường 9, Đà Lạt (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 1800000
+  },
+  {
+    "name": "Halong Bay Cruise Hotel",
+    "addr": "Bến tàu du lịch Tuần Châu, Hạ Long (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 5500000
+  },
+  {
+    "name": "Vinpearl Resort & Spa Phú Quốc",
+    "addr": "Khu bãi Dài, Xã Gành Dầu, Phú Quốc, Kiên Giang (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 3200000
+  },
+  {
+    "name": "The Reverie Saigon",
+    "addr": "22-36 Nguyễn Huệ, Quận 1, Hồ Chí Minh (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 8800000
+  },
+  {
+    "name": "Amanoi Resort",
+    "addr": "Vịnh Vĩnh Hy, Vườn Quốc gia Núi Chúa, Ninh Thuận (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 25000000
+  },
+  {
+    "name": "Sofitel Legend Metropole Hanoi",
+    "addr": "15 Ngô Quyền, Hoàn Kiếm, Hà Nội (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 6500000
+  },
+  {
+    "name": "Caravelle Saigon",
+    "addr": "19-23 Công Trường Lam Sơn, Quận 1, Hồ Chí Minh (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 3500000
+  },
+  {
+    "name": "Flamingo Dai Lai Resort",
+    "addr": "Ngọc Thanh, Phúc Yên, Vĩnh Phúc (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 2800000
+  },
+  {
+    "name": "Hoi An Heritage Boutique",
+    "addr": "15 Nguyễn Thái Học, Phố cổ Hội An (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 1200000
+  },
+  {
+    "name": "Mekong Delta Resort",
+    "addr": "Cồn Ấu, Cái Răng, Cần Thơ (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 2800000
+  },
+  {
+    "name": "Quy Nhon Beach Resort",
+    "addr": "Khu du lịch Kỳ Co, Nhơn Lý, Quy Nhơn (Chi nhánh mới)",
+    "rooms": 2,
+    "price": 3200000
+  }
+]
