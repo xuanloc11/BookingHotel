@@ -1,0 +1,16 @@
+{
+  "name": "booking-hotel-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "FE",
+    "BE"
+  ],
+  "scripts": {
+    "dev": "concurrently -c \"cyan,magenta\" -n \"FRONTEND,BACKEND\" \"npm run dev -w FE\" \"npm run dev -w BE\"",
+    "install:all": "npm install && cd BE && .venv\\Scripts\\activate && pip install -r requirements.txt"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
