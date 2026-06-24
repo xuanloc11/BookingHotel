@@ -138,6 +138,7 @@ def province_list(request):
 	return JsonResponse({'results': provinces})
 
 
+@csrf_exempt
 @require_http_methods(['POST'])
 def register(request):
 	try:
@@ -153,6 +154,7 @@ def register(request):
 
 	return JsonResponse({'message': 'Vui lòng kiểm tra email để xác nhận tài khoản.'}, status=201)
 
+@csrf_exempt
 @require_http_methods(['POST'])
 def verify_email(request):
 	try:
@@ -198,6 +200,7 @@ def login(request):
 	return response
 
 
+@csrf_exempt
 @require_http_methods(['POST'])
 def forgot_password(request):
 	try:
@@ -208,6 +211,7 @@ def forgot_password(request):
 	return JsonResponse({'detail': auth_service.reset_password(payload.get('email', ''))})
 
 
+@csrf_exempt
 @require_http_methods(['POST'])
 def reset_password_confirm(request):
 	try:
