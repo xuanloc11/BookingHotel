@@ -65,3 +65,14 @@ export async function updateVendorBookingStatus(bookingId: string, status: strin
     body: { status }
   }));
 }
+
+export async function getVendorWithdrawals() {
+  return fetchBackendJson<any>('/vendor/withdrawals/', getAuthOptions());
+}
+
+export async function createVendorWithdrawal(amount: number) {
+  return fetchBackendJson<any>('/vendor/withdrawals/', getAuthOptions({
+    method: 'POST',
+    body: { amount }
+  }));
+}

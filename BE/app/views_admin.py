@@ -242,3 +242,89 @@ def update_approval_status(request, user, hotel_id: int):
         hotel.save()
         return JsonResponse({'message': f'Hotel status updated to {status}.'})
     return _json_error('Invalid status.', status=400)
+
+@require_http_methods(['GET'])
+@admin_required
+def list_withdrawals(request, user):
+    from app.models import WithdrawalRequest
+    withdrawals = WithdrawalRequest.objects.all().order_by('-created_at')
+    data = []
+    for w in withdrawals:
+        data.append({
+            'id': w.id,
+            'vendor_name': getattr(w.vendor.profile, 'full_name', w.vendor.email) if hasattr(w.vendor, 'profile') else w.vendor.email,
+            'amount': w.amount,
+            'status': w.status,
+            'bank_name': w.bank_name,
+            'account_number': w.account_number,
+            'account_name': w.account_name,
+            'created_at': w.created_at.isoformat(),
+            'processed_at': w.processed_at.isoformat() if w.processed_at else None
+        })
+    return JsonResponse({'withdrawals': data})
+
+def _process_withdrawal(withdrawal, status, admin_user):
+    from django.utils import timezone
+    from app.models import WithdrawalRequest, Transaction, Hotel
+    from app.services.withdrawal_events import WithdrawalEventSubject, WithdrawalNotificationObserver, WithdrawalEventContext
+    import uuid
+
+    if withdrawal.status != WithdrawalRequest.STATUS_PENDING:
+        return False, 'Yêu cầu này đã được xử lý trước đó.'
+
+    withdrawal.status = status
+    withdrawal.processed_at = timezone.now()
+    withdrawal.save()
+
+    if status == WithdrawalRequest.STATUS_APPROVED:
+        # Trừ tiền (tạo Transaction Payout)
+        hotel = Hotel.objects.filter(owner=withdrawal.vendor).first()
+        if hotel:
+            Transaction.objects.create(
+                hotel=hotel,
+                transaction_id=f"PO-{uuid.uuid4().hex[:8].upper()}",
+                type=Transaction.TYPE_PAYOUT,
+                amount=withdrawal.amount,
+                net_amount=withdrawal.amount,
+                description=f"Rút tiền về {withdrawal.bank_name}",
+                status=Transaction.STATUS_COMPLETED
+            )
+
+    # Gửi sự kiện qua Observer pattern
+    subject = WithdrawalEventSubject()
+    subject.attach(WithdrawalNotificationObserver())
+    
+    subject.notify(WithdrawalEventContext(
+        event_name='withdrawal.processed',
+        payload={
+            'withdrawal_id': withdrawal.id,
+            'vendor_email': withdrawal.vendor.email,
+            'amount': withdrawal.amount,
+            'status': status,
+            'bank_name': withdrawal.bank_name,
+            'account_number': withdrawal.account_number,
+            'account_name': withdrawal.account_name
+        }
+    ))
+
+    return True, f'Withdrawal has been {status}.'
+
+@require_http_methods(['POST'])
+@admin_required
+def approve_withdrawal(request, user, withdrawal_id: int):
+    from app.models import WithdrawalRequest
+    withdrawal = get_object_or_404(WithdrawalRequest, id=withdrawal_id)
+    success, message = _process_withdrawal(withdrawal, WithdrawalRequest.STATUS_APPROVED, user)
+    if not success:
+        return _json_error(message, status=400)
+    return JsonResponse({'message': message})
+
+@require_http_methods(['POST'])
+@admin_required
+def reject_withdrawal(request, user, withdrawal_id: int):
+    from app.models import WithdrawalRequest
+    withdrawal = get_object_or_404(WithdrawalRequest, id=withdrawal_id)
+    success, message = _process_withdrawal(withdrawal, WithdrawalRequest.STATUS_REJECTED, user)
+    if not success:
+        return _json_error(message, status=400)
+    return JsonResponse({'message': message})

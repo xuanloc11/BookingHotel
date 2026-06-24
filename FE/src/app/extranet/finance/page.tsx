@@ -1,15 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getExtranetDashboard, getVendorBookings } from "@/lib/api/vendorApi";
+import { getExtranetDashboard, getVendorBookings, getVendorWithdrawals, createVendorWithdrawal } from "@/lib/api/vendorApi";
+import toast from "react-hot-toast";
 
 const COMMISSION_RATE = 0.15;
 
 export default function ExtranetFinance() {
   const [stats, setStats] = useState<any>(null);
   const [bookings, setBookings] = useState<any[]>([]);
+  const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
+  const [activeMainTab, setActiveMainTab] = useState("bookings"); // 'bookings' or 'withdrawals'
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState<number | "">("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [currency, setCurrency] = useState("VND");
 
@@ -17,18 +23,47 @@ export default function ExtranetFinance() {
     if (typeof window !== "undefined") {
       setCurrency(localStorage.getItem("app_currency") || "VND");
     }
-    Promise.all([getExtranetDashboard(), getVendorBookings()])
-      .then(([dashData, bookData]) => {
+    Promise.all([getExtranetDashboard(), getVendorBookings(), getVendorWithdrawals()])
+      .then(([dashData, bookData, withData]) => {
         setStats(dashData);
         setBookings(bookData.bookings || []);
+        setWithdrawals(withData.withdrawals || []);
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
 
+  const handleWithdraw = async () => {
+    if (!withdrawAmount || Number(withdrawAmount) <= 0) {
+      toast.error("Vui lòng nhập số tiền hợp lệ");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const res = await createVendorWithdrawal(Number(withdrawAmount));
+      if (res.error) {
+        toast.error(res.error);
+      } else {
+        toast.success("Đã gửi yêu cầu rút tiền thành công!");
+        setShowWithdrawModal(false);
+        setWithdrawAmount("");
+        // Tải lại lịch sử rút tiền
+        const withData = await getVendorWithdrawals();
+        setWithdrawals(withData.withdrawals || []);
+        // Cập nhật lại số dư
+        const dashData = await getExtranetDashboard();
+        setStats(dashData);
+      }
+    } catch (err) {
+      toast.error("Có lỗi xảy ra khi gửi yêu cầu.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const totalRevenue = stats?.total_revenue || 0;
   const commission = Math.round(totalRevenue * COMMISSION_RATE);
-  const netBalance = totalRevenue - commission;
+  const netBalance = stats?.available_balance || 0;
 
   const formatMoney = (amount: number, bCurr: string = "VND") => {
     let finalAmount = amount;
@@ -114,7 +149,12 @@ export default function ExtranetFinance() {
               <h2 className="text-white mt-2 mb-3">
                 {formatMoney(netBalance, "VND")}
               </h2>
-              <button className="btn btn-light btn-rounded">Rút tiền về Ngân hàng</button>
+              <button 
+                className="btn btn-light btn-rounded"
+                onClick={() => setShowWithdrawModal(true)}
+              >
+                Rút tiền về Ngân hàng
+              </button>
             </div>
           </div>
         </div>
@@ -163,10 +203,23 @@ export default function ExtranetFinance() {
         <div className="col-12">
           <div className="card">
             <div className="card-header d-flex justify-content-between align-items-center">
-              <h4 className="header-title mb-0">Lịch sử Giao dịch</h4>
+              <ul className="nav nav-pills" style={{ cursor: 'pointer' }}>
+                <li className="nav-item">
+                  <a className={`nav-link ${activeMainTab === 'bookings' ? 'active' : ''}`} onClick={() => setActiveMainTab('bookings')}>
+                    Giao dịch Đặt phòng
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a className={`nav-link ${activeMainTab === 'withdrawals' ? 'active' : ''}`} onClick={() => setActiveMainTab('withdrawals')}>
+                    Lịch sử Rút tiền
+                  </a>
+                </li>
+              </ul>
             </div>
             <div className="card-body pt-0">
-              <ul className="nav nav-tabs nav-bordered mb-3">
+              {activeMainTab === 'bookings' ? (
+                <>
+                  <ul className="nav nav-tabs nav-bordered mt-3 mb-3">
                 {[
                   { key: "all", label: "Tất cả" },
                   { key: "completed", label: "Thành công" },
@@ -242,10 +295,103 @@ export default function ExtranetFinance() {
                   </tbody>
                 </table>
               </div>
+              </>
+              ) : (
+              <div className="table-responsive mt-3">
+                <table className="table table-centered mb-0">
+                  <thead className="table-light">
+                    <tr>
+                      <th>Mã giao dịch</th>
+                      <th>Thời gian</th>
+                      <th>Số tiền rút</th>
+                      <th>Ngân hàng</th>
+                      <th>Số tài khoản</th>
+                      <th>Trạng thái</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {withdrawals.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="text-center py-4 text-muted">
+                          Chưa có yêu cầu rút tiền nào.
+                        </td>
+                      </tr>
+                    ) : (
+                      withdrawals.map((w) => (
+                        <tr key={w.id}>
+                          <td><b>#{w.id}</b></td>
+                          <td>{new Date(w.created_at).toLocaleString("vi-VN")}</td>
+                          <td className="fw-bold">{formatMoney(w.amount, "VND")}</td>
+                          <td>{w.bank_name}</td>
+                          <td>{w.account_number}</td>
+                          <td>
+                            <span className={`badge ${
+                              w.status === 'approved' ? 'bg-success' :
+                              w.status === 'rejected' ? 'bg-danger' : 'bg-warning text-dark'
+                            }`}>
+                              {w.status === 'approved' ? 'Đã duyệt' :
+                               w.status === 'rejected' ? 'Từ chối' : 'Đang xử lý'}
+                            </span>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Modal Rút tiền */}
+      {showWithdrawModal && (
+        <div className="modal fade show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Yêu cầu rút tiền</h5>
+                <button type="button" className="btn-close" onClick={() => setShowWithdrawModal(false)}></button>
+              </div>
+              <div className="modal-body">
+                <div className="mb-3">
+                  <label className="form-label">Số dư khả dụng</label>
+                  <input type="text" className="form-control" value={formatMoney(netBalance, "VND")} disabled />
+                  <small className="text-muted mt-1 d-block">
+                    * Bạn cần cập nhật thông tin Tài khoản ngân hàng ở mục <b>Cài đặt</b> trước khi rút.
+                  </small>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Số tiền muốn rút (VND) <span className="text-danger">*</span></label>
+                  <input 
+                    type="number" 
+                    className="form-control" 
+                    placeholder="VD: 500000"
+                    value={withdrawAmount}
+                    onChange={(e) => setWithdrawAmount(e.target.value)}
+                    max={netBalance}
+                  />
+                  {Number(withdrawAmount) > netBalance && (
+                    <div className="text-danger mt-1 small">Số tiền rút không được vượt quá số dư khả dụng.</div>
+                  )}
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-light" onClick={() => setShowWithdrawModal(false)}>Hủy</button>
+                <button 
+                  type="button" 
+                  className="btn btn-primary"
+                  onClick={handleWithdraw}
+                  disabled={isSubmitting || !withdrawAmount || Number(withdrawAmount) <= 0 || Number(withdrawAmount) > netBalance}
+                >
+                  {isSubmitting ? "Đang xử lý..." : "Gửi yêu cầu"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

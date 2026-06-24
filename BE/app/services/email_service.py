@@ -126,3 +126,60 @@ class EmailService:
         except Exception as e:
             print(f"Failed to send booking confirmation email: {e}")
             return False
+
+    @staticmethod
+    def send_withdrawal_notification(payload: dict):
+        if not settings.RESEND_API_KEY:
+            print(f"Warning: RESEND_API_KEY not set. Would have sent withdrawal notification to {payload.get('vendor_email')}")
+            return False
+
+        vendor_email = payload.get('vendor_email')
+        if not vendor_email:
+            return False
+
+        withdrawal_id = payload.get('withdrawal_id')
+        amount = payload.get('amount')
+        status = payload.get('status') # 'approved' or 'rejected'
+        bank_name = payload.get('bank_name')
+        account_number = payload.get('account_number')
+        account_name = payload.get('account_name')
+
+        if status == 'approved':
+            title = "Yêu cầu rút tiền đã được DUYỆT"
+            color = "#28a745"
+            msg = "Yêu cầu rút tiền của bạn đã được quản trị viên duyệt thành công. Tiền sẽ được chuyển vào tài khoản ngân hàng của bạn trong 1-3 ngày làm việc."
+        else:
+            title = "Yêu cầu rút tiền bị TỪ CHỐI"
+            color = "#dc3545"
+            msg = "Yêu cầu rút tiền của bạn đã bị từ chối. Vui lòng liên hệ với ban quản trị hoặc kiểm tra lại thông tin ngân hàng."
+
+        html_content = f"""
+        <html>
+            <body>
+                <h2 style="color: {color}">{title}</h2>
+                <p>Xin chào,</p>
+                <p>{msg}</p>
+                <h3>Chi tiết giao dịch:</h3>
+                <ul>
+                    <li><strong>Mã giao dịch:</strong> #{withdrawal_id}</li>
+                    <li><strong>Số tiền rút:</strong> {amount:,.0f} VND</li>
+                    <li><strong>Ngân hàng:</strong> {bank_name}</li>
+                    <li><strong>Số tài khoản:</strong> {account_number}</li>
+                    <li><strong>Chủ tài khoản:</strong> {account_name}</li>
+                </ul>
+                <p>Cảm ơn bạn đã hợp tác cùng VPL Hotel!</p>
+            </body>
+        </html>
+        """
+
+        try:
+            resend.Emails.send({
+                "from": settings.RESEND_FROM_EMAIL,
+                "to": vendor_email,
+                "subject": f"Kết quả yêu cầu rút tiền #{withdrawal_id}",
+                "html": html_content
+            })
+            return True
+        except Exception as e:
+            print(f"Failed to send withdrawal email: {e}")
+            return False

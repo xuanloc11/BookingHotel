@@ -64,6 +64,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { label: "Khách sạn", href: "/admin/hotels", icon: "ri-building-4-line" },
     { label: "Đơn đặt phòng", href: "/admin/bookings", icon: "ri-calendar-check-line" },
     { label: "Kiểm duyệt", href: "/admin/approvals", icon: "ri-shield-check-line" },
+    { label: "Yêu cầu rút tiền", href: "/admin/withdrawals", icon: "ri-bank-card-line" },
   ];
 
   return (

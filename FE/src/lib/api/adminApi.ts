@@ -65,3 +65,24 @@ export async function deleteAdminHotel(hotelId: number): Promise<any> {
     ...getAuthOptions(),
   });
 }
+
+export async function getAdminWithdrawals(): Promise<any> {
+  return fetchBackendJson("/system-admin/withdrawals", {
+    method: "GET",
+    ...getAuthOptions(),
+  });
+}
+
+export async function approveWithdrawal(withdrawalId: number): Promise<any> {
+  return fetchBackendJson(`/system-admin/withdrawals/${withdrawalId}/approve`, {
+    method: "POST",
+    ...getAuthOptions(),
+  });
+}
+
+export async function rejectWithdrawal(withdrawalId: number): Promise<any> {
+  return fetchBackendJson(`/system-admin/withdrawals/${withdrawalId}/reject`, {
+    method: "POST",
+    ...getAuthOptions(),
+  });
+}

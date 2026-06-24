@@ -66,6 +66,9 @@ urlpatterns = [
     path('vendor/settings/', views_vendor.manage_settings, name='api-vendor-settings'),
     path('vendor/settings', views_vendor.manage_settings),
     
+    path('vendor/withdrawals/', views_vendor.manage_withdrawals, name='api-vendor-withdrawals'),
+    path('vendor/withdrawals', views_vendor.manage_withdrawals),
+    
     path('system-admin/dashboard/', views_admin.dashboard_stats, name='api-admin-dashboard'),
     path('system-admin/dashboard', views_admin.dashboard_stats),
     path('system-admin/users/', views_admin.list_users, name='api-admin-users'),
@@ -82,4 +85,11 @@ urlpatterns = [
     path('system-admin/approvals', views_admin.list_approvals),
     path('system-admin/approvals/<int:hotel_id>/', views_admin.update_approval_status, name='api-admin-approval-status'),
     path('system-admin/approvals/<int:hotel_id>', views_admin.update_approval_status),
+    
+    path('system-admin/withdrawals/', views_admin.list_withdrawals, name='api-admin-withdrawals'),
+    path('system-admin/withdrawals', views_admin.list_withdrawals),
+    path('system-admin/withdrawals/<int:withdrawal_id>/approve/', views_admin.approve_withdrawal, name='api-admin-withdrawals-approve'),
+    path('system-admin/withdrawals/<int:withdrawal_id>/approve', views_admin.approve_withdrawal),
+    path('system-admin/withdrawals/<int:withdrawal_id>/reject/', views_admin.reject_withdrawal, name='api-admin-withdrawals-reject'),
+    path('system-admin/withdrawals/<int:withdrawal_id>/reject', views_admin.reject_withdrawal),
 ]

@@ -341,7 +341,11 @@ def get_finance(request, user):
     
     balance = transactions.filter(type=Transaction.TYPE_REVENUE, status=Transaction.STATUS_COMPLETED).aggregate(Sum('net_amount'))['net_amount__sum'] or 0
     payouts = transactions.filter(type=Transaction.TYPE_PAYOUT).aggregate(Sum('amount'))['amount__sum'] or 0
-    available_balance = balance - payouts
+    
+    from app.models import WithdrawalRequest
+    pending_withdrawals = WithdrawalRequest.objects.filter(vendor=user, status=WithdrawalRequest.STATUS_PENDING).aggregate(Sum('amount'))['amount__sum'] or 0
+    
+    available_balance = balance - payouts - pending_withdrawals
     
     total_revenue = transactions.filter(type=Transaction.TYPE_REVENUE).aggregate(Sum('amount'))['amount__sum'] or 0
     
@@ -390,3 +394,66 @@ def manage_settings(request, user):
     setting.save()
     
     return JsonResponse({'message': 'Settings updated successfully.'})
+
+@require_http_methods(['GET', 'POST'])
+@vendor_required
+def manage_withdrawals(request, user):
+    if request.method == 'GET':
+        from app.models import WithdrawalRequest
+        withdrawals = WithdrawalRequest.objects.filter(vendor=user).order_by('-created_at')
+        return JsonResponse({'withdrawals': [{
+            'id': w.id,
+            'amount': w.amount,
+            'status': w.status,
+            'bank_name': w.bank_name,
+            'account_number': w.account_number,
+            'account_name': w.account_name,
+            'created_at': w.created_at.isoformat(),
+            'processed_at': w.processed_at.isoformat() if w.processed_at else None
+        } for w in withdrawals]})
+        
+    if request.method == 'POST':
+        try:
+            payload = _parse_json_body(request)
+        except ValueError as e:
+            return _json_error(str(e))
+            
+        amount = int(payload.get('amount', 0))
+        if amount <= 0:
+            return _json_error('Số tiền rút phải lớn hơn 0.')
+            
+        # Tính số dư khả dụng
+        hotel = Hotel.objects.filter(owner=user).first()
+        if not hotel:
+            return _json_error('Bạn chưa có khách sạn nào.', status=400)
+            
+        transactions = Transaction.objects.filter(hotel=hotel)
+        balance = transactions.filter(type=Transaction.TYPE_REVENUE, status=Transaction.STATUS_COMPLETED).aggregate(Sum('net_amount'))['net_amount__sum'] or 0
+        payouts = transactions.filter(type=Transaction.TYPE_PAYOUT).aggregate(Sum('amount'))['amount__sum'] or 0
+        
+        # Thêm những khoản tiền đang chờ duyệt rút
+        from app.models import WithdrawalRequest
+        pending_withdrawals = WithdrawalRequest.objects.filter(vendor=user, status=WithdrawalRequest.STATUS_PENDING).aggregate(Sum('amount'))['amount__sum'] or 0
+        
+        available_balance = balance - payouts - pending_withdrawals
+        
+        if amount > available_balance:
+            return _json_error(f'Số dư không đủ. Bạn chỉ có thể rút tối đa {available_balance}', status=400)
+            
+        # Lấy thông tin tài khoản ngân hàng
+        setting = VendorSetting.objects.filter(user=user).first()
+        if not setting or not setting.bank_name or not setting.account_number:
+            return _json_error('Vui lòng cập nhật thông tin tài khoản ngân hàng trước khi rút tiền.', status=400)
+            
+        withdrawal = WithdrawalRequest.objects.create(
+            vendor=user,
+            amount=amount,
+            bank_name=setting.bank_name,
+            account_number=setting.account_number,
+            account_name=setting.account_name
+        )
+        
+        return JsonResponse({
+            'message': 'Yêu cầu rút tiền đã được tạo và đang chờ duyệt.',
+            'id': withdrawal.id
+        }, status=201)

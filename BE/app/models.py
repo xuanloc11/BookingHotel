@@ -246,3 +246,26 @@ class NewsletterSubscription(models.Model):
 
 	def __str__(self):
 		return self.email
+
+
+class WithdrawalRequest(models.Model):
+	STATUS_PENDING = 'pending'
+	STATUS_APPROVED = 'approved'
+	STATUS_REJECTED = 'rejected'
+	STATUS_CHOICES = [
+		(STATUS_PENDING, 'Pending'),
+		(STATUS_APPROVED, 'Approved'),
+		(STATUS_REJECTED, 'Rejected')
+	]
+
+	vendor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='withdrawals')
+	amount = models.BigIntegerField()
+	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+	bank_name = models.CharField(max_length=255)
+	account_number = models.CharField(max_length=50)
+	account_name = models.CharField(max_length=255)
+	created_at = models.DateTimeField(auto_now_add=True)
+	processed_at = models.DateTimeField(null=True, blank=True)
+
+	def __str__(self):
+		return f"Withdrawal {self.id} - {self.vendor.email} - {self.amount}"
