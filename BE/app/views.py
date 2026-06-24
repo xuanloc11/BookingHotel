@@ -322,3 +322,24 @@ def booking_detail(request, booking_id: str):
 		return _json_error('Booking not found.', status=404)
 
 	return JsonResponse(booking)
+
+@csrf_exempt
+@require_http_methods(['POST'])
+def newsletter_subscribe(request: HttpRequest) -> HttpResponse:
+    try:
+        payload = _parse_json_body(request)
+        email = payload.get('email')
+        
+        if not email:
+            return _json_error('Vui lòng cung cấp email.', status=400)
+            
+        from app.models import NewsletterSubscription
+        sub, created = NewsletterSubscription.objects.get_or_create(email=email)
+        
+        if not created and not sub.is_active:
+            sub.is_active = True
+            sub.save()
+            
+        return JsonResponse({'message': 'Đăng ký nhận bản tin thành công!'})
+    except Exception as e:
+        return _json_error(str(e), status=500)
