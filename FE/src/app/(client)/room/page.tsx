@@ -14,21 +14,21 @@ import {
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
-    title: "Room | EliteStay - Hotel Booking Multi-Purpose Next Js Template",
+    title: "Phòng | VPL Hotel",
     description:
-      "EliteStay is a professional Next JS Template for Hotel Booking Multi-Purpose services. Clean design, responsive layout, and modern UI components included.",
+      "VPL Hotel là nền tảng đặt phòng khách sạn tiện lợi và nhanh chóng.",
     openGraph: {
-      title: "Room | EliteStay",
+      title: "Phòng | VPL Hotel",
       description:
-        "EliteStay is a professional Next JS Template for Hotel Booking Multi-Purpose services. Clean design, responsive layout, and modern UI components included.",
-      url: "https://nextjs.elitestay.wowtheme7.com",
+        "VPL Hotel là nền tảng đặt phòng khách sạn tiện lợi và nhanh chóng.",
+      url: "https://booking.xloc.id.vn",
       type: "website",
       images: [
         {
-          url: "https://nextjs.elitestay.wowtheme7.com/images/meta.png",
+          url: "https://booking.xloc.id.vn/images/meta.png",
           width: 1200,
           height: 630,
-          alt: "elitestay",
+          alt: "vplhotel",
         },
       ],
     },

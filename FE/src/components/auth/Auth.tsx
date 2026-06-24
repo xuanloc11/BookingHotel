@@ -19,7 +19,7 @@ const Auth: React.FC = () => {
                       {isLogin ? "Welcome Back" : "Join Us"}
                     </h6>
                     <h2 className='section-two-title tw-text-16 fw-normal tw-mb-6 tw-char-animation'>
-                      {isLogin ? "Login to EliteStay" : "Create an Account"}
+                      {isLogin ? "Login to VPL Hotel" : "Create an Account"}
                     </h2>
                     <p className='fw-medium tw-text-lg'>
                       {isLogin

@@ -1,5 +1,5 @@
 export default function sitemap() {
-  const base = "https://nextjs.elitestay.wowtheme7.com";
+  const base = "https://booking.xloc.id.vn";
 
   return [
     {
