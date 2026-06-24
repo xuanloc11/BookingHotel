@@ -183,6 +183,7 @@ def verify_email(request):
 		return _json_error(str(e))
 
 
+@csrf_exempt
 @require_http_methods(['POST'])
 def login(request):
 	try:
@@ -232,6 +233,7 @@ def reset_password_confirm(request):
 	return _json_error('Đường dẫn không hợp lệ hoặc đã hết hạn.', status=400)
 
 
+@csrf_exempt
 @require_http_methods(['POST'])
 def logout(request):
 	user = _get_authenticated_user(request)
@@ -242,6 +244,7 @@ def logout(request):
 	return response
 
 
+@csrf_exempt
 @require_http_methods(['GET', 'PATCH'])
 def current_user(request):
 	user = _get_authenticated_user(request)
@@ -273,6 +276,7 @@ def current_user(request):
 	return JsonResponse(_serialize_user(user))
 
 
+@csrf_exempt
 @require_http_methods(['POST'])
 def create_booking(request):
 	try:
@@ -284,6 +288,7 @@ def create_booking(request):
 	return JsonResponse(result.payload, status=201)
 
 
+@csrf_exempt
 @require_http_methods(['POST'])
 def create_room_hold(request):
 	try:

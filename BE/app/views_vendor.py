@@ -2,6 +2,7 @@ import json
 from datetime import datetime, timedelta
 
 from django.http import HttpRequest, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Count, Q
@@ -21,6 +22,7 @@ def _is_vendor(user) -> bool:
 
 
 def vendor_required(view_func):
+    @csrf_exempt
     def wrapper(request: HttpRequest, *args, **kwargs):
         user = _get_authenticated_user(request)
         if not user or not _is_vendor(user):
