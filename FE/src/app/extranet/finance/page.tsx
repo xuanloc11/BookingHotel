@@ -14,7 +14,7 @@ export default function ExtranetFinance() {
   const [activeTab, setActiveTab] = useState("all");
   const [activeMainTab, setActiveMainTab] = useState("bookings"); // 'bookings' or 'withdrawals'
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
-  const [withdrawAmount, setWithdrawAmount] = useState<number | "">("");
+  const [withdrawAmount, setWithdrawAmount] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [currency, setCurrency] = useState("VND");
