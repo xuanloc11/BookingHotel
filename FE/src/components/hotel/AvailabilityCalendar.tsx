@@ -10,6 +10,7 @@ import type { HotelAvailabilityDay } from "@/types/hotel";
 interface AvailabilityCalendarProps {
   hotelId: number;
   availability: HotelAvailabilityDay[];
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 function addDays(dateValue: string, days: number): string {
@@ -39,6 +40,7 @@ function buildCheckoutHref(input: {
 export default function AvailabilityCalendar({
   hotelId,
   availability,
+  searchParams,
 }: AvailabilityCalendarProps) {
   const { t } = useLanguage();
   const firstAvailable = availability.find((day) => day.is_available);
@@ -47,15 +49,21 @@ export default function AvailabilityCalendar({
     [availability],
   );
 
-  const [checkIn, setCheckIn] = useState(firstAvailable?.date ?? "");
+  const paramCheckIn = typeof searchParams?.checkIn === 'string' ? searchParams.checkIn : null;
+  const paramCheckOut = typeof searchParams?.checkOut === 'string' ? searchParams.checkOut : null;
+  const paramRooms = typeof searchParams?.rooms === 'string' ? parseInt(searchParams.rooms, 10) : 1;
+  const paramAdults = typeof searchParams?.adults === 'string' ? parseInt(searchParams.adults, 10) : 2;
+  const paramChildren = typeof searchParams?.children === 'string' ? parseInt(searchParams.children, 10) : 0;
+
+  const [checkIn, setCheckIn] = useState(paramCheckIn || firstAvailable?.date || "");
   const [checkOut, setCheckOut] = useState(
-    firstAvailable ? addDays(firstAvailable.date, 1) : "",
+    paramCheckOut || (firstAvailable ? addDays(firstAvailable.date, 1) : "")
   );
   const [selectingMode, setSelectingMode] = useState<"checkIn" | "checkOut">("checkIn");
   const [guests, setGuests] = useState<BookingGuestCounts>({
-    adults: 2,
-    children: 0,
-    rooms: 1,
+    adults: isNaN(paramAdults) ? 2 : paramAdults,
+    children: isNaN(paramChildren) ? 0 : paramChildren,
+    rooms: isNaN(paramRooms) ? 1 : paramRooms,
   });
 
   const checkInAvailable = checkIn ? availableDateSet.has(checkIn) : false;

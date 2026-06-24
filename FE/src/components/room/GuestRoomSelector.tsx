@@ -3,15 +3,23 @@ import React, { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export interface GuestRoomSelectorProps {
+  initialAdults?: number;
+  initialChildren?: number;
+  initialRooms?: number;
   onChange?: (values: { adults: number; children: number; rooms: number }) => void;
 }
 
-const GuestRoomSelector: React.FC<GuestRoomSelectorProps> = ({ onChange }) => {
+const GuestRoomSelector: React.FC<GuestRoomSelectorProps> = ({ 
+  initialAdults = 2,
+  initialChildren = 0,
+  initialRooms = 1,
+  onChange 
+}) => {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const [adults, setAdults] = useState(2);
-  const [children, setChildren] = useState(0);
-  const [rooms, setRooms] = useState(1);
+  const [adults, setAdults] = useState(initialAdults);
+  const [children, setChildren] = useState(initialChildren);
+  const [rooms, setRooms] = useState(initialRooms);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -54,8 +62,8 @@ const GuestRoomSelector: React.FC<GuestRoomSelectorProps> = ({ onChange }) => {
     <div className='position-relative w-100' ref={dropdownRef}>
       {/* Trigger Button */}
       <div
-        className='custom-date-input d-flex align-items-center justify-content-between px-3 border bg-white w-100'
-        style={{ height: "42px", borderRadius: "0.375rem", borderColor: "#ced4da", cursor: "pointer" }}
+        className='custom-date-input d-flex align-items-center justify-content-between px-3 border bg-white w-100 tw-h-14'
+        style={{ borderRadius: "0.375rem", borderColor: "#ced4da", cursor: "pointer" }}
         onClick={handleToggle}
       >
         <div className='d-flex gap-2 align-items-center overflow-hidden'>

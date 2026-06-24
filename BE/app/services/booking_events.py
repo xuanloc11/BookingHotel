@@ -36,6 +36,9 @@ class BookingConfirmationObserver:
 
         context.payload.setdefault('confirmation_message', 'Your booking has been created successfully.')
 
+        from app.services.email_service import EmailService
+        EmailService.send_booking_confirmation(context.payload)
+
 
 class BookingAuditObserver:
     def update(self, context: BookingEventContext) -> None:

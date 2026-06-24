@@ -7,7 +7,7 @@ import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
-import { fetchHotelById } from "@/lib/api/hotelApi";
+import { fetchHotelBySlug } from "@/lib/api/hotelApi";
 import { parseCheckoutParams } from "@/lib/checkout/checkoutParams";
 import { calculateBookingPrice } from "@/lib/checkout/pricing";
 import type { PageSearchParams } from "@/lib/hotelSearchParams";
@@ -59,7 +59,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
     );
   }
 
-  const hotel = await fetchHotelById(selection.hotel_id);
+  const hotel = await fetchHotelBySlug(selection.hotel_id.toString());
   const price = calculateBookingPrice({
     nightlyRate: hotel.price_per_night,
     checkIn: selection.check_in,

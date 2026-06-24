@@ -11,6 +11,7 @@ import {
   register,
 } from "@/lib/api/authApi";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { sanitizeTextInput } from "@/lib/validation/sanitize";
 import toast from "react-hot-toast";
 
@@ -28,6 +29,7 @@ function formValue(formData: FormData, key: string): string {
 export default function AuthForm({ mode, nextPath }: AuthFormProps) {
   const router = useRouter();
   const { setUser } = useAuth();
+  const { t } = useLanguage();
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -71,10 +73,9 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
           password,
           password_confirm: passwordConfirm,
         });
-        persistAuthSession(regResponse);
-        setUser(regResponse.user);
-        toast.success("Đăng ký thành công!");
-        router.push(nextPath || "/profile");
+        toast.success((regResponse as any).message || "Đăng ký thành công! Vui lòng kiểm tra email để xác nhận.");
+        // Redirect to login or just clear form
+        router.push("/login");
         router.refresh();
         return;
       }
@@ -109,20 +110,24 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                 <div className='section-two-wrapper tw-mb-14'>
                   <h6 className='section-two-subtitle tw-text-xl text-uppercase text-main-three-800 tw-mb-4'>
                     {isLogin
-                      ? "Chào mừng trở lại"
+                      ? t("auth.welcomeBack")
                       : isRegister
-                        ? "Tạo tài khoản"
-                        : "Khôi phục tài khoản"}
+                        ? t("auth.createAccount")
+                        : t("auth.recoverAccount")}
                   </h6>
                   <h2 className='section-two-title tw-text-16 fw-normal tw-mb-6 tw-char-animation'>
                     {isLogin
-                      ? "Đăng nhập"
+                      ? t("auth.loginTitle")
                       : isRegister
-                        ? "Đăng ký"
-                        : "Đặt lại mật khẩu"}
+                        ? t("auth.registerTitle")
+                        : t("auth.resetTitle")}
                   </h2>
                   <p className='fw-medium tw-text-lg'>
-                    Quản lý đơn đặt phòng, chi tiết hồ sơ và lịch sử chuyến đi từ một tài khoản an toàn.
+                    {isLogin
+                      ? t("auth.loginDesc")
+                      : isRegister
+                        ? t("auth.registerDesc")
+                        : t("auth.resetDesc")}
                   </p>
                 </div>
               </div>
@@ -140,7 +145,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                             <input
                               className='form-control rounded-0 bg-white shadow-none border-none border-bottom border-bottom-neutral text-heading tw-ps-8 tw-pe-13 focus-border-main-600 tw-h-14'
                               name='full_name'
-                              placeholder='Họ và tên'
+                              placeholder={t("auth.fullNamePlaceholder")}
                               required
                               type='text'
                             />
@@ -156,7 +161,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                           <input
                             className='form-control rounded-0 bg-white shadow-none border-none border-bottom border-bottom-neutral text-heading tw-ps-8 tw-pe-13 focus-border-main-600 tw-h-14'
                             name='email'
-                            placeholder='Địa chỉ email'
+                            placeholder={t("auth.emailPlaceholder")}
                             required
                             type='email'
                           />
@@ -172,7 +177,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                             <input
                               className='form-control rounded-0 bg-white shadow-none border-none border-bottom border-bottom-neutral text-heading tw-ps-8 tw-pe-13 focus-border-main-600 tw-h-14'
                               name='password'
-                              placeholder='Mật khẩu'
+                              placeholder={t("auth.passwordPlaceholder")}
                               required
                               type='password'
                             />
@@ -189,7 +194,7 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                             <input
                               className='form-control rounded-0 bg-white shadow-none border-none border-bottom border-bottom-neutral text-heading tw-ps-8 tw-pe-13 focus-border-main-600 tw-h-14'
                               name='password_confirm'
-                              placeholder='Xác nhận mật khẩu'
+                              placeholder={t("auth.passwordConfirmPlaceholder")}
                               required
                               type='password'
                             />
@@ -201,10 +206,10 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                         <div className='col-xl-12 tw-mb-8 d-flex justify-content-between align-items-center flex-wrap row-gap-2'>
                           <label className='form-check-label d-flex align-items-center tw-gap-2'>
                             <input className='form-check-input' type='checkbox' />
-                            Ghi nhớ đăng nhập
+                            {t("auth.rememberMe")}
                           </label>
                           <Link className='text-main-600 fw-bold' href='/forgot-password'>
-                            Quên mật khẩu?
+                            {t("auth.forgotPassword")}
                           </Link>
                         </div>
                       ) : null}
@@ -218,14 +223,14 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                           {submitting ? (
                             <>
                               <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                              Vui lòng chờ...
+                              {t("auth.waitMsg")}
                             </>
                           ) : isLogin ? (
-                            "Đăng nhập"
+                            t("auth.loginBtn")
                           ) : isRegister ? (
-                            "Đăng ký"
+                            t("auth.registerBtn")
                           ) : (
-                            "Gửi liên kết đặt lại"
+                            t("auth.resetBtn")
                           )}
                           {!submitting && (
                             <span className='d-inline-block lh-1 tw-text-lg'>
@@ -238,16 +243,16 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                       <div className='col-xl-12 tw-mt-6'>
                         {isLogin ? (
                           <p className='mb-0'>
-                            Chưa có tài khoản?{" "}
+                            {t("auth.noAccount")}{" "}
                             <Link className='text-main-600 fw-bold' href='/register'>
-                              Đăng ký
+                              {t("auth.registerNow")}
                             </Link>
                           </p>
                         ) : (
                           <p className='mb-0'>
-                            Đã có tài khoản?{" "}
+                            {t("auth.hasAccount")}{" "}
                             <Link className='text-main-600 fw-bold' href='/login'>
-                              Đăng nhập
+                              {t("auth.loginNow")}
                             </Link>
                           </p>
                         )}

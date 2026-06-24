@@ -7,28 +7,40 @@ import type { HotelAvailabilityDay, HotelDetails as HotelDetailsType } from "@/t
 interface HotelDetailsProps {
   hotel: HotelDetailsType;
   availability: HotelAvailabilityDay[];
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-export default function HotelDetails({ hotel, availability }: HotelDetailsProps) {
+export default function HotelDetails({ hotel, availability, searchParams }: HotelDetailsProps) {
   const { formatMoney } = useCurrency();
   return (
     <>
       <section className='tw-py-14 bg_2'>
         <div className='container'>
           <div className='row g-4'>
-            {hotel.images.map((image, index) => (
-              <div
-                className={index === 0 ? "col-lg-6" : "col-lg-3 col-md-4"}
-                key={image}
-              >
+            <div className='col-lg-6'>
+              {hotel.images[0] && (
                 <img
-                  alt={`${hotel.name} gallery ${index + 1}`}
+                  alt={`${hotel.name} gallery 1`}
                   className='tw-rounded-lg w-100 object-fit-cover'
-                  style={{ height: index === 0 ? '520px' : '250px' }}
-                  src={image}
+                  style={{ height: '520px' }}
+                  src={hotel.images[0]}
                 />
+              )}
+            </div>
+            <div className='col-lg-6'>
+              <div className='row g-4'>
+                {hotel.images.slice(1, 5).map((image, index) => (
+                  <div className='col-6' key={image}>
+                    <img
+                      alt={`${hotel.name} gallery ${index + 2}`}
+                      className='tw-rounded-lg w-100 object-fit-cover'
+                      style={{ height: '250px' }}
+                      src={image}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
@@ -94,6 +106,7 @@ export default function HotelDetails({ hotel, availability }: HotelDetailsProps)
               <AvailabilityCalendar
                 availability={availability}
                 hotelId={hotel.id}
+                searchParams={searchParams}
               />
             </div>
           </div>

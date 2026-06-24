@@ -2,7 +2,6 @@ import json
 from datetime import datetime, timedelta
 
 from django.http import HttpRequest, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.db.models import Sum, Count, Q
 from django.db.models.functions import TruncMonth
@@ -33,7 +32,6 @@ def admin_required(view_func):
     return wrapper
 
 
-@csrf_exempt
 @require_http_methods(['GET'])
 @admin_required
 def dashboard_stats(request, user):
@@ -73,7 +71,6 @@ def dashboard_stats(request, user):
     })
 
 
-@csrf_exempt
 @require_http_methods(['GET', 'POST'])
 @admin_required
 def list_users(request, user):
@@ -119,7 +116,6 @@ def list_users(request, user):
         return JsonResponse({'message': 'User created successfully.', 'id': new_user.id})
 
 
-@csrf_exempt
 @require_http_methods(['GET'])
 @admin_required
 def list_hotels(request, user):
@@ -140,7 +136,6 @@ def list_hotels(request, user):
     return JsonResponse({'hotels': hotel_list})
 
 
-@csrf_exempt
 @require_http_methods(['PUT', 'DELETE'])
 @admin_required
 def manage_user(request, user, user_id: int):
@@ -198,7 +193,6 @@ def manage_user(request, user, user_id: int):
             
         return JsonResponse({'message': 'User updated successfully.'})
 
-@csrf_exempt
 @require_http_methods(['DELETE'])
 @admin_required
 def manage_hotel(request, user, hotel_id: int):
@@ -206,14 +200,12 @@ def manage_hotel(request, user, hotel_id: int):
     hotel.delete()
     return JsonResponse({'message': 'Hotel deleted successfully.'})
 
-@csrf_exempt
 @require_http_methods(['GET'])
 @admin_required
 def list_bookings(request, user):
     bookings = Booking.objects.all().order_by('-created_at')
     return JsonResponse({'bookings': [b.to_summary() for b in bookings]})
 
-@csrf_exempt
 @require_http_methods(['GET'])
 @admin_required
 def list_approvals(request, user):
@@ -235,7 +227,6 @@ def list_approvals(request, user):
         })
     return JsonResponse({'approvals': hotel_list})
 
-@csrf_exempt
 @require_http_methods(['PUT'])
 @admin_required
 def update_approval_status(request, user, hotel_id: int):

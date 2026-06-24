@@ -58,9 +58,9 @@ export async function fetchHotelSearchResults(
   };
 }
 
-export async function fetchHotelById(id: number): Promise<HotelDetails> {
+export async function fetchHotelBySlug(slug: string): Promise<HotelDetails> {
   const hotels = await fetchHotels();
-  const hotel = hotels.find((item) => item.id === id);
+  const hotel = hotels.find((item) => item.slug === slug || item.id.toString() === slug);
 
   if (!hotel) {
     throw new Error("Hotel not found.");
@@ -70,16 +70,16 @@ export async function fetchHotelById(id: number): Promise<HotelDetails> {
 }
 
 export async function fetchHotelAvailability(
-  hotelId: number,
+  slug: string,
 ): Promise<HotelAvailabilityDay[]> {
   try {
     const response = await fetchBackendJson<HotelAvailabilityResponse>(
-      `/hotels/${hotelId}/availability/`,
+      `/hotels/${slug}/availability/`,
     );
 
     return response.results;
   } catch {
-    const hotel = await fetchHotelById(hotelId);
+    const hotel = await fetchHotelBySlug(slug);
     return generateAvailability(hotel);
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useCurrency } from "@/lib/currency/CurrencyContext";
 
 import type { Hotel } from "@/types/hotel";
@@ -11,11 +12,16 @@ interface HotelCardProps {
 
 export default function HotelCard({ hotel }: HotelCardProps) {
   const { formatMoney } = useCurrency();
+  const searchParams = useSearchParams();
+  
+  const href = searchParams.toString() 
+    ? `/hotel/${hotel.slug}?${searchParams.toString()}`
+    : `/hotel/${hotel.slug}`;
 
   return (
     <article className='service-wrapper bg-white tw-p-4 tw-rounded-xl tw-mb-8 h-100 d-flex flex-column'>
       <div className='service-thumb tw-mb-5 position-relative z-1 overflow-hidden'>
-        <Link href={`/hotel/${hotel.id}`}>
+        <Link href={href}>
           <img
             alt={hotel.name}
             className='tw-rounded-xl w-100 object-fit-cover hover-scale-2 tw-duration-500'
@@ -35,7 +41,7 @@ export default function HotelCard({ hotel }: HotelCardProps) {
           <i className='ph ph-map-pin' /> {hotel.address}
         </span>
         <h3 className='service-title tw-text-8 fw-normal text-capitalize tw-mb-2 d-flex flex-wrap align-items-center tw-gap-2'>
-          <Link className='hover-text-secondary' href={`/hotel/${hotel.id}`}>
+          <Link className='hover-text-secondary' href={href}>
             {hotel.name}
           </Link>
           <span className='d-flex align-items-center tw-gap-1 tw-text-sm' style={{ color: "#fbb03b" }}>
@@ -76,7 +82,7 @@ export default function HotelCard({ hotel }: HotelCardProps) {
             </div>
             <Link
               className='font-heading tw-text-sm text-uppercase text-heading fw-normal hover-text-main-600'
-              href={`/hotel/${hotel.id}`}
+              href={href}
             >
               Xem chi tiết <i className='tw-text-base ph ph-arrow-up-right' />
             </Link>

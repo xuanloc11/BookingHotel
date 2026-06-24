@@ -9,8 +9,8 @@ import Preloader from "@/helper/Preloader";
 import type { PageSearchParams } from "@/lib/hotelSearchParams";
 
 export const metadata: Metadata = {
-  title: "Login",
-  description: "Sign in to manage hotel bookings and profile details.",
+  title: "Đăng nhập",
+  description: "Đăng nhập để quản lý đặt phòng và thông tin cá nhân.",
 };
 
 interface LoginPageProps {
@@ -32,7 +32,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     <AOSWrap>
       <Preloader />
       <Header />
-      <Breadcrumb title='Đăng nhập' sub_title='Tài khoản' />
+      <Breadcrumb title='Đăng nhập' titleKey='auth.loginTitle' sub_title='Tài khoản' subTitleKey='auth.loginSubtitle' />
       <AuthForm mode='login' nextPath={firstValue(params, "next")} />
       <Footer />
     </AOSWrap>

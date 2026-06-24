@@ -6,7 +6,9 @@ from uuid import uuid4
 
 from django.db import transaction
 
-from app.models import Booking
+from django.utils.timezone import now
+from datetime import timedelta
+from app.models import Booking, RoomHold, Hotel
 from app.repositories.hotel_repository import HotelRepository
 from app.services.booking_events import (
     BookingAuditObserver,
@@ -51,6 +53,9 @@ class BookingService:
 
     @transaction.atomic
     def create_booking(self, payload: dict, user=None) -> BookingCreationResult:
+        if payload.get('session_id'):
+            RoomHold.objects.filter(session_id=payload['session_id'], is_active=True).update(is_active=False)
+
         hotel = self.hotel_repository.get_by_id(int(payload['hotel_id']))
         if not hotel:
             raise ValueError('Hotel not found.')
@@ -85,6 +90,7 @@ class BookingService:
                 'booking_id': booking.booking_id,
                 'status': booking.status,
                 'hotel_id': booking.hotel_id,
+                'hotel_name': booking.hotel_name,
                 'check_in': booking.check_in,
                 'check_out': booking.check_out,
                 'guests': booking.guests,
@@ -112,3 +118,32 @@ class BookingService:
 
     def _generate_booking_id(self) -> str:
         return f'BK-{uuid4().hex[:10].upper()}'
+
+    @transaction.atomic
+    def create_room_hold(self, payload: dict) -> dict:
+        hotel_id = payload.get('hotel_id')
+        session_id = payload.get('session_id')
+        
+        if not hotel_id or not session_id:
+            raise ValueError('Missing hotel_id or session_id')
+
+        hotel = Hotel.objects.filter(id=hotel_id).first()
+        if not hotel:
+            raise ValueError('Hotel not found.')
+
+        hold, created = RoomHold.objects.update_or_create(
+            session_id=session_id,
+            hotel=hotel,
+            defaults={
+                'hold_id': uuid4().hex,
+                'check_in': payload.get('check_in'),
+                'check_out': payload.get('check_out'),
+                'rooms': int(payload.get('rooms', 1)),
+                'expires_at': now() + timedelta(minutes=10),
+                'is_active': True
+            }
+        )
+        return {
+            'hold_id': hold.hold_id,
+            'expires_at': hold.expires_at.isoformat()
+        }

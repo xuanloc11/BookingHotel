@@ -13,8 +13,8 @@ interface BookingSuccessPageProps {
 }
 
 export const metadata: Metadata = {
-  title: "Booking Success",
-  description: "Booking confirmation details.",
+  title: "Đặt phòng thành công",
+  description: "Chi tiết xác nhận đặt phòng của bạn.",
 };
 
 function firstValue(
@@ -34,7 +34,7 @@ export default async function BookingSuccessPage({
     <AOSWrap>
       <Preloader />
       <Header />
-      <Breadcrumb title='Booking Success' sub_title='Confirmation' />
+      <Breadcrumb title='Đặt phòng thành công' titleKey='success.title' sub_title='Xác nhận' subTitleKey='success.subtitle' />
       <BookingSuccessDetails
         bookingId={firstValue(params, "bookingId")}
         checkIn={firstValue(params, "checkIn")}

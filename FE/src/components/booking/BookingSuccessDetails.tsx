@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface BookingSuccessDetailsProps {
   bookingId?: string;
@@ -15,6 +16,7 @@ export default function BookingSuccessDetails({
   checkIn,
   checkOut,
 }: BookingSuccessDetailsProps) {
+  const { t } = useLanguage();
   return (
     <section className='bg_2 pt-120 pb-120'>
       <div className='container'>
@@ -25,32 +27,32 @@ export default function BookingSuccessDetails({
                 <i className='ph ph-check' />
               </span>
               <h1 className='tw-text-12 fw-normal tw-mb-4'>
-                Đã nhận được yêu cầu đặt chỗ
+                {t("success.heading")}
               </h1>
               <p className='tw-text-lg tw-mb-8'>
-                Thông tin xác nhận đã được ghi nhận. Giữ mã đặt phòng để làm thủ tục nhận phòng và hỗ trợ.
+                {t("success.desc")}
               </p>
 
               <div className='border tw-rounded-lg tw-p-6 text-start tw-mb-8'>
                 <div className='d-flex justify-content-between tw-mb-3'>
-                  <span>Booking ID</span>
-                  <strong>{bookingId ?? "Pending"}</strong>
+                  <span>{t("success.bookingId")}</span>
+                  <strong>{bookingId ?? t("success.statusPending")}</strong>
                 </div>
                 <div className='d-flex justify-content-between tw-mb-3'>
-                  <span>Trạng thái</span>
-                  <strong className='text-capitalize'>{status ?? "pending"}</strong>
+                  <span>{t("success.status")}</span>
+                  <strong className='text-capitalize'>{status ?? t("success.statusPending")}</strong>
                 </div>
                 {hotelName ? (
                   <div className='d-flex justify-content-between tw-mb-3'>
-                    <span>Hotel</span>
+                    <span>{t("success.hotel")}</span>
                     <strong>{hotelName}</strong>
                   </div>
                 ) : null}
                 {checkIn && checkOut ? (
                   <div className='d-flex justify-content-between'>
-                    <span>Ngày</span>
+                    <span>{t("success.dates")}</span>
                     <strong>
-                      {checkIn} to {checkOut}
+                      {t("success.from")} {checkIn} {t("success.to")} {checkOut}
                     </strong>
                   </div>
                 ) : null}
@@ -61,10 +63,10 @@ export default function BookingSuccessDetails({
                   className='tw-btn-hover-black bg-main-600 tw-py-4 tw-px-8 text-heading font-heading tw-rounded-lg'
                   href='/profile/?tab=bookings'
                 >
-                  Xem các đơn đặt phòng
+                  {t("success.viewBookings")}
                 </Link>
                 <Link className='btn btn-outline-secondary tw-py-4 tw-px-8' href='/room'>
-                  Tìm kiếm thêm khách sạn
+                  {t("success.searchMore")}
                 </Link>
               </div>
             </div>

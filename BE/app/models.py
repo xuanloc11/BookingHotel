@@ -36,6 +36,7 @@ class Hotel(models.Model):
 		blank=True
 	)
 	name = models.CharField(max_length=255)
+	slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
 	province = models.CharField(max_length=255, default='')
 	address = models.CharField(max_length=255)
 	price_per_night = models.PositiveIntegerField(default=0)
@@ -208,4 +209,18 @@ class VendorSetting(models.Model):
 
 	def __str__(self):
 		return f"{self.user.email} - Settings"
+
+class RoomHold(models.Model):
+	hold_id = models.CharField(max_length=50, unique=True)
+	hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='holds')
+	session_id = models.CharField(max_length=255)
+	check_in = models.CharField(max_length=10)
+	check_out = models.CharField(max_length=10)
+	rooms = models.PositiveIntegerField(default=1)
+	expires_at = models.DateTimeField()
+	created_at = models.DateTimeField(auto_now_add=True)
+	is_active = models.BooleanField(default=True)
+
+	def __str__(self):
+		return f"Hold {self.hold_id} - {self.hotel.name}"
 

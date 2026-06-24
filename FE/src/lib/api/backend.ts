@@ -87,7 +87,18 @@ export async function fetchBackendJson<T>(
     headers.set("Authorization", `Bearer ${authToken}`);
   }
 
-  const csrfToken = readBrowserCookie("csrftoken");
+  let csrfToken = readBrowserCookie("csrftoken");
+  const isMutating = requestOptions.method && ["POST", "PUT", "PATCH", "DELETE"].includes(requestOptions.method.toUpperCase());
+
+  if (isMutating && !csrfToken && typeof window !== "undefined") {
+    try {
+      await fetch(getBackendUrl("/csrf/"), { credentials: "include" });
+      csrfToken = readBrowserCookie("csrftoken");
+    } catch (e) {
+      console.warn("Failed to prefetch CSRF token", e);
+    }
+  }
+
   if (csrfToken && !headers.has("X-CSRFToken")) {
     headers.set("X-CSRFToken", csrfToken);
   }

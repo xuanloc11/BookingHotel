@@ -5,6 +5,7 @@ class HotelRepository:
     def _hotel_to_dict(self, hotel: Hotel) -> dict:
         return {
             'id': hotel.id,
+            'slug': hotel.slug,
             'name': hotel.name,
             'province': hotel.province,
             'address': hotel.address,
@@ -27,4 +28,17 @@ class HotelRepository:
             hotel = Hotel.objects.get(id=hotel_id, status=Hotel.STATUS_APPROVED)
             return self._hotel_to_dict(hotel)
         except Hotel.DoesNotExist:
+            return None
+
+    def get_by_slug_or_id(self, identifier: str | int) -> dict | None:
+        try:
+            hotel = Hotel.objects.get(slug=identifier, status=Hotel.STATUS_APPROVED)
+            return self._hotel_to_dict(hotel)
+        except Hotel.DoesNotExist:
+            try:
+                if isinstance(identifier, str) and identifier.isdigit() or isinstance(identifier, int):
+                    hotel = Hotel.objects.get(id=int(identifier), status=Hotel.STATUS_APPROVED)
+                    return self._hotel_to_dict(hotel)
+            except Hotel.DoesNotExist:
+                pass
             return None

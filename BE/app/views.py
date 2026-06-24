@@ -5,7 +5,7 @@ import json
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.http import HttpRequest, JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_http_methods
 
 from app.models import Profile
@@ -72,13 +72,17 @@ def _serialize_user(user) -> dict:
     }
 
 
-@csrf_exempt
 @require_GET
 def health_check(request):
 	return JsonResponse({'status': 'ok', 'service': 'booking-hotel-be'})
 
 
-@csrf_exempt
+@ensure_csrf_cookie
+@require_GET
+def get_csrf_token(request):
+	return JsonResponse({'status': 'ok'})
+
+
 @require_GET
 def hotel_list(request):
 	limit = request.GET.get('limit')
@@ -112,32 +116,28 @@ def hotel_list(request):
 	return JsonResponse({'results': hotels})
 
 
-@csrf_exempt
 @require_GET
-def hotel_detail(request, hotel_id: int):
+def hotel_detail(request, hotel_id: str):
 	hotel = hotel_service.get_hotel_details(hotel_id)
 	if not hotel:
 		return _json_error('Hotel not found.', status=404)
 	return JsonResponse(hotel)
 
 
-@csrf_exempt
 @require_GET
-def hotel_availability(request, hotel_id: int):
+def hotel_availability(request, hotel_id: str):
 	availability = hotel_service.get_hotel_availability(hotel_id)
 	if not availability:
 		return _json_error('Hotel not found.', status=404)
 	return JsonResponse({'results': availability})
 
 
-@csrf_exempt
 @require_GET
 def province_list(request):
 	provinces = hotel_service.list_provinces()
 	return JsonResponse({'results': provinces})
 
 
-@csrf_exempt
 @require_http_methods(['POST'])
 def register(request):
 	try:
@@ -151,13 +151,36 @@ def register(request):
 	except ValueError as error:
 		return _json_error(str(error))
 
-	auth_login(request, result.user)
-	response = JsonResponse({'user': _serialize_user(result.user), 'tokens': {'access': result.access_token, 'refresh': result.refresh_token}})
-	response.set_cookie('booking_access_token', result.access_token, max_age=60 * 60 * 24, samesite='Lax')
-	return response
+	return JsonResponse({'message': 'Vui lòng kiểm tra email để xác nhận tài khoản.'}, status=201)
+
+@require_http_methods(['POST'])
+def verify_email(request):
+	try:
+		payload = _parse_json_body(request)
+		uidb64 = payload.get('uid')
+		token = payload.get('token')
+
+		from django.utils.http import urlsafe_base64_decode
+		from django.contrib.auth import get_user_model
+		from django.contrib.auth.tokens import default_token_generator
+
+		User = get_user_model()
+		try:
+			uid = urlsafe_base64_decode(uidb64).decode()
+			user = User.objects.get(pk=uid)
+		except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+			user = None
+
+		if user is not None and default_token_generator.check_token(user, token):
+			user.is_active = True
+			user.save()
+			return JsonResponse({'message': 'Xác nhận email thành công. Bạn có thể đăng nhập.'})
+		else:
+			return _json_error('Link xác nhận không hợp lệ hoặc đã hết hạn.', status=400)
+	except Exception as e:
+		return _json_error(str(e))
 
 
-@csrf_exempt
 @require_http_methods(['POST'])
 def login(request):
 	try:
@@ -175,7 +198,6 @@ def login(request):
 	return response
 
 
-@csrf_exempt
 @require_http_methods(['POST'])
 def forgot_password(request):
 	try:
@@ -186,7 +208,26 @@ def forgot_password(request):
 	return JsonResponse({'detail': auth_service.reset_password(payload.get('email', ''))})
 
 
-@csrf_exempt
+@require_http_methods(['POST'])
+def reset_password_confirm(request):
+	try:
+		payload = _parse_json_body(request)
+	except ValueError as error:
+		return _json_error(str(error))
+
+	uidb64 = payload.get('uid')
+	token = payload.get('token')
+	new_password = payload.get('new_password')
+
+	if not uidb64 or not token or not new_password:
+		return _json_error('Thiếu thông tin yêu cầu.', status=400)
+
+	success = auth_service.confirm_reset_password(uidb64, token, new_password)
+	if success:
+		return JsonResponse({'message': 'Đặt lại mật khẩu thành công.'})
+	return _json_error('Đường dẫn không hợp lệ hoặc đã hết hạn.', status=400)
+
+
 @require_http_methods(['POST'])
 def logout(request):
 	user = _get_authenticated_user(request)
@@ -197,7 +238,6 @@ def logout(request):
 	return response
 
 
-@csrf_exempt
 @require_http_methods(['GET', 'PATCH'])
 def current_user(request):
 	user = _get_authenticated_user(request)
@@ -229,7 +269,6 @@ def current_user(request):
 	return JsonResponse(_serialize_user(user))
 
 
-@csrf_exempt
 @require_http_methods(['POST'])
 def create_booking(request):
 	try:
@@ -241,7 +280,17 @@ def create_booking(request):
 	return JsonResponse(result.payload, status=201)
 
 
-@csrf_exempt
+@require_http_methods(['POST'])
+def create_room_hold(request):
+	try:
+		payload = _parse_json_body(request)
+		result = booking_service.create_room_hold(payload)
+	except ValueError as error:
+		return _json_error(str(error))
+
+	return JsonResponse(result, status=201)
+
+
 @require_GET
 def my_bookings(request):
 	user = _get_authenticated_user(request)
@@ -251,7 +300,6 @@ def my_bookings(request):
 	return JsonResponse({'results': booking_service.list_user_bookings(user)})
 
 
-@csrf_exempt
 @require_GET
 def booking_detail(request, booking_id: str):
 	user = _get_authenticated_user(request)

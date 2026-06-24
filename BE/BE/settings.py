@@ -86,6 +86,12 @@ ALLOWED_HOSTS = [
 if 'testserver' not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append('testserver')
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'https://booking.xloc.id.vn',
+]
+
 
 # Application definition
 
@@ -184,3 +190,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+RESEND_API_KEY = _env('RESEND_API_KEY', '')
+RESEND_FROM_EMAIL = _env('RESEND_FROM_EMAIL', 'help@booking.xloc.id.vn')
+FRONTEND_URL = _env('FRONTEND_URL', 'http://localhost:3000')

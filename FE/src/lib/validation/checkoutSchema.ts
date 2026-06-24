@@ -73,6 +73,7 @@ export const createBookingRequestSchema = z
     guests: bookingGuestCountsSchema,
     customer: checkoutCustomerSchema,
     payment: bookingPaymentIntentSchema,
+    session_id: z.string().optional(),
   })
   .strict()
   .superRefine((value, context) => {

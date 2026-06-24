@@ -5,6 +5,7 @@ import type {
   ForgotPasswordResponse,
   LoginRequest,
   RegisterRequest,
+  ResetPasswordConfirmRequest,
 } from "@/types/auth";
 
 export const AUTH_ACCESS_TOKEN_COOKIE = "booking_access_token";
@@ -51,6 +52,15 @@ export async function forgotPassword(
   payload: ForgotPasswordRequest,
 ): Promise<ForgotPasswordResponse> {
   return fetchBackendJson<ForgotPasswordResponse>("/auth/password-reset/", {
+    method: "POST",
+    body: payload,
+  });
+}
+
+export async function resetPasswordConfirm(
+  payload: ResetPasswordConfirmRequest,
+): Promise<{ message: string }> {
+  return fetchBackendJson<{ message: string }>("/auth/reset-password-confirm", {
     method: "POST",
     body: payload,
   });

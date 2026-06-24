@@ -24,20 +24,30 @@ class AuthService:
             raise ValueError('Password confirmation does not match.')
 
         normalized_email = email.strip().lower()
-        if User.objects.filter(username=normalized_email).exists():
-            raise ValueError('An account with this email already exists.')
+        existing_user = User.objects.filter(username=normalized_email).first()
+        if existing_user:
+            if not existing_user.is_active:
+                raise ValueError('Tài khoản này đã được đăng ký nhưng chưa xác nhận email. Vui lòng kiểm tra email hoặc dùng email khác để đăng ký.')
+            raise ValueError('Email này đã được sử dụng.')
 
         user = User.objects.create_user(
             username=normalized_email,
             email=normalized_email,
             password=password,
+            is_active=False,
         )
         Profile.objects.update_or_create(
             user=user,
             defaults={'full_name': full_name.strip()},
         )
 
-        return self._issue_tokens(user)
+        from django.contrib.auth.tokens import default_token_generator
+        from app.services.email_service import EmailService
+
+        token = default_token_generator.make_token(user)
+        EmailService.send_verification_email(user, token)
+
+        return AuthResult(user=user, access_token="", refresh_token="")
 
     def login(self, email: str, password: str) -> AuthResult:
         normalized_email = email.strip().lower()
@@ -58,10 +68,33 @@ class AuthService:
 
     def reset_password(self, email: str) -> str:
         normalized_email = email.strip().lower()
-        if User.objects.filter(username=normalized_email).exists():
-            return 'Password reset instructions have been sent.'
+        user = User.objects.filter(username=normalized_email).first()
+        if user:
+            from django.contrib.auth.tokens import default_token_generator
+            from app.services.email_service import EmailService
 
-        return 'If the email exists, password reset instructions have been sent.'
+            token = default_token_generator.make_token(user)
+            EmailService.send_password_reset_email(user, token)
+            return 'Đã gửi hướng dẫn đặt lại mật khẩu vào email của bạn.'
+
+        return 'Nếu email tồn tại, hướng dẫn đặt lại mật khẩu đã được gửi.'
+
+    def confirm_reset_password(self, uidb64: str, token: str, new_password: str) -> bool:
+        from django.utils.http import urlsafe_base64_decode
+        from django.utils.encoding import force_str
+        from django.contrib.auth.tokens import default_token_generator
+
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+
+        if user is not None and default_token_generator.check_token(user, token):
+            user.set_password(new_password)
+            user.save()
+            return True
+        return False
 
     def logout(self, user: User | None = None, access_token: str | None = None) -> None:
         if access_token:

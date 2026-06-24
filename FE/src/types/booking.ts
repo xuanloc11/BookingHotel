@@ -37,6 +37,7 @@ export interface CreateBookingRequest {
   guests: BookingGuestCounts;
   customer: BookingCustomerInfo;
   payment: BookingPaymentIntent;
+  session_id?: string;
 }
 
 export interface BookingPriceBreakdown {

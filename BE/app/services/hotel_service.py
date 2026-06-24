@@ -117,8 +117,11 @@ class HotelService:
     def get_hotel_by_id(self, hotel_id: int) -> dict | None:
         return self.repository.get_by_id(hotel_id)
 
-    def get_hotel_details(self, hotel_id: int) -> dict | None:
-        hotel = self.get_hotel_by_id(hotel_id)
+    def get_hotel_by_identifier(self, identifier: str | int) -> dict | None:
+        return self.repository.get_by_slug_or_id(identifier)
+
+    def get_hotel_details(self, identifier: str | int) -> dict | None:
+        hotel = self.get_hotel_by_identifier(identifier)
         if not hotel:
             return None
 
@@ -132,13 +135,18 @@ class HotelService:
             ],
         }
 
-    def get_hotel_availability(self, hotel_id: int) -> list[dict]:
-        hotel = self.get_hotel_by_id(hotel_id)
+    def get_hotel_availability(self, identifier: str | int) -> list[dict]:
+        hotel = self.get_hotel_by_identifier(identifier)
         if not hotel:
             return []
 
+        hotel_id = hotel['id']
+
         today = datetime.utcnow().date()
         availability: list[dict] = []
+        
+        from django.utils.timezone import now
+        from app.models import RoomHold
         
         # Calculate booked rooms per date
         booked_rooms_per_date = Counter()
@@ -156,6 +164,21 @@ class HotelService:
                     current_date += timedelta(days=1)
             except Exception:
                 pass # Ignore malformed bookings
+
+        # Add active holds to booked rooms
+        active_holds = RoomHold.objects.filter(hotel_id=hotel_id, is_active=True, expires_at__gt=now())
+        for hold in active_holds:
+            try:
+                check_in_date = datetime.strptime(hold.check_in, '%Y-%m-%d').date()
+                check_out_date = datetime.strptime(hold.check_out, '%Y-%m-%d').date()
+                rooms = hold.rooms
+
+                current_date = check_in_date
+                while current_date < check_out_date:
+                    booked_rooms_per_date[current_date.isoformat()] += rooms
+                    current_date += timedelta(days=1)
+            except Exception:
+                pass
 
         for index in range(21):
             date_value = today + timedelta(days=index)

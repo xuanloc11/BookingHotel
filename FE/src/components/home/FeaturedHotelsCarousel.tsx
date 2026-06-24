@@ -49,7 +49,7 @@ const FeaturedHotelsCarousel: FC<FeaturedHotelsCarouselProps> = ({ title, subtit
           {hotels.map((hotel) => (
             <SwiperSlide key={hotel.id} style={{ height: "auto" }}>
               <div className='card border-0 shadow-sm h-100 tw-rounded-xl overflow-hidden d-flex flex-column'>
-                <Link href={`/hotel/${hotel.id}`} className='text-decoration-none'>
+                <Link href={`/hotel/${hotel.slug}`} className='text-decoration-none'>
                   <div className='position-relative' style={{ aspectRatio: "4/3" }}>
                     <img
                       src={hotel.thumbnail || '/assets/images/thumbs/room-details-thumb1.jpg'}
@@ -65,7 +65,7 @@ const FeaturedHotelsCarousel: FC<FeaturedHotelsCarouselProps> = ({ title, subtit
                 </Link>
                 
                 <div className='card-body p-3 d-flex flex-column flex-grow-1'>
-                  <Link href={`/hotel/${hotel.id}`} className='text-decoration-none text-dark'>
+                  <Link href={`/hotel/${hotel.slug}`} className='text-decoration-none text-dark'>
                     <h3 className='tw-text-lg fw-bold tw-mb-1 text-truncate d-flex align-items-center flex-wrap tw-gap-2'>
                       {hotel.name}
                       <span className='d-flex align-items-center tw-gap-1 tw-text-sm' style={{ color: "#fbb03b" }}>

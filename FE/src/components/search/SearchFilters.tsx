@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import GuestRoomSelector from "@/components/room/GuestRoomSelector";
 
 import type { HotelSearchFilters } from "@/types/hotel";
 
@@ -13,6 +15,11 @@ interface SearchFiltersProps {
 export default function SearchFilters({ filters, amenities }: SearchFiltersProps) {
   const { t } = useLanguage();
   const selectedAmenities = new Set(filters.amenities ?? []);
+  const [guestConfig, setGuestConfig] = useState({
+    adults: filters.adults ?? 2,
+    children: filters.children ?? 0,
+    rooms: filters.rooms ?? 1,
+  });
 
   return (
     <section className='bg_2 tw-py-12'>
@@ -23,13 +30,9 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
           method='get'
         >
           <div className='row row-gap-4 align-items-end'>
-            {filters.rooms !== undefined && <input type='hidden' name='rooms' value={filters.rooms} />}
-            {filters.rooms !== undefined && <input type='hidden' name='rooms' value={filters.rooms} />}
-            {filters.adults !== undefined && <input type='hidden' name='adults' value={filters.adults} />}
-            {filters.children !== undefined && <input type='hidden' name='children' value={filters.children} />}
-            
-            {filters.adults !== undefined && <input type='hidden' name='adults' value={filters.adults} />}
-            {filters.children !== undefined && <input type='hidden' name='children' value={filters.children} />}
+            <input type='hidden' name='adults' value={guestConfig.adults} />
+            <input type='hidden' name='children' value={guestConfig.children} />
+            <input type='hidden' name='rooms' value={guestConfig.rooms} />
             
             <div className='col-xl-3 col-lg-12'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
@@ -65,6 +68,18 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
                 defaultValue={filters.checkOut ?? ""}
                 name='checkOut'
                 type='date'
+              />
+            </div>
+
+            <div className='col-xl-3 col-lg-6 col-md-6'>
+              <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
+                {t("checkout.guests") === "checkout.guests" ? "Khách và phòng" : t("checkout.guests")}
+              </label>
+              <GuestRoomSelector 
+                initialAdults={filters.adults}
+                initialChildren={filters.children}
+                initialRooms={filters.rooms}
+                onChange={setGuestConfig}
               />
             </div>
 
@@ -112,7 +127,7 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
               </select>
             </div>
 
-            <div className='col-xl-4 col-lg-4 col-md-6'>
+            <div className='col-xl-3 col-lg-6 col-md-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
                 {t("search.guestRating")}
               </label>
@@ -129,7 +144,7 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
               </select>
             </div>
 
-            <div className='col-xl-4 col-lg-4 col-md-6'>
+            <div className='col-xl-3 col-lg-6 col-md-6'>
               <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
                 {t("search.sortBy")}
               </label>
@@ -145,7 +160,7 @@ export default function SearchFilters({ filters, amenities }: SearchFiltersProps
               </select>
             </div>
 
-            <div className='col-xl-4 col-lg-4 col-md-12'>
+            <div className='col-xl-9 col-lg-12 col-md-12'>
               <div className='d-flex tw-gap-3'>
                 <button
                   className='tw-btn-hover-black bg-main-600 tw-py-4 tw-px-8 text-heading font-heading tw-rounded-lg flex-grow-1'

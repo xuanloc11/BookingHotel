@@ -49,3 +49,25 @@ export async function fetchBookingById(
     },
   );
 }
+
+export interface HoldRoomRequest {
+  hotel_id: number;
+  check_in: string;
+  check_out: string;
+  rooms: number;
+  session_id: string;
+}
+
+export interface HoldRoomResponse {
+  hold_id: string;
+  expires_at: string;
+}
+
+export async function holdRoom(
+  payload: HoldRoomRequest
+): Promise<HoldRoomResponse> {
+  return fetchBackendJson<HoldRoomResponse>("/holds/", {
+    method: "POST",
+    body: payload,
+  });
+}

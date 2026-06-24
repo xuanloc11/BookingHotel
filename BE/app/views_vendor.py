@@ -2,7 +2,6 @@ import json
 from datetime import datetime, timedelta
 
 from django.http import HttpRequest, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Count, Q
@@ -30,7 +29,6 @@ def vendor_required(view_func):
     return wrapper
 
 
-@csrf_exempt
 @require_http_methods(['GET'])
 @vendor_required
 def dashboard_stats(request, user):
@@ -82,7 +80,6 @@ def dashboard_stats(request, user):
     })
 
 
-@csrf_exempt
 @require_http_methods(['GET', 'POST', 'PUT'])
 @vendor_required
 def manage_hotel(request, user):
@@ -140,7 +137,6 @@ def manage_hotel(request, user):
         return JsonResponse({'message': 'Hotel updated.'})
 
 
-@csrf_exempt
 @require_http_methods(['GET', 'POST'])
 @vendor_required
 def manage_rooms(request, user):
@@ -176,7 +172,6 @@ def manage_rooms(request, user):
     return JsonResponse({'message': 'Room created.', 'id': room.id})
 
 
-@csrf_exempt
 @require_http_methods(['PUT', 'DELETE'])
 @vendor_required
 def manage_room_detail(request, user, room_id: int):
@@ -205,7 +200,6 @@ def manage_room_detail(request, user, room_id: int):
     return JsonResponse({'message': 'Room updated.'})
 
 
-@csrf_exempt
 @require_http_methods(['GET'])
 @vendor_required
 def list_bookings(request, user):
@@ -217,7 +211,6 @@ def list_bookings(request, user):
     return JsonResponse({'bookings': [b.to_summary() for b in bookings]})
 
 
-@csrf_exempt
 @require_http_methods(['PUT'])
 @vendor_required
 def update_booking_status(request, user, booking_id: str):
@@ -244,7 +237,6 @@ def update_booking_status(request, user, booking_id: str):
 
 # --- EXTRANET FEATURES ---
 
-@csrf_exempt
 @require_http_methods(['GET'])
 @vendor_required
 def get_reviews(request, user):
@@ -263,7 +255,6 @@ def get_reviews(request, user):
         'created_at': r.created_at.isoformat()
     } for r in reviews]})
 
-@csrf_exempt
 @require_http_methods(['POST'])
 @vendor_required
 def reply_review(request, user, review_id: int):
@@ -288,7 +279,6 @@ def reply_review(request, user, review_id: int):
     
     return JsonResponse({'message': 'Reply submitted successfully.'})
 
-@csrf_exempt
 @require_http_methods(['GET', 'POST'])
 @vendor_required
 def manage_promotions(request, user):
@@ -327,7 +317,6 @@ def manage_promotions(request, user):
     )
     return JsonResponse({'message': 'Promotion created.', 'id': promo.id})
 
-@csrf_exempt
 @require_http_methods(['DELETE'])
 @vendor_required
 def delete_promotion(request, user, promo_id: int):
@@ -339,7 +328,6 @@ def delete_promotion(request, user, promo_id: int):
     promo.delete()
     return JsonResponse({'message': 'Promotion deleted.'})
 
-@csrf_exempt
 @require_http_methods(['GET'])
 @vendor_required
 def get_finance(request, user):
@@ -371,7 +359,6 @@ def get_finance(request, user):
         } for t in transactions]
     })
 
-@csrf_exempt
 @require_http_methods(['GET', 'PUT'])
 @vendor_required
 def manage_settings(request, user):

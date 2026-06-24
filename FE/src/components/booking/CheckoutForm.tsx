@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { ZodError } from "zod";
 
-import { createBooking } from "@/lib/api/bookingApi";
+import { createBooking, holdRoom } from "@/lib/api/bookingApi";
 import { readStoredAccessToken } from "@/lib/api/authApi";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useCurrency } from "@/lib/currency/CurrencyContext";
@@ -54,6 +54,41 @@ export default function CheckoutForm({
   const { formatMoney } = useCurrency();
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
+
+  const [sessionId, setSessionId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Generate a unique session ID for this hold
+    const newSessionId = Math.random().toString(36).substring(2, 15);
+    setSessionId(newSessionId);
+
+    holdRoom({
+      hotel_id: selection.hotel_id,
+      check_in: selection.check_in,
+      check_out: selection.check_out,
+      rooms: selection.guests.rooms,
+      session_id: newSessionId,
+    }).then((res) => {
+      // Tính lại timeLeft dựa trên expires_at
+      const expires = new Date(res.expires_at).getTime();
+      const now = new Date().getTime();
+      const diffSeconds = Math.max(0, Math.floor((expires - now) / 1000));
+      setTimeLeft(diffSeconds);
+    }).catch(console.error);
+  }, [selection]);
+
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+    const intervalId = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
+
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  const timeString = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -79,6 +114,7 @@ export default function CheckoutForm({
         method: paymentMethod,
         provider: paymentProviders[paymentMethod],
       },
+      session_id: sessionId || undefined,
     };
 
     try {
@@ -110,8 +146,9 @@ export default function CheckoutForm({
   };
 
   return (
-    <section className='bg_2 pt-120 pb-120'>
-      <div className='container'>
+    <>
+      <section className='bg_2 pt-120 pb-120'>
+        <div className='container'>
         <div className='row row-gap-5'>
           <div className='col-xl-4'>
             {/* Hotel & Booking Summary Card */}
@@ -326,5 +363,32 @@ export default function CheckoutForm({
         </div>
       </div>
     </section>
+
+      {/* Sticky Hold Room Timer */}
+      {timeLeft > 0 && (
+        <div 
+          className="position-fixed tw-z-50 tw-shadow-lg tw-rounded-xl tw-p-4 d-flex align-items-center tw-gap-4 tw-fade-in" 
+          style={{ 
+            bottom: '32px', 
+            right: '32px', 
+            backgroundColor: '#fff8e6', 
+            border: '1px solid #ffd8a8',
+            color: '#945b14',
+            maxWidth: '380px',
+            animation: 'slideInRight 0.5s ease-out'
+          }}
+        >
+          <div className="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 tw-shadow-sm" style={{ width: 52, height: 52 }}>
+            <i className="ph-bold ph-hourglass-high tw-text-2xl"></i>
+          </div>
+          <div>
+            <h4 className="tw-text-lg fw-bold mb-1 d-flex align-items-center tw-gap-2 text-dark">
+              Giữ phòng: <span className="text-danger tw-text-2xl font-monospace">{timeString}</span>
+            </h4>
+            <p className="tw-text-sm mb-0">Phòng của bạn đang được giữ an toàn. Hãy an tâm hoàn tất thông tin nhé!</p>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

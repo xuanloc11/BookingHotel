@@ -9,8 +9,8 @@ import Preloader from "@/helper/Preloader";
 import type { PageSearchParams } from "@/lib/hotelSearchParams";
 
 export const metadata: Metadata = {
-  title: "Register",
-  description: "Create a hotel booking account.",
+  title: "Đăng ký",
+  description: "Tạo tài khoản khách hàng để đặt phòng khách sạn.",
 };
 
 interface RegisterPageProps {
@@ -32,7 +32,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
     <AOSWrap>
       <Preloader />
       <Header />
-      <Breadcrumb title='Đăng ký' sub_title='Tài khoản' />
+      <Breadcrumb title='Đăng ký' titleKey='auth.registerTitle' sub_title='Tài khoản' subTitleKey='auth.loginSubtitle' />
       <AuthForm mode='register' nextPath={firstValue(params, "next")} />
       <Footer />
     </AOSWrap>
