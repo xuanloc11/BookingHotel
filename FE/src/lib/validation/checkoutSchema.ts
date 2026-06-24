@@ -74,6 +74,10 @@ export const createBookingRequestSchema = z
     customer: checkoutCustomerSchema,
     payment: bookingPaymentIntentSchema,
     session_id: z.string().optional(),
+    room_selections: z.array(z.object({
+      room_type_id: z.number().int().positive(),
+      quantity: z.number().int().positive()
+    })).optional(),
   })
   .strict()
   .superRefine((value, context) => {
