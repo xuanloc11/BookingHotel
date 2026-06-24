@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getExtranetDashboard, getVendorBookings, getVendorWithdrawals, createVendorWithdrawal } from "@/lib/api/vendorApi";
+import { getExtranetDashboard, getVendorFinance, getVendorBookings, getVendorWithdrawals, createVendorWithdrawal } from "@/lib/api/vendorApi";
 import toast from "react-hot-toast";
 
 const COMMISSION_RATE = 0.15;
@@ -23,9 +23,9 @@ export default function ExtranetFinance() {
     if (typeof window !== "undefined") {
       setCurrency(localStorage.getItem("app_currency") || "VND");
     }
-    Promise.all([getExtranetDashboard(), getVendorBookings(), getVendorWithdrawals()])
-      .then(([dashData, bookData, withData]) => {
-        setStats(dashData);
+    Promise.all([getExtranetDashboard(), getVendorFinance(), getVendorBookings(), getVendorWithdrawals()])
+      .then(([dashData, financeData, bookData, withData]) => {
+        setStats({ ...dashData, ...financeData });
         setBookings(bookData.bookings || []);
         setWithdrawals(withData.withdrawals || []);
       })
@@ -51,8 +51,8 @@ export default function ExtranetFinance() {
         const withData = await getVendorWithdrawals();
         setWithdrawals(withData.withdrawals || []);
         // Cập nhật lại số dư
-        const dashData = await getExtranetDashboard();
-        setStats(dashData);
+        const financeData = await getVendorFinance();
+        setStats((prev: any) => ({ ...prev, ...financeData }));
       }
     } catch (err) {
       toast.error("Có lỗi xảy ra khi gửi yêu cầu.");

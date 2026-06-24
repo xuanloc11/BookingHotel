@@ -13,6 +13,10 @@ export async function getExtranetDashboard() {
   return fetchBackendJson<any>('/vendor/dashboard/', getAuthOptions());
 }
 
+export async function getVendorFinance() {
+  return fetchBackendJson<any>('/vendor/finance/', getAuthOptions());
+}
+
 export async function getVendorHotel() {
   return fetchBackendJson<any>('/vendor/hotels/', getAuthOptions());
 }

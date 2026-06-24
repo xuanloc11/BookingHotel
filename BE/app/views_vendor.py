@@ -337,17 +337,18 @@ def get_finance(request, user):
     if not hotel:
         return JsonResponse({'balance': 0, 'total_revenue': 0, 'transactions': []})
         
+    from app.models import Booking, WithdrawalRequest
+    
+    total_revenue = Booking.objects.filter(hotel=hotel, status=Booking.STATUS_COMPLETED).aggregate(Sum('total'))['total__sum'] or 0
+    balance = int(total_revenue * 0.85)
+    
     transactions = Transaction.objects.filter(hotel=hotel).order_by('-created_at')
     
-    balance = transactions.filter(type=Transaction.TYPE_REVENUE, status=Transaction.STATUS_COMPLETED).aggregate(Sum('net_amount'))['net_amount__sum'] or 0
     payouts = transactions.filter(type=Transaction.TYPE_PAYOUT).aggregate(Sum('amount'))['amount__sum'] or 0
     
-    from app.models import WithdrawalRequest
     pending_withdrawals = WithdrawalRequest.objects.filter(vendor=user, status=WithdrawalRequest.STATUS_PENDING).aggregate(Sum('amount'))['amount__sum'] or 0
     
     available_balance = balance - payouts - pending_withdrawals
-    
-    total_revenue = transactions.filter(type=Transaction.TYPE_REVENUE).aggregate(Sum('amount'))['amount__sum'] or 0
     
     return JsonResponse({
         'available_balance': available_balance,
