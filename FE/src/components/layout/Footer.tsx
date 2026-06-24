@@ -1,11 +1,43 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import toast from "react-hot-toast";
 
 const Footer: FC = () => {
   const { t } = useLanguage();
+
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    
+    setLoading(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/newsletter/subscribe/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        toast.success(data.message || "Đăng ký thành công!");
+        setEmail("");
+      } else {
+        toast.error(data.detail || "Có lỗi xảy ra.");
+      }
+    } catch (err: any) {
+      toast.error("Không thể kết nối đến máy chủ.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <footer
@@ -28,7 +60,7 @@ const Footer: FC = () => {
                     <br /> {t("footer.newsletterSubtitle")}
                   </h4>
                   <form
-                    action='#'
+                    onSubmit={handleSubscribe}
                     className='tw-mt-6 position-relative form-submit d-flex tw-gap-2 align-items-center tw-mb-4 flex-wrap'
                   >
                     <input
@@ -36,15 +68,21 @@ const Footer: FC = () => {
                       className='form-control tw-w-288-px  bg-white shadow-none border border-neutral-700 text-heading tw-ps-6 tw-pe-13 focus-border-main-600 tw-h-14 tw-placeholder-text-neutral-700 focus-tw-placeholder-text-hidden tw-placeholder-transition-2'
                       placeholder={t("footer.emailPlaceholder")}
                       required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={loading}
                     />
                     <button
                       type='submit'
+                      disabled={loading}
                       className='tw-btn-hover-white bg-main-600 text-heading fw-bold tw-py-4 tw-px-8 tw-rounded-md transition-all d-flex tw-gap-3'
                     >
-                      {t("footer.subscribe")}{" "}
-                      <span>
-                        <i className='ph ph-paper-plane-tilt' />
-                      </span>
+                      {loading ? "Đang xử lý..." : t("footer.subscribe")}
+                      {!loading && (
+                        <span>
+                          <i className='ph ph-paper-plane-tilt' />
+                        </span>
+                      )}
                     </button>
                   </form>
                   <p className='font-heading fw-normal text-white'>

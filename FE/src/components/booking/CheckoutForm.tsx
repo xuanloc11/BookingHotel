@@ -22,6 +22,7 @@ interface CheckoutFormProps {
   hotel: HotelDetails;
   selection: CheckoutSelection;
   price: BookingPriceBreakdown;
+  selectedRoomsDisplay?: {name: string, quantity: number, price: number}[];
 }
 
 const paymentProviders: Record<PaymentMethod, PaymentProvider> = {
@@ -48,6 +49,7 @@ export default function CheckoutForm({
   hotel,
   selection,
   price,
+  selectedRoomsDisplay,
 }: CheckoutFormProps) {
   const router = useRouter();
   const { t } = useLanguage();
@@ -64,7 +66,8 @@ export default function CheckoutForm({
     setSessionId(newSessionId);
 
     holdRoom({
-      hotel_id: selection.hotel_id,
+      hotel_id: hotel.id,
+      room_selections: selection.room_selections,
       check_in: selection.check_in,
       check_out: selection.check_out,
       rooms: selection.guests.rooms,
@@ -76,7 +79,7 @@ export default function CheckoutForm({
       const diffSeconds = Math.max(0, Math.floor((expires - now) / 1000));
       setTimeLeft(diffSeconds);
     }).catch(console.error);
-  }, [selection]);
+  }, [selection, hotel.id]);
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -98,7 +101,8 @@ export default function CheckoutForm({
     const formData = new FormData(event.currentTarget);
     const paymentMethod = getPaymentMethod(formData);
     const payload: CreateBookingRequest = {
-      hotel_id: selection.hotel_id,
+      hotel_id: hotel.id,
+      room_selections: selection.room_selections,
       check_in: selection.check_in,
       check_out: selection.check_out,
       guests: selection.guests,
@@ -161,6 +165,16 @@ export default function CheckoutForm({
                 width={520}
               />
               <h2 className='tw-text-6 fw-normal tw-mb-2'>{hotel.name}</h2>
+              {selectedRoomsDisplay && selectedRoomsDisplay.length > 0 && (
+                <div className="tw-mb-4">
+                  <h3 className="tw-text-sm fw-bold mb-2">Các phòng đã chọn:</h3>
+                  {selectedRoomsDisplay.map((room, idx) => (
+                    <div key={idx} className="d-flex justify-content-between tw-text-sm tw-mb-1">
+                      <span className="text-main-600 fw-medium">{room.quantity}x {room.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
               <p className='tw-mb-4 tw-text-sm text-secondary'>{hotel.address}</p>
 
               <div className='border-top tw-pt-4 tw-mt-4'>
@@ -187,10 +201,21 @@ export default function CheckoutForm({
             <aside className='bg-white tw-rounded-lg tw-p-8 tw-shadow-sm border border-neutral'>
               <h3 className='tw-text-lg fw-bold tw-mb-4'>{t("checkout.totalAmount")}</h3>
               
+              {selectedRoomsDisplay && selectedRoomsDisplay.length > 0 && (
+                <div className='tw-mb-3 border-bottom tw-pb-3'>
+                  {selectedRoomsDisplay.map((room, idx) => (
+                    <div key={idx} className='d-flex justify-content-between tw-text-sm text-secondary tw-mb-1'>
+                      <span>{room.quantity}x {room.name}</span>
+                      <span>{formatMoney(room.price * room.quantity)}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
               <div className='d-flex justify-content-between tw-mb-3 tw-text-sm'>
                 <p className='tw-text-sm text-neutral-500 mb-0'>
                   {formatMoney(price.nightly_rate)} x {price.nights}{" "}
-                  {t("checkout.nights")}
+                  {t("checkout.nightsCount")}
                 </p>
                 <strong>{formatMoney(price.subtotal)}</strong>
               </div>
@@ -217,7 +242,7 @@ export default function CheckoutForm({
               
               <div className='bg-main-50 tw-p-4 tw-rounded-md tw-mb-4'>
                 <div className='d-flex justify-content-between align-items-center mb-0'>
-                  <strong className='tw-text-lg'>{t("checkout.total")}</strong>
+                  <strong className='tw-text-lg'>{t("checkout.totalAmount")}</strong>
                   <span className='fw-bold tw-text-lg'>{formatMoney(price.total)}</span>
                 </div>
               </div>

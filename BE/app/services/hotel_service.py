@@ -135,12 +135,20 @@ class HotelService:
             ],
         }
 
-    def get_hotel_availability(self, identifier: str | int) -> list[dict]:
+    def get_hotel_availability(self, identifier: str | int, room_type_id: int | None = None) -> list[dict]:
         hotel = self.get_hotel_by_identifier(identifier)
         if not hotel:
             return []
 
         hotel_id = hotel['id']
+        room_type = None
+
+        from app.models import RoomType
+        if room_type_id:
+            try:
+                room_type = RoomType.objects.get(id=room_type_id, hotel_id=hotel_id)
+            except RoomType.DoesNotExist:
+                return []
 
         today = datetime.utcnow().date()
         availability: list[dict] = []
@@ -150,17 +158,28 @@ class HotelService:
         
         # Calculate booked rooms per date
         booked_rooms_per_date = Counter()
-        bookings = Booking.objects.filter(hotel_id=hotel_id).exclude(status='cancelled')
-        for booking in bookings:
+        bookings_qs = Booking.objects.prefetch_related('rooms').filter(hotel_id=hotel_id).exclude(status='cancelled')
+        if room_type:
+            bookings_qs = bookings_qs.filter(rooms__room_type_id=room_type.id)
+
+        for booking in bookings_qs:
             try:
                 check_in_date = datetime.strptime(booking.check_in, '%Y-%m-%d').date()
                 check_out_date = datetime.strptime(booking.check_out, '%Y-%m-%d').date()
-                rooms = int(booking.guests.get('rooms', 1))
+                
+                rooms_count = 0
+                if room_type:
+                    # Get quantity for specific room type
+                    for r in booking.rooms.all():
+                        if r.room_type_id == room_type.id:
+                            rooms_count += r.quantity
+                else:
+                    rooms_count = sum(r.quantity for r in booking.rooms.all())
                 
                 # Iterate through each night of the stay
                 current_date = check_in_date
                 while current_date < check_out_date:
-                    booked_rooms_per_date[current_date.isoformat()] += rooms
+                    booked_rooms_per_date[current_date.isoformat()] += rooms_count
                     current_date += timedelta(days=1)
             except Exception:
                 pass # Ignore malformed bookings
@@ -186,7 +205,13 @@ class HotelService:
             
             # Base logic
             base_available = index % 6 != 5
-            base_rooms = 4 - (index % 3) if base_available else 0
+            
+            if room_type:
+                base_rooms = room_type.available_rooms if base_available else 0
+                nightly_rate = room_type.price
+            else:
+                base_rooms = 4 - (index % 3) if base_available else 0
+                nightly_rate = hotel.get('price_per_night', 0)
             
             # Subtract booked rooms
             booked = booked_rooms_per_date[date_str]
@@ -197,7 +222,7 @@ class HotelService:
                 {
                     'date': date_str,
                     'available_rooms': remaining_rooms,
-                    'nightly_rate': hotel.get('price_per_night', 0),
+                    'nightly_rate': nightly_rate,
                     'is_available': is_available,
                 }
             )

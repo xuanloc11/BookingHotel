@@ -90,6 +90,9 @@ class EmailService:
         hotel_name = payload.get('hotel_name', 'Khách sạn')
         price = payload.get('price', {}).get('total', 0)
 
+        rooms = payload.get('rooms', [])
+        rooms_html = "".join([f"<li>{r['quantity']}x {r['room_type_name']}</li>" for r in rooms])
+
         html_content = f"""
         <html>
             <body>
@@ -99,6 +102,9 @@ class EmailService:
                 <ul>
                     <li><strong>Mã đơn:</strong> {booking_id}</li>
                     <li><strong>Khách sạn:</strong> {hotel_name}</li>
+                    <li><strong>Loại phòng:</strong>
+                        <ul>{rooms_html}</ul>
+                    </li>
                     <li><strong>Ngày nhận phòng:</strong> {check_in}</li>
                     <li><strong>Ngày trả phòng:</strong> {check_out}</li>
                     <li><strong>Tổng tiền:</strong> {price:,.0f} VND</li>

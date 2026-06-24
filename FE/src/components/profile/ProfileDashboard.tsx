@@ -202,6 +202,15 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
                                 {booking.status}
                               </span>
                             </div>
+                            {booking.rooms && booking.rooms.length > 0 && (
+                              <div className="tw-mb-2">
+                                {booking.rooms.map((room, idx) => (
+                                  <p key={idx} className="tw-text-sm text-main-600 fw-medium tw-mb-0">
+                                    {room.quantity}x {room.room_type_name}
+                                  </p>
+                                ))}
+                              </div>
+                            )}
                             <p className='tw-mb-2'>
                               <i className="ph ph-calendar-blank tw-me-2"></i>
                               {booking.check_in} — {booking.check_out}

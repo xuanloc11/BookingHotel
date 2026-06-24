@@ -8,6 +8,7 @@ import HotelDetails from "@/components/hotel/HotelDetails";
 import AOSWrap from "@/helper/AOSWrap";
 import Preloader from "@/helper/Preloader";
 import { fetchHotelAvailability, fetchHotelBySlug } from "@/lib/api/hotelApi";
+import type { HotelAvailabilityDay } from "@/types/hotel";
 
 interface HotelDetailsPageProps {
   params: Promise<{ slug: string }>;
@@ -35,10 +36,18 @@ export default async function HotelDetailsPage({
   const resolvedSearchParams = await searchParams;
 
   try {
-    const [hotel, availability] = await Promise.all([
-      fetchHotelBySlug(slug),
-      fetchHotelAvailability(slug),
-    ]);
+    const hotel = await fetchHotelBySlug(slug);
+    
+    const roomAvailabilities: Record<number, HotelAvailabilityDay[]> = {};
+    if (hotel.room_types && hotel.room_types.length > 0) {
+      await Promise.all(
+        hotel.room_types.map(async (room) => {
+          roomAvailabilities[room.id] = await fetchHotelAvailability(slug, room.id);
+        })
+      );
+    } else {
+      roomAvailabilities[0] = await fetchHotelAvailability(slug);
+    }
 
     return (
       <AOSWrap>
@@ -46,7 +55,7 @@ export default async function HotelDetailsPage({
         <Header />
         <Breadcrumb title={hotel.name} sub_title='Chi tiết khách sạn' subTitleKey='breadcrumb.hotelDetails' imageUrl={hotel.thumbnail} />
         <HotelDetails 
-          availability={availability} 
+          roomAvailabilities={roomAvailabilities} 
           hotel={hotel} 
           searchParams={resolvedSearchParams} 
         />

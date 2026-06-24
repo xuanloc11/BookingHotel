@@ -32,6 +32,7 @@ export interface BookingPaymentIntent {
 
 export interface CreateBookingRequest {
   hotel_id: number;
+  room_selections?: { room_type_id: number; quantity: number }[];
   check_in: string;
   check_out: string;
   guests: BookingGuestCounts;
@@ -69,6 +70,7 @@ export interface BookingSummary {
   hotel_id: number;
   hotel_name: string;
   hotel_thumbnail?: string;
+  rooms: { room_type_id: number; room_type_name: string; quantity: number; price: number }[];
   check_in: string;
   check_out: string;
   guests: BookingGuestCounts;
@@ -84,6 +86,7 @@ export interface BookingListResponse {
 
 export interface CheckoutSelection {
   hotel_id: number;
+  room_selections?: { room_type_id: number; quantity: number }[];
   check_in: string;
   check_out: string;
   guests: BookingGuestCounts;

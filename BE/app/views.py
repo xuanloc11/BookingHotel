@@ -126,8 +126,10 @@ def hotel_detail(request, hotel_id: str):
 
 @require_GET
 def hotel_availability(request, hotel_id: str):
-	availability = hotel_service.get_hotel_availability(hotel_id)
-	if not availability:
+	room_type_id = request.GET.get('room_type_id')
+	room_type_id = int(room_type_id) if room_type_id and room_type_id.isdigit() else None
+	availability = hotel_service.get_hotel_availability(hotel_id, room_type_id=room_type_id)
+	if not availability and hotel_service.get_hotel_details(hotel_id) is None:
 		return _json_error('Hotel not found.', status=404)
 	return JsonResponse({'results': availability})
 

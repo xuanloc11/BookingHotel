@@ -10,6 +10,10 @@ const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const checkoutSelectionSchema = z
   .object({
     hotel_id: z.coerce.number().int().positive(),
+    room_selections: z.array(z.object({
+      room_type_id: z.number().int().positive(),
+      quantity: z.number().int().positive()
+    })).optional(),
     check_in: z.string().regex(DATE_ONLY_PATTERN),
     check_out: z.string().regex(DATE_ONLY_PATTERN),
     guests: bookingGuestCountsSchema,
@@ -31,8 +35,17 @@ function firstValue(
 export function parseCheckoutParams(
   params: PageSearchParams,
 ): CheckoutSelection | null {
+  let parsedRoomSelections = undefined;
+  try {
+    const rsString = firstValue(params, "roomSelections");
+    if (rsString) {
+      parsedRoomSelections = JSON.parse(rsString);
+    }
+  } catch(e) {}
+
   const result = checkoutSelectionSchema.safeParse({
     hotel_id: firstValue(params, "hotelId"),
+    room_selections: parsedRoomSelections,
     check_in: firstValue(params, "checkIn"),
     check_out: firstValue(params, "checkOut"),
     guests: {

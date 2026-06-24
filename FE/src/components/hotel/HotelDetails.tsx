@@ -1,16 +1,16 @@
 "use client";
 
-import AvailabilityCalendar from "./AvailabilityCalendar";
+import HotelRoomTable from "./HotelRoomTable";
 import { useCurrency } from "@/lib/currency/CurrencyContext";
 import type { HotelAvailabilityDay, HotelDetails as HotelDetailsType } from "@/types/hotel";
 
 interface HotelDetailsProps {
   hotel: HotelDetailsType;
-  availability: HotelAvailabilityDay[];
+  roomAvailabilities: Record<number, HotelAvailabilityDay[]>;
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-export default function HotelDetails({ hotel, availability, searchParams }: HotelDetailsProps) {
+export default function HotelDetails({ hotel, roomAvailabilities, searchParams }: HotelDetailsProps) {
   const { formatMoney } = useCurrency();
   return (
     <>
@@ -48,7 +48,7 @@ export default function HotelDetails({ hotel, availability, searchParams }: Hote
       <section className='room-details-area pb-120 bg_2'>
         <div className='container'>
           <div className='row row-gap-5'>
-            <div className='col-xl-7'>
+            <div className='col-xl-12'>
               <div className='d-flex justify-content-between align-items-start flex-wrap row-gap-3 border-bottom border-neutral tw-pb-8 tw-mb-9'>
                 <div>
                   <span className='bg-main-600 fw-normal tw-px-6 tw-rounded-md text-heading tw-py-1'>
@@ -100,14 +100,16 @@ export default function HotelDetails({ hotel, availability, searchParams }: Hote
                   ))}
                 </div>
               </div>
-            </div>
 
-            <div className='col-xl-5'>
-              <AvailabilityCalendar
-                availability={availability}
-                hotelId={hotel.id}
-                searchParams={searchParams}
-              />
+              {/* Room Types Table */}
+              {hotel.room_types && hotel.room_types.length > 0 && (
+                <HotelRoomTable
+                  hotelId={hotel.id}
+                  roomTypes={hotel.room_types}
+                  roomAvailabilities={roomAvailabilities}
+                  searchParams={searchParams}
+                />
+              )}
             </div>
           </div>
         </div>

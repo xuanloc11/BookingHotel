@@ -8,6 +8,8 @@ from app import views_admin
 urlpatterns = [
     path('csrf/', views.get_csrf_token, name='api-csrf-token'),
     path('health/', views.health_check, name='api-health'),
+    path('newsletter/subscribe/', views.newsletter_subscribe, name='api-newsletter-subscribe'),
+    path('newsletter/subscribe', views.newsletter_subscribe),
     path('hotels/', views.hotel_list, name='api-hotels'),
     path('hotels', views.hotel_list),
     path('hotels/<str:hotel_id>/', views.hotel_detail, name='api-hotel-detail'),

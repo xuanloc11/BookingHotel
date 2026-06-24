@@ -8,7 +8,7 @@ from django.db import transaction
 
 from django.utils.timezone import now
 from datetime import timedelta
-from app.models import Booking, RoomHold, Hotel
+from app.models import Booking, RoomHold, Hotel, RoomType, BookingRoom
 from app.repositories.hotel_repository import HotelRepository
 from app.services.booking_events import (
     BookingAuditObserver,
@@ -34,18 +34,17 @@ class BookingService:
         self.booking_events.attach(BookingConfirmationObserver())
         self.booking_events.attach(BookingAuditObserver())
 
-    def calculate_price(self, nightly_rate: int, check_in: str, check_out: str, rooms: int) -> dict:
+    def calculate_price(self, nightly_subtotal: int, check_in: str, check_out: str) -> dict:
         check_in_date = self._parse_date(check_in)
         check_out_date = self._parse_date(check_out)
         nights = max(1, (check_out_date - check_in_date).days)
-        subtotal = nightly_rate * nights * rooms
+        subtotal = nightly_subtotal * nights
         taxes_and_fees = round(subtotal * DEFAULT_TAX_RATE)
 
         return {
             'currency': 'VND',
-            'nightly_rate': nightly_rate,
+            'nightly_rate': nightly_subtotal, # Note: this is actually nightly total for all rooms
             'nights': nights,
-            'rooms': rooms,
             'subtotal': subtotal,
             'taxes_and_fees': taxes_and_fees,
             'total': subtotal + taxes_and_fees,
@@ -60,11 +59,40 @@ class BookingService:
         if not hotel:
             raise ValueError('Hotel not found.')
 
+        room_selections = payload.get('room_selections', [])
+        if not room_selections:
+            # Fallback for old requests
+            room_selections = []
+            if payload.get('room_type_id'):
+                room_selections.append({
+                    'room_type_id': payload.get('room_type_id'),
+                    'quantity': int(payload['guests']['rooms'])
+                })
+
+        nightly_subtotal = 0
+        room_objects_to_create = []
+
+        if room_selections:
+            for selection in room_selections:
+                try:
+                    room_type = RoomType.objects.get(id=selection['room_type_id'], hotel_id=hotel['id'])
+                    qty = int(selection['quantity'])
+                    nightly_subtotal += room_type.price * qty
+                    room_objects_to_create.append({
+                        'room_type': room_type,
+                        'room_type_name': room_type.name,
+                        'quantity': qty,
+                        'price': room_type.price
+                    })
+                except RoomType.DoesNotExist:
+                    pass
+        else:
+            nightly_subtotal = int(hotel.get('price_per_night', 0)) * int(payload['guests']['rooms'])
+
         price = self.calculate_price(
-            nightly_rate=int(hotel.get('price_per_night', 0)),
+            nightly_subtotal=nightly_subtotal,
             check_in=payload['check_in'],
             check_out=payload['check_out'],
-            rooms=int(payload['guests']['rooms']),
         )
 
         booking = Booking.objects.create(
@@ -84,6 +112,15 @@ class BookingService:
             price=price,
         )
 
+        for room_data in room_objects_to_create:
+            BookingRoom.objects.create(
+                booking=booking,
+                room_type=room_data['room_type'],
+                room_type_name=room_data['room_type_name'],
+                quantity=room_data['quantity'],
+                price=room_data['price']
+            )
+
         event_context = BookingEventContext(
             event_name='booking.created',
             payload={
@@ -96,6 +133,13 @@ class BookingService:
                 'guests': booking.guests,
                 'customer_email': booking.customer.get('email', ''),
                 'price': booking.price,
+                'rooms': [
+                    {
+                        'room_type_name': r['room_type_name'],
+                        'quantity': r['quantity'],
+                        'price': r['price']
+                    } for r in room_objects_to_create
+                ],
                 'created_at': booking.created_at.isoformat(),
             },
         )
@@ -131,6 +175,12 @@ class BookingService:
         if not hotel:
             raise ValueError('Hotel not found.')
 
+        total_rooms = 0
+        if payload.get('room_selections'):
+            total_rooms = sum(int(sel['quantity']) for sel in payload['room_selections'])
+        else:
+            total_rooms = int(payload.get('rooms', 1))
+
         hold, created = RoomHold.objects.update_or_create(
             session_id=session_id,
             hotel=hotel,
@@ -138,7 +188,7 @@ class BookingService:
                 'hold_id': uuid4().hex,
                 'check_in': payload.get('check_in'),
                 'check_out': payload.get('check_out'),
-                'rooms': int(payload.get('rooms', 1)),
+                'rooms': total_rooms,
                 'expires_at': now() + timedelta(minutes=10),
                 'is_active': True
             }

@@ -93,6 +93,19 @@ function BookingDetailModal({ booking, onClose, formatMoney }: { booking: any; o
               <div className="text-muted" style={{ fontSize: 12 }}>Ngày đặt</div>
               <div className="fw-bold">{new Date(booking.created_at).toLocaleDateString("vi-VN")}</div>
             </div>
+            {booking.rooms && booking.rooms.length > 0 && (
+              <div className="col-12 mt-3">
+                <div className="text-muted mb-1" style={{ fontSize: 12 }}>Các phòng đã đặt</div>
+                <div className="p-2 border rounded bg-light">
+                  {booking.rooms.map((room: any, idx: number) => (
+                    <div key={idx} className="d-flex justify-content-between mb-1" style={{ fontSize: 14 }}>
+                      <span className="fw-medium text-primary">{room.quantity}x {room.room_type_name}</span>
+                      <span className="text-muted">{formatMoney(room.price * room.quantity, booking.currency)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="col-12">
               <hr style={{ margin: "4px 0 12px" }} />
               <div className="d-flex justify-content-between align-items-center">

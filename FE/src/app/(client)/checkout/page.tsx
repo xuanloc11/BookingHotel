@@ -60,11 +60,31 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
   }
 
   const hotel = await fetchHotelBySlug(selection.hotel_id.toString());
+  
+  let nightlyRate = 0; // Will be the total nightly rate for all selected rooms
+  let selectedRoomsDisplay: {name: string, quantity: number, price: number}[] = [];
+
+  if (selection.room_selections && selection.room_selections.length > 0 && hotel.room_types) {
+    selection.room_selections.forEach(sel => {
+      const roomType = hotel.room_types?.find(r => r.id === sel.room_type_id);
+      if (roomType) {
+        nightlyRate += roomType.price * sel.quantity;
+        selectedRoomsDisplay.push({
+          name: roomType.name,
+          quantity: sel.quantity,
+          price: roomType.price
+        });
+      }
+    });
+  } else {
+    nightlyRate = hotel.price_per_night * selection.guests.rooms;
+  }
+
   const price = calculateBookingPrice({
-    nightlyRate: hotel.price_per_night,
+    nightlyRate: nightlyRate, // This is already multiplied by quantity
     checkIn: selection.check_in,
     checkOut: selection.check_out,
-    guests: selection.guests,
+    guests: { ...selection.guests, rooms: 1 }, // Set rooms to 1 because nightlyRate is already total
   });
 
   return (
@@ -72,7 +92,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
       <Preloader />
       <Header />
       <Breadcrumb title='Thanh toán' sub_title='Đặt phòng' titleKey='checkout.title' subTitleKey='checkout.booking' />
-      <CheckoutForm hotel={hotel} price={price} selection={selection} />
+      <CheckoutForm hotel={hotel} price={price} selectedRoomsDisplay={selectedRoomsDisplay} selection={selection} />
       <Footer />
     </AOSWrap>
   );

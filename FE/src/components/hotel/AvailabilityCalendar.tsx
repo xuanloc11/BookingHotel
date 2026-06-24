@@ -9,6 +9,7 @@ import type { HotelAvailabilityDay } from "@/types/hotel";
 
 interface AvailabilityCalendarProps {
   hotelId: number;
+  roomId?: number;
   availability: HotelAvailabilityDay[];
   searchParams?: { [key: string]: string | string[] | undefined };
 }
@@ -21,6 +22,7 @@ function addDays(dateValue: string, days: number): string {
 
 function buildCheckoutHref(input: {
   hotelId: number;
+  roomId?: number;
   checkIn: string;
   checkOut: string;
   guests: BookingGuestCounts;
@@ -33,12 +35,16 @@ function buildCheckoutHref(input: {
     children: String(input.guests.children),
     rooms: String(input.guests.rooms),
   });
+  if (input.roomId) {
+    params.set("roomId", String(input.roomId));
+  }
 
   return `/checkout?${params.toString()}`;
 }
 
 export default function AvailabilityCalendar({
   hotelId,
+  roomId,
   availability,
   searchParams,
 }: AvailabilityCalendarProps) {
@@ -106,9 +112,9 @@ export default function AvailabilityCalendar({
   const checkoutHref = useMemo(
     () =>
       canContinue
-        ? buildCheckoutHref({ hotelId, checkIn, checkOut, guests })
+        ? buildCheckoutHref({ hotelId, roomId, checkIn, checkOut, guests })
         : "/checkout",
-    [canContinue, checkIn, checkOut, guests, hotelId],
+    [canContinue, checkIn, checkOut, guests, hotelId, roomId],
   );
 
   const updateGuests = (key: keyof BookingGuestCounts, value: string) => {

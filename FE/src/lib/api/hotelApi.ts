@@ -59,23 +59,23 @@ export async function fetchHotelSearchResults(
 }
 
 export async function fetchHotelBySlug(slug: string): Promise<HotelDetails> {
-  const hotels = await fetchHotels();
-  const hotel = hotels.find((item) => item.slug === slug || item.id.toString() === slug);
-
-  if (!hotel) {
+  try {
+    const hotel = await fetchBackendJson<Hotel>(`/hotels/${slug}/`);
+    return toHotelDetails(hotel);
+  } catch (error) {
     throw new Error("Hotel not found.");
   }
-
-  return toHotelDetails(hotel);
 }
 
 export async function fetchHotelAvailability(
   slug: string,
+  roomId?: number,
 ): Promise<HotelAvailabilityDay[]> {
   try {
-    const response = await fetchBackendJson<HotelAvailabilityResponse>(
-      `/hotels/${slug}/availability/`,
-    );
+    const url = roomId 
+      ? `/hotels/${slug}/availability/?room_type_id=${roomId}`
+      : `/hotels/${slug}/availability/`;
+    const response = await fetchBackendJson<HotelAvailabilityResponse>(url);
 
     return response.results;
   } catch {

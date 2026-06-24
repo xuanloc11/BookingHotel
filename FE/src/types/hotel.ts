@@ -14,8 +14,18 @@ export interface Hotel {
   available_rooms?: number;
 }
 
+export interface RoomType {
+  id: number;
+  name: string;
+  price: number;
+  capacity: number;
+  available_rooms: number;
+  features: string[];
+}
+
 export interface HotelDetails extends Hotel {
   images: string[];
+  room_types?: RoomType[];
 }
 
 export interface HotelListResponse {

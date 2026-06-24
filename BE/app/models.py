@@ -132,10 +132,24 @@ class Booking(models.Model):
 			'status': self.status,
 			'total': self.total,
 			'currency': self.currency,
-			'customer': self.customer,
 			'created_at': self.created_at.isoformat(),
+			'rooms': [room.to_dict() for room in self.rooms.all()],
 		}
 
+class BookingRoom(models.Model):
+	booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='rooms')
+	room_type = models.ForeignKey('RoomType', on_delete=models.SET_NULL, null=True, blank=True)
+	room_type_name = models.CharField(max_length=255)
+	quantity = models.PositiveIntegerField(default=1)
+	price = models.PositiveIntegerField(default=0)
+
+	def to_dict(self):
+		return {
+			'room_type_id': self.room_type_id,
+			'room_type_name': self.room_type_name,
+			'quantity': self.quantity,
+			'price': self.price,
+		}
 
 class Review(models.Model):
 	STATUS_PENDING = 'pending'
@@ -224,3 +238,11 @@ class RoomHold(models.Model):
 	def __str__(self):
 		return f"Hold {self.hold_id} - {self.hotel.name}"
 
+
+class NewsletterSubscription(models.Model):
+	email = models.EmailField(unique=True)
+	is_active = models.BooleanField(default=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return self.email
