@@ -56,6 +56,7 @@ export interface HoldRoomRequest {
   check_out: string;
   rooms: number;
   session_id: string;
+  room_selections?: { room_id: number; count: number }[];
 }
 
 export interface HoldRoomResponse {
