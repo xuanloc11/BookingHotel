@@ -74,6 +74,27 @@ export default function HotelRoomTable({ hotelId, roomTypes, roomAvailabilities,
     return minRooms === Infinity ? 0 : minRooms;
   };
 
+  const calculatePriceForNights = (roomId: number) => {
+    const availability = roomAvailabilities[roomId] || [];
+    if (!checkIn || !checkOut || checkOut <= checkIn) return 0;
+
+    let totalPrice = 0;
+    let currentDate = checkIn;
+    
+    while (currentDate < checkOut) {
+      const dayData = availability.find((day) => day.date === currentDate);
+      if (dayData) {
+        totalPrice += dayData.nightly_rate;
+      }
+      
+      const d = new Date(currentDate);
+      d.setDate(d.getDate() + 1);
+      currentDate = d.toISOString().split('T')[0];
+    }
+    
+    return totalPrice;
+  };
+
   const nights = useMemo(() => {
     if (!checkIn || !checkOut || checkOut <= checkIn) return 0;
     const diffTime = Math.abs(new Date(checkOut).getTime() - new Date(checkIn).getTime());
@@ -171,7 +192,8 @@ export default function HotelRoomTable({ hotelId, roomTypes, roomAvailabilities,
             {roomTypes.map((room, index) => {
               const availableRooms = calculateAvailableRooms(room.id);
               const isAvailable = availableRooms > 0;
-              const priceForNights = room.price * nights;
+              const dynamicPriceForNights = calculatePriceForNights(room.id);
+              const priceForNights = dynamicPriceForNights > 0 ? dynamicPriceForNights : room.price * nights;
               const selectedQty = selections[room.id] || 0;
 
               return (
