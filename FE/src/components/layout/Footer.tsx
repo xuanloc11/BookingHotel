@@ -19,10 +19,10 @@ const Footer: FC = () => {
     
     setLoading(true);
     try {
-      const data = await fetchBackendJson("/newsletter/subscribe/", {
+      const data = (await fetchBackendJson("/newsletter/subscribe/", {
         method: "POST",
         body: { email },
-      });
+      })) as any;
       
       toast.success(data.message || "Đăng ký thành công!");
       setEmail("");
