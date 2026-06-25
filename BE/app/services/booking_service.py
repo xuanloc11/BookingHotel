@@ -34,16 +34,15 @@ class BookingService:
         self.booking_events.attach(BookingConfirmationObserver())
         self.booking_events.attach(BookingAuditObserver())
 
-    def calculate_price(self, nightly_subtotal: int, check_in: str, check_out: str) -> dict:
+    def calculate_price(self, subtotal: int, check_in: str, check_out: str) -> dict:
         check_in_date = self._parse_date(check_in)
         check_out_date = self._parse_date(check_out)
         nights = max(1, (check_out_date - check_in_date).days)
-        subtotal = nightly_subtotal * nights
         taxes_and_fees = round(subtotal * DEFAULT_TAX_RATE)
 
         return {
             'currency': 'VND',
-            'nightly_rate': nightly_subtotal, # Note: this is actually nightly total for all rooms
+            'nightly_rate': round(subtotal / nights) if nights > 0 else subtotal,
             'nights': nights,
             'subtotal': subtotal,
             'taxes_and_fees': taxes_and_fees,
@@ -69,28 +68,68 @@ class BookingService:
                     'quantity': int(payload['guests']['rooms'])
                 })
 
-        nightly_subtotal = 0
+        subtotal = 0
         room_objects_to_create = []
+        
+        from app.services.hotel_service import HotelService
+        hotel_svc = HotelService()
+
+        check_in_date = self._parse_date(payload['check_in']).date()
+        check_out_date = self._parse_date(payload['check_out']).date()
 
         if room_selections:
+            # Prevent Race Condition by locking the requested RoomTypes
+            room_type_ids = [s['room_type_id'] for s in room_selections]
+            list(RoomType.objects.select_for_update().filter(id__in=room_type_ids))
+
             for selection in room_selections:
                 try:
                     room_type = RoomType.objects.get(id=selection['room_type_id'], hotel_id=hotel['id'])
                     qty = int(selection['quantity'])
-                    nightly_subtotal += room_type.price * qty
+                    if qty <= 0:
+                        raise ValueError(f"Số lượng phòng không hợp lệ ({qty}). Phải lớn hơn 0.")
+                    
+                    # Verify dynamic availability under lock
+                    availability = hotel_svc.get_hotel_availability(hotel['id'], room_type_id=room_type.id, start_date=check_in_date, end_date=check_out_date)
+                    
+                    c_date = check_in_date
+                    room_total_price = 0
+                    while c_date < check_out_date:
+                        date_str = c_date.isoformat()
+                        day_avail = next((item for item in availability if item["date"] == date_str), None)
+                        if not day_avail or day_avail['available_rooms'] < qty:
+                            raise ValueError(f"Không đủ phòng trống cho loại phòng {room_type.name} vào ngày {date_str}.")
+                        room_total_price += day_avail['nightly_rate'] * qty
+                        c_date += timedelta(days=1)
+
+                    subtotal += room_total_price
+                    nights = max(1, (check_out_date - check_in_date).days)
                     room_objects_to_create.append({
                         'room_type': room_type,
                         'room_type_name': room_type.name,
                         'quantity': qty,
-                        'price': room_type.price
+                        'price': round(room_total_price / (nights * qty)) if (nights * qty) > 0 else room_type.price
                     })
                 except RoomType.DoesNotExist:
                     pass
         else:
-            nightly_subtotal = int(hotel.get('price_per_night', 0)) * int(payload['guests']['rooms'])
+            qty = int(payload['guests']['rooms'])
+            if qty <= 0:
+                raise ValueError(f"Số lượng phòng không hợp lệ ({qty}). Phải lớn hơn 0.")
+            
+            availability = hotel_svc.get_hotel_availability(hotel['id'], start_date=check_in_date, end_date=check_out_date)
+            
+            c_date = check_in_date
+            while c_date < check_out_date:
+                date_str = c_date.isoformat()
+                day_avail = next((item for item in availability if item["date"] == date_str), None)
+                if not day_avail or day_avail['available_rooms'] < qty:
+                    raise ValueError(f"Không đủ phòng trống vào ngày {date_str}.")
+                subtotal += day_avail['nightly_rate'] * qty
+                c_date += timedelta(days=1)
 
         price = self.calculate_price(
-            nightly_subtotal=nightly_subtotal,
+            subtotal=subtotal,
             check_in=payload['check_in'],
             check_out=payload['check_out'],
         )
@@ -164,6 +203,20 @@ class BookingService:
         return f'BK-{uuid4().hex[:10].upper()}'
 
     @transaction.atomic
+    def cancel_booking(self, booking_id: str, user) -> dict:
+        booking = Booking.objects.filter(booking_id=booking_id, user=user).first()
+        if not booking:
+            raise ValueError('Booking not found.')
+        
+        if booking.status == 'cancelled':
+            raise ValueError('Booking is already cancelled.')
+            
+        booking.status = 'cancelled'
+        booking.save(update_fields=['status'])
+        
+        return booking.to_summary()
+
+    @transaction.atomic
     def create_room_hold(self, payload: dict) -> dict:
         hotel_id = payload.get('hotel_id')
         session_id = payload.get('session_id')
@@ -176,10 +229,43 @@ class BookingService:
             raise ValueError('Hotel not found.')
 
         total_rooms = 0
+        from app.services.hotel_service import HotelService
+        hotel_svc = HotelService()
+
+        check_in_date = self._parse_date(payload.get('check_in')).date()
+        check_out_date = self._parse_date(payload.get('check_out')).date()
+
         if payload.get('room_selections'):
             total_rooms = sum(int(sel['quantity']) for sel in payload['room_selections'])
+            
+            # Prevent Race Condition by locking the requested RoomTypes
+            room_type_ids = [s['room_type_id'] for s in payload['room_selections']]
+            list(RoomType.objects.select_for_update().filter(id__in=room_type_ids))
+            
+            for selection in payload['room_selections']:
+                try:
+                    room_type = RoomType.objects.get(id=selection['room_type_id'], hotel_id=hotel_id)
+                    qty = int(selection['quantity'])
+                    if qty <= 0:
+                        raise ValueError(f"Số lượng phòng không hợp lệ ({qty}). Phải lớn hơn 0.")
+                    
+                    availability = hotel_svc.get_hotel_availability(hotel_id, room_type_id=room_type.id, start_date=check_in_date, end_date=check_out_date)
+                    
+                    c_date = check_in_date
+                    while c_date < check_out_date:
+                        date_str = c_date.isoformat()
+                        day_avail = next((item for item in availability if item["date"] == date_str), None)
+                        if not day_avail or day_avail['available_rooms'] < qty:
+                            raise ValueError(f"Không đủ phòng trống cho loại phòng {room_type.name} vào ngày {date_str}.")
+                        c_date += timedelta(days=1)
+                except RoomType.DoesNotExist:
+                    pass
         else:
             total_rooms = int(payload.get('rooms', 1))
+            if total_rooms <= 0:
+                raise ValueError("Số lượng phòng không hợp lệ. Phải lớn hơn 0.")
+            # Optional: lock hotel if not using room types (omitted for brevity as default behavior)
+
 
         hold, created = RoomHold.objects.update_or_create(
             session_id=session_id,

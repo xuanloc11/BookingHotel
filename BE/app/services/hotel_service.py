@@ -135,7 +135,7 @@ class HotelService:
             ],
         }
 
-    def get_hotel_availability(self, identifier: str | int, room_type_id: int | None = None) -> list[dict]:
+    def get_hotel_availability(self, identifier: str | int, room_type_id: int | None = None, start_date: datetime.date | None = None, end_date: datetime.date | None = None) -> list[dict]:
         hotel = self.get_hotel_by_identifier(identifier)
         if not hotel:
             return []
@@ -199,9 +199,17 @@ class HotelService:
             except Exception:
                 pass
 
-        for index in range(21):
-            date_value = today + timedelta(days=index)
-            date_str = date_value.isoformat()
+        today = datetime.utcnow().date()
+        
+        calc_start = start_date if start_date else today
+        calc_end = end_date if end_date else today + timedelta(days=21)
+        
+        from app.services.pricing_engine import pricing_engine
+
+        current_date = calc_start
+        while current_date < calc_end:
+            date_str = current_date.isoformat()
+            index = (current_date - today).days
             
             # Base logic
             base_available = index % 6 != 5
@@ -218,14 +226,24 @@ class HotelService:
             remaining_rooms = max(0, base_rooms - booked)
             is_available = remaining_rooms > 0
 
+            # Dynamic pricing
+            adjusted_rate = pricing_engine.calculate_price(
+                base_price=nightly_rate,
+                current_date=current_date,
+                capacity=base_rooms,
+                booked=booked
+            )
+
             availability.append(
                 {
                     'date': date_str,
                     'available_rooms': remaining_rooms,
-                    'nightly_rate': nightly_rate,
+                    'nightly_rate': adjusted_rate,
                     'is_available': is_available,
                 }
             )
+            
+            current_date += timedelta(days=1)
 
         return availability
 

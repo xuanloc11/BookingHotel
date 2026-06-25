@@ -90,6 +90,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'https://booking.xloc.id.vn',
+    'http://169.254.83.107:3000',
 ]
 
 
@@ -194,3 +195,8 @@ STATIC_URL = 'static/'
 RESEND_API_KEY = _env('RESEND_API_KEY', '')
 RESEND_FROM_EMAIL = _env('RESEND_FROM_EMAIL', 'help@booking.xloc.id.vn')
 FRONTEND_URL = _env('FRONTEND_URL', 'http://localhost:3000')
+
+# Security settings
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'

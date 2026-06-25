@@ -9,6 +9,9 @@ import { createBooking, holdRoom } from "@/lib/api/bookingApi";
 import { readStoredAccessToken } from "@/lib/api/authApi";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useCurrency } from "@/lib/currency/CurrencyContext";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import type {
   BookingPriceBreakdown,
   CheckoutSelection,
@@ -31,19 +34,16 @@ const paymentProviders: Record<PaymentMethod, PaymentProvider> = {
   card: "stripe",
 };
 
-function value(formData: FormData, key: string): string {
-  return String(formData.get(key) ?? "");
-}
-
-function getPaymentMethod(formData: FormData): PaymentMethod {
-  const method = value(formData, "payment_method");
-
-  if (method === "bank_transfer" || method === "card") {
-    return method;
-  }
-
-  return "pay_at_hotel";
-}
+const checkoutSchema = z.object({
+  first_name: z.string().min(1, "Vui lòng nhập tên / First name is required"),
+  last_name: z.string().min(1, "Vui lòng nhập họ / Last name is required"),
+  email: z.string().email("Email không hợp lệ / Invalid email"),
+  phone: z.string().min(8, "Số điện thoại không hợp lệ / Invalid phone number"),
+  country: z.string().min(1, "Vui lòng nhập quốc gia / Country is required"),
+  payment_method: z.enum(["pay_at_hotel", "bank_transfer", "card"]),
+  special_requests: z.string().optional(),
+});
+type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
 export default function CheckoutForm({
   hotel,
@@ -59,6 +59,18 @@ export default function CheckoutForm({
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
 
   const [sessionId, setSessionId] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit: hookFormSubmit,
+    formState: { errors },
+  } = useForm<CheckoutFormData>({
+    resolver: zodResolver(checkoutSchema),
+    mode: "onBlur",
+    defaultValues: {
+      payment_method: "pay_at_hotel",
+    }
+  });
 
   useEffect(() => {
     // Generate a unique session ID for this hold
@@ -93,13 +105,10 @@ export default function CheckoutForm({
   const seconds = timeLeft % 60;
   const timeString = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const onSubmit = async (data: CheckoutFormData) => {
     setError(null);
     setSubmitting(true);
 
-    const formData = new FormData(event.currentTarget);
-    const paymentMethod = getPaymentMethod(formData);
     const payload: CreateBookingRequest = {
       hotel_id: hotel.id,
       room_selections: selection.room_selections,
@@ -107,16 +116,16 @@ export default function CheckoutForm({
       check_out: selection.check_out,
       guests: selection.guests,
       customer: {
-        first_name: value(formData, "first_name"),
-        last_name: value(formData, "last_name"),
-        email: value(formData, "email"),
-        phone: value(formData, "phone"),
-        country: value(formData, "country"),
-        special_requests: value(formData, "special_requests"),
+        first_name: data.first_name,
+        last_name: data.last_name,
+        email: data.email,
+        phone: data.phone,
+        country: data.country,
+        special_requests: data.special_requests || "",
       },
       payment: {
-        method: paymentMethod,
-        provider: paymentProviders[paymentMethod],
+        method: data.payment_method as PaymentMethod,
+        provider: paymentProviders[data.payment_method as PaymentMethod],
       },
       session_id: sessionId || undefined,
     };
@@ -269,81 +278,84 @@ export default function CheckoutForm({
                 </div>
               ) : null}
 
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={hookFormSubmit(onSubmit)}>
                 <div className='row row-gap-4'>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
                       {t("checkout.firstName")} <span className='text-danger'>*</span>
                     </label>
                     <input
-                      className='form-control tw-h-14'
+                      className={`form-control tw-h-14 ${errors.first_name ? 'is-invalid' : ''}`}
                       maxLength={80}
-                      name='first_name'
-                      required
+                      {...register("first_name")}
                       type='text'
                     />
+                    {errors.first_name && <small className="text-danger tw-text-xs tw-mt-1 d-block">{errors.first_name.message}</small>}
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
                       {t("checkout.lastName")} <span className='text-danger'>*</span>
                     </label>
                     <input
-                      className='form-control tw-h-14'
+                      className={`form-control tw-h-14 ${errors.last_name ? 'is-invalid' : ''}`}
                       maxLength={80}
-                      name='last_name'
-                      required
+                      {...register("last_name")}
                       type='text'
                     />
+                    {errors.last_name && <small className="text-danger tw-text-xs tw-mt-1 d-block">{errors.last_name.message}</small>}
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
                       {t("checkout.email")} <span className='text-danger'>*</span>
                     </label>
                     <input
-                      className='form-control tw-h-14'
-                      name='email'
-                      required
+                      className={`form-control tw-h-14 ${errors.email ? 'is-invalid' : ''}`}
+                      {...register("email")}
                       type='email'
                     />
-                    <small className='text-secondary tw-text-xs tw-mt-1 d-block'>{t("checkout.emailHelp")}</small>
+                    {errors.email ? (
+                      <small className="text-danger tw-text-xs tw-mt-1 d-block">{errors.email.message}</small>
+                    ) : (
+                      <small className='text-secondary tw-text-xs tw-mt-1 d-block'>{t("checkout.emailHelp")}</small>
+                    )}
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
                       {t("checkout.phone")} <span className='text-danger'>*</span>
                     </label>
                     <input
-                      className='form-control tw-h-14'
+                      className={`form-control tw-h-14 ${errors.phone ? 'is-invalid' : ''}`}
                       maxLength={30}
-                      name='phone'
-                      required
+                      {...register("phone")}
                       type='tel'
                     />
+                    {errors.phone && <small className="text-danger tw-text-xs tw-mt-1 d-block">{errors.phone.message}</small>}
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
                       {t("checkout.country")} <span className='text-danger'>*</span>
                     </label>
                     <input
-                      className='form-control tw-h-14'
+                      className={`form-control tw-h-14 ${errors.country ? 'is-invalid' : ''}`}
                       maxLength={80}
-                      name='country'
-                      required
+                      {...register("country")}
                       type='text'
                     />
+                    {errors.country && <small className="text-danger tw-text-xs tw-mt-1 d-block">{errors.country.message}</small>}
                   </div>
                   <div className='col-md-6'>
                     <label className='tw-text-sm fw-bold text-heading tw-mb-2'>
                       {t("checkout.paymentMethod")} <span className='text-danger'>*</span>
                     </label>
                     <select
-                      className='form-select tw-h-14'
-                      defaultValue='pay_at_hotel'
-                      name='payment_method'
+                      className={`form-select tw-h-14 ${errors.payment_method ? 'is-invalid' : ''}`}
+                      {...register("payment_method")}
                     >
                       <option value='pay_at_hotel'>{t("checkout.payAtHotel")}</option>
                       <option value='bank_transfer'>{t("checkout.bankTransfer")}</option>
                       <option value='card'>{t("checkout.card")}</option>
                     </select>
+                    {errors.payment_method && <small className="text-danger tw-text-xs tw-mt-1 d-block">{errors.payment_method.message}</small>}
                   </div>
                   <div className='col-12'>
                     <hr className='tw-my-4 text-neutral' />
@@ -357,7 +369,7 @@ export default function CheckoutForm({
                     <textarea
                       className='form-control'
                       maxLength={500}
-                      name='special_requests'
+                      {...register("special_requests")}
                       rows={5}
                     />
                   </div>

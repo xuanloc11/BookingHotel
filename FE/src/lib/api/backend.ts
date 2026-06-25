@@ -92,7 +92,7 @@ export async function fetchBackendJson<T>(
 
   if (isMutating && !csrfToken && typeof window !== "undefined") {
     try {
-      await fetch(getBackendUrl("/csrf/"), { credentials: "include" });
+      await fetch(getBackendUrl("/csrf/"), { credentials: "include", cache: "no-store" });
       csrfToken = readBrowserCookie("csrftoken");
     } catch (e) {
       console.warn("Failed to prefetch CSRF token", e);

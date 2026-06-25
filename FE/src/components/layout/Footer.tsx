@@ -5,6 +5,8 @@ import { FC, useState } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import toast from "react-hot-toast";
 
+import { fetchBackendJson } from "@/lib/api/backend";
+
 const Footer: FC = () => {
   const { t } = useLanguage();
 
@@ -17,23 +19,15 @@ const Footer: FC = () => {
     
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/newsletter/subscribe/`, {
+      const data = await fetchBackendJson("/newsletter/subscribe/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
+        body: { email },
       });
-      const data = await res.json();
       
-      if (res.ok) {
-        toast.success(data.message || "Đăng ký thành công!");
-        setEmail("");
-      } else {
-        toast.error(data.detail || "Có lỗi xảy ra.");
-      }
+      toast.success(data.message || "Đăng ký thành công!");
+      setEmail("");
     } catch (err: any) {
-      toast.error("Không thể kết nối đến máy chủ.");
+      toast.error(err.message || "Không thể kết nối đến máy chủ.");
     } finally {
       setLoading(false);
     }

@@ -7,6 +7,7 @@ from app import views_admin
 
 urlpatterns = [
     path('csrf/', views.get_csrf_token, name='api-csrf-token'),
+    path('csrf', views.get_csrf_token),
     path('health/', views.health_check, name='api-health'),
     path('newsletter/subscribe/', views.newsletter_subscribe, name='api-newsletter-subscribe'),
     path('newsletter/subscribe', views.newsletter_subscribe),
@@ -40,6 +41,9 @@ urlpatterns = [
     path('bookings/my/', views.my_bookings, name='api-bookings-my'),
     path('bookings/my', views.my_bookings),
     path('bookings/<str:booking_id>/', views.booking_detail, name='api-booking-detail'),
+    path('bookings/<str:booking_id>/cancel/', views.cancel_booking, name='api-booking-cancel'),
+    path('bookings/<str:booking_id>/cancel', views.cancel_booking),
+    path('bookings/<str:booking_id>', views.booking_detail),
     path('vendor/dashboard/', views_vendor.dashboard_stats, name='api-vendor-dashboard'),
     path('vendor/dashboard', views_vendor.dashboard_stats),
     path('vendor/hotels/', views_vendor.manage_hotel, name='api-vendor-hotels'),

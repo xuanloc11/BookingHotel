@@ -50,6 +50,20 @@ export async function fetchBookingById(
   );
 }
 
+export async function cancelBooking(
+  bookingId: string,
+  options: BookingApiOptions = {},
+): Promise<BookingSummary> {
+  return fetchBackendJson<BookingSummary>(
+    `/bookings/${encodeURIComponent(bookingId)}/cancel/`,
+    {
+      method: "POST",
+      authToken: options.authToken,
+      headers: options.headers,
+    },
+  );
+}
+
 export interface HoldRoomRequest {
   hotel_id: number;
   check_in: string;

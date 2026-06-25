@@ -33,6 +33,8 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [isRateLimited, setIsRateLimited] = useState(false);
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
 
   const isLogin = mode === "login";
   const isRegister = mode === "register";
@@ -41,6 +43,8 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmitting(true);
+    setIsRateLimited(false);
+    setIsUnauthorized(false);
 
     const formData = new FormData(event.currentTarget);
 
@@ -86,15 +90,25 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
       });
       persistAuthSession(loginResponse);
       setUser(loginResponse.user);
-      toast.success("Đăng nhập thành công!");
       router.push(nextPath || "/profile");
       router.refresh();
     } catch (requestError) {
-      toast.error(
-        requestError instanceof Error
-          ? requestError.message
-          : "Yêu cầu xác thực thất bại.",
-      );
+      let isHandled = false;
+      if (requestError instanceof Error && requestError.message.includes("429")) {
+        setIsRateLimited(true);
+        isHandled = true;
+      } else if (requestError instanceof Error && requestError.message.includes("401")) {
+        setIsUnauthorized(true);
+        isHandled = true;
+      }
+      
+      if (!isHandled) {
+        toast.error(
+          requestError instanceof Error
+            ? requestError.message
+            : "Yêu cầu xác thực thất bại.",
+        );
+      }
     } finally {
       setSubmitting(false);
     }
@@ -238,6 +252,16 @@ export default function AuthForm({ mode, nextPath }: AuthFormProps) {
                             </span>
                           )}
                         </button>
+                        {isRateLimited && isLogin && (
+                          <div className='text-danger text-center tw-mt-4 fw-medium'>
+                            Bạn đã nhập sai mật khẩu quá 5 lần. Vui lòng thử lại sau.
+                          </div>
+                        )}
+                        {isUnauthorized && isLogin && !isRateLimited && (
+                          <div className='text-danger text-center tw-mt-4 fw-medium'>
+                            Bạn nhập sai mật khẩu hoặc email.
+                          </div>
+                        )}
                       </div>
 
                       <div className='col-xl-12 tw-mt-6'>

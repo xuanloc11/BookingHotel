@@ -12,3 +12,49 @@
 @import url("../../public/assets/css/phosphor-icons-thin.css");
 @import url("../../public/assets/css/main.css");
 @import url("../../public/assets/css/extra.css");
+
+/* =========================================
+   UI/UX AUDIT PREMIUM OVERRIDES (INTER)
+========================================= */
+
+:root {
+  /* Button Premium Styling */
+  --btn-radius: 8px !important;
+}
+
+body {
+  font-family: var(--body-font), "Inter", sans-serif !important;
+  color: #334155; /* Dark Slate for better readability */
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--heading-font), "Inter", sans-serif !important;
+  letter-spacing: -0.02em;
+}
+
+/* Premium Button Hover Micro-interactions */
+.bg-main-600 {
+  border-radius: var(--btn-radius);
+  transition: all 0.3s ease-in-out;
+}
+
+.tw-btn-hover-black:hover, .bg-main-600:hover, button[type="submit"]:hover {
+  filter: brightness(90%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Inline Validation Styles */
+.is-invalid {
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1) !important;
+}
+.text-danger {
+  color: #EF4444 !important;
+}
+
+/* Focus rings for Inputs */
+.form-control:focus {
+  border-color: var(--main-600, #0F172A) !important;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1) !important;
+}

@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { UserProfile } from "@/types/user";
 import { BookingSummary } from "@/types/booking";
 import { updateCurrentUser } from "@/lib/api/userApi";
+import { cancelBooking } from "@/lib/api/bookingApi";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import toast from "react-hot-toast";
@@ -49,6 +50,14 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
       setActiveTab("profile");
     }
   }, [tabParam]);
+
+  const [localBookings, setLocalBookings] = useState<BookingSummary[]>(bookings);
+  const [loadingCancel, setLoadingCancel] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLocalBookings(bookings);
+  }, [bookings]);
+
   const [formData, setFormData] = useState({
     full_name: user.full_name || "",
     phone: user.phone || "",
@@ -69,6 +78,22 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
       toast.error(error.message || t("profile.updateError"));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCancelBooking = async (bookingId: string) => {
+    if (!window.confirm(t("profile.confirmCancel") || "Bạn có chắc chắn muốn hủy đơn này?")) {
+      return;
+    }
+    setLoadingCancel(bookingId);
+    try {
+      const updatedBooking = await cancelBooking(bookingId);
+      setLocalBookings(prev => prev.map(b => b.booking_id === bookingId ? updatedBooking : b));
+      toast.success(t("profile.cancelSuccess") || "Hủy đơn thành công");
+    } catch (error: any) {
+      toast.error(error.message || t("profile.cancelError") || "Có lỗi xảy ra khi hủy đơn");
+    } finally {
+      setLoadingCancel(null);
     }
   };
 
@@ -167,7 +192,7 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
                     </Link>
                   </div>
 
-                  {bookings.length === 0 ? (
+                  {localBookings.length === 0 ? (
                     <div className='bg-neutral-100 tw-rounded-lg tw-p-10 text-center'>
                       <h4 className='fw-normal tw-mb-3'>{t("profile.noBookings")}</h4>
                       <p className='tw-mb-6'>
@@ -179,7 +204,7 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
                     </div>
                   ) : (
                     <div className='d-flex flex-column tw-gap-5'>
-                      {bookings.map((booking) => (
+                      {localBookings.map((booking) => (
                         <article
                           className='bg-neutral-50 border tw-rounded-lg tw-p-5 d-flex flex-wrap tw-gap-5 align-items-center'
                           key={booking.booking_id}
@@ -198,8 +223,13 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
                               <h4 className='fw-normal mb-0'>
                                 {booking.hotel_name}
                               </h4>
-                              <span className='badge bg-warning text-dark text-capitalize'>
-                                {booking.status}
+                              <span className={`badge text-capitalize ${
+                                booking.status === 'cancelled' ? 'bg-danger' : 
+                                booking.status === 'completed' ? 'bg-success' : 'bg-warning text-dark'
+                              }`}>
+                                {booking.status === 'cancelled' ? (t("profile.statusCancelled") || 'Đã hủy') : 
+                                 booking.status === 'completed' ? (t("profile.statusCompleted") || 'Hoàn thành') : 
+                                 (t("profile.statusPending") || 'Đang chờ')}
                               </span>
                             </div>
                             {booking.rooms && booking.rooms.length > 0 && (
@@ -223,12 +253,23 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
                             <strong className='tw-text-xl text-main-600 d-block tw-mb-3'>
                               {formatMoney(booking.total || 0, booking.currency)}
                             </strong>
-                            <Link
-                              className='font-heading text-heading hover-text-main-600 d-flex align-items-center tw-gap-1'
-                              href={`/hotel/${booking.hotel_id}`}
-                            >
-                              {t("profile.viewHotel")} <i className='ph ph-arrow-up-right' />
-                            </Link>
+                            <div className="d-flex align-items-center tw-gap-3">
+                              {booking.status !== 'cancelled' && booking.status !== 'completed' && (
+                                <button
+                                  onClick={() => handleCancelBooking(booking.booking_id)}
+                                  disabled={loadingCancel === booking.booking_id}
+                                  className="btn btn-outline-danger btn-sm fw-medium tw-px-4"
+                                >
+                                  {loadingCancel === booking.booking_id ? "..." : (t("profile.cancelBooking") || "Hủy phòng")}
+                                </button>
+                              )}
+                              <Link
+                                className='font-heading text-heading hover-text-main-600 d-flex align-items-center tw-gap-1'
+                                href={`/hotel/${booking.hotel_id}`}
+                              >
+                                {t("profile.viewHotel")} <i className='ph ph-arrow-up-right' />
+                              </Link>
+                            </div>
                           </div>
                         </article>
                       ))}

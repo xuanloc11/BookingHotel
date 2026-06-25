@@ -25,6 +25,13 @@ def _json_error(message: str, status: int = 400, details: object | None = None) 
         payload['details'] = details
     return JsonResponse(payload, status=status)
 
+from django_ratelimit.decorators import ratelimit
+
+def check_ratelimit(request) -> JsonResponse | None:
+    if getattr(request, 'limited', False):
+        return _json_error('Bạn đã thử quá nhiều lần. Vui lòng đợi một lát trước khi thử lại.', status=429)
+    return None
+
 
 def _parse_json_body(request: HttpRequest) -> dict:
     if not request.body:
@@ -140,9 +147,12 @@ def province_list(request):
 	return JsonResponse({'results': provinces})
 
 
-@csrf_exempt
+@ratelimit(key='ip', rate='5/m', block=False)
 @require_http_methods(['POST'])
 def register(request):
+	limit_resp = check_ratelimit(request)
+	if limit_resp: return limit_resp
+
 	try:
 		payload = _parse_json_body(request)
 		result = auth_service.register(
@@ -156,7 +166,6 @@ def register(request):
 
 	return JsonResponse({'message': 'Vui lòng kiểm tra email để xác nhận tài khoản.'}, status=201)
 
-@csrf_exempt
 @require_http_methods(['POST'])
 def verify_email(request):
 	try:
@@ -185,9 +194,12 @@ def verify_email(request):
 		return _json_error(str(e))
 
 
-@csrf_exempt
+@ratelimit(key='ip', rate='5/m', block=False)
 @require_http_methods(['POST'])
 def login(request):
+	limit_resp = check_ratelimit(request)
+	if limit_resp: return limit_resp
+
 	try:
 		payload = _parse_json_body(request)
 		result = auth_service.login(
@@ -203,9 +215,12 @@ def login(request):
 	return response
 
 
-@csrf_exempt
+@ratelimit(key='ip', rate='3/m', block=False)
 @require_http_methods(['POST'])
 def forgot_password(request):
+	limit_resp = check_ratelimit(request)
+	if limit_resp: return limit_resp
+
 	try:
 		payload = _parse_json_body(request)
 	except ValueError as error:
@@ -214,9 +229,12 @@ def forgot_password(request):
 	return JsonResponse({'detail': auth_service.reset_password(payload.get('email', ''))})
 
 
-@csrf_exempt
+@ratelimit(key='ip', rate='5/m', block=False)
 @require_http_methods(['POST'])
 def reset_password_confirm(request):
+	limit_resp = check_ratelimit(request)
+	if limit_resp: return limit_resp
+
 	try:
 		payload = _parse_json_body(request)
 	except ValueError as error:
@@ -235,7 +253,6 @@ def reset_password_confirm(request):
 	return _json_error('Đường dẫn không hợp lệ hoặc đã hết hạn.', status=400)
 
 
-@csrf_exempt
 @require_http_methods(['POST'])
 def logout(request):
 	user = _get_authenticated_user(request)
@@ -246,7 +263,6 @@ def logout(request):
 	return response
 
 
-@csrf_exempt
 @require_http_methods(['GET', 'PATCH'])
 def current_user(request):
 	user = _get_authenticated_user(request)
@@ -278,7 +294,6 @@ def current_user(request):
 	return JsonResponse(_serialize_user(user))
 
 
-@csrf_exempt
 @require_http_methods(['POST'])
 def create_booking(request):
 	try:
@@ -290,7 +305,6 @@ def create_booking(request):
 	return JsonResponse(result.payload, status=201)
 
 
-@csrf_exempt
 @require_http_methods(['POST'])
 def create_room_hold(request):
 	try:
@@ -323,7 +337,18 @@ def booking_detail(request, booking_id: str):
 
 	return JsonResponse(booking)
 
-@csrf_exempt
+@require_http_methods(['POST'])
+def cancel_booking(request, booking_id: str):
+	user = _get_authenticated_user(request)
+	if not user:
+		return _json_error('Authentication required.', status=401)
+
+	try:
+		booking = booking_service.cancel_booking(booking_id, user)
+		return JsonResponse(booking)
+	except ValueError as error:
+		return _json_error(str(error), status=400)
+
 @require_http_methods(['POST'])
 def newsletter_subscribe(request: HttpRequest) -> HttpResponse:
     try:

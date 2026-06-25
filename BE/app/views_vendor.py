@@ -22,7 +22,6 @@ def _is_vendor(user) -> bool:
 
 
 def vendor_required(view_func):
-    @csrf_exempt
     def wrapper(request: HttpRequest, *args, **kwargs):
         user = _get_authenticated_user(request)
         if not user or not _is_vendor(user):
@@ -423,38 +422,40 @@ def manage_withdrawals(request, user):
         if amount <= 0:
             return _json_error('Số tiền rút phải lớn hơn 0.')
             
-        # Tính số dư khả dụng
-        hotel = Hotel.objects.filter(owner=user).first()
-        if not hotel:
-            return _json_error('Bạn chưa có khách sạn nào.', status=400)
+        from django.db import transaction
+        with transaction.atomic():
+            # Lock the VendorSetting row to prevent Race Condition during withdrawal
+            setting = VendorSetting.objects.select_for_update().filter(user=user).first()
+            if not setting or not setting.bank_name or not setting.account_number:
+                return _json_error('Vui lòng cập nhật thông tin tài khoản ngân hàng trước khi rút tiền.', status=400)
+
+            # Tính số dư khả dụng
+            hotel = Hotel.objects.filter(owner=user).first()
+            if not hotel:
+                return _json_error('Bạn chưa có khách sạn nào.', status=400)
+                
+            transactions = Transaction.objects.filter(hotel=hotel)
+            balance = transactions.filter(type=Transaction.TYPE_REVENUE, status=Transaction.STATUS_COMPLETED).aggregate(Sum('net_amount'))['net_amount__sum'] or 0
+            payouts = transactions.filter(type=Transaction.TYPE_PAYOUT).aggregate(Sum('amount'))['amount__sum'] or 0
             
-        transactions = Transaction.objects.filter(hotel=hotel)
-        balance = transactions.filter(type=Transaction.TYPE_REVENUE, status=Transaction.STATUS_COMPLETED).aggregate(Sum('net_amount'))['net_amount__sum'] or 0
-        payouts = transactions.filter(type=Transaction.TYPE_PAYOUT).aggregate(Sum('amount'))['amount__sum'] or 0
-        
-        # Thêm những khoản tiền đang chờ duyệt rút
-        from app.models import WithdrawalRequest
-        pending_withdrawals = WithdrawalRequest.objects.filter(vendor=user, status=WithdrawalRequest.STATUS_PENDING).aggregate(Sum('amount'))['amount__sum'] or 0
-        
-        available_balance = balance - payouts - pending_withdrawals
-        
-        if amount > available_balance:
-            return _json_error(f'Số dư không đủ. Bạn chỉ có thể rút tối đa {available_balance}', status=400)
+            # Thêm những khoản tiền đang chờ duyệt rút
+            from app.models import WithdrawalRequest
+            pending_withdrawals = WithdrawalRequest.objects.filter(vendor=user, status=WithdrawalRequest.STATUS_PENDING).aggregate(Sum('amount'))['amount__sum'] or 0
             
-        # Lấy thông tin tài khoản ngân hàng
-        setting = VendorSetting.objects.filter(user=user).first()
-        if not setting or not setting.bank_name or not setting.account_number:
-            return _json_error('Vui lòng cập nhật thông tin tài khoản ngân hàng trước khi rút tiền.', status=400)
+            available_balance = balance - payouts - pending_withdrawals
             
-        withdrawal = WithdrawalRequest.objects.create(
-            vendor=user,
-            amount=amount,
-            bank_name=setting.bank_name,
-            account_number=setting.account_number,
-            account_name=setting.account_name
-        )
-        
-        return JsonResponse({
-            'message': 'Yêu cầu rút tiền đã được tạo và đang chờ duyệt.',
-            'id': withdrawal.id
-        }, status=201)
+            if amount > available_balance:
+                return _json_error(f'Số dư không đủ. Bạn chỉ có thể rút tối đa {available_balance}', status=400)
+                
+            withdrawal = WithdrawalRequest.objects.create(
+                vendor=user,
+                amount=amount,
+                bank_name=setting.bank_name,
+                account_number=setting.account_number,
+                account_name=setting.account_name
+            )
+            
+            return JsonResponse({
+                'message': 'Yêu cầu rút tiền đã được tạo và đang chờ duyệt.',
+                'id': withdrawal.id
+            }, status=201)
