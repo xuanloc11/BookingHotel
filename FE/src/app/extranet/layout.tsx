@@ -63,6 +63,12 @@ export default function ExtranetLayout({ children }: { children: ReactNode }) {
     }
   }, [user, loading, router]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      document.documentElement.setAttribute("data-menu-color", "light");
+    }
+  }, []);
+
 
   if (loading || !user || (user.role !== "vendor" && user.role !== "admin")) {
     return (
@@ -167,7 +173,7 @@ export default function ExtranetLayout({ children }: { children: ReactNode }) {
         <div className="leftside-menu">
           <Link href="/extranet/dashboard" className="logo logo-light">
             <span className="logo-lg">
-              <h3 className="text-white mt-3 text-center">Booking</h3>
+              <h3 className="text-white mt-3 text-center">VPL Booking</h3>
             </span>
             <span className="logo-sm">
               <h3 className="text-white mt-3 text-center">B</h3>
@@ -175,7 +181,7 @@ export default function ExtranetLayout({ children }: { children: ReactNode }) {
           </Link>
           <Link href="/extranet/dashboard" className="logo logo-dark">
             <span className="logo-lg">
-              <h3 className="mt-3 text-center">Booking</h3>
+              <h3 className="mt-3 text-center">VPL Booking</h3>
             </span>
             <span className="logo-sm">
               <h3 className="mt-3 text-center">B</h3>

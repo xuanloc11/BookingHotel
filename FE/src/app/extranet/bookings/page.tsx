@@ -351,14 +351,14 @@ export default function VendorBookingsManage() {
           <div className="card border-0 shadow-sm">
             <div className="card-body p-0">
               <div className="table-responsive">
-                <table className="table table-hover table-centered mb-0">
+                <table className="table table-hover table-centered align-middle mb-0">
                   <thead className="table-light">
                     <tr>
                       <th className="py-3 px-4">Mã đơn</th>
                       <th className="py-3">Ngày nhận/trả</th>
                       <th className="py-3">Thông tin khách</th>
-                      <th className="py-3">Tổng tiền</th>
-                      <th className="py-3">Trạng thái</th>
+                      <th className="py-3 text-end">Tổng tiền</th>
+                      <th className="py-3 text-center">Trạng thái</th>
                       <th className="py-3 px-4 text-end">Thao tác</th>
                     </tr>
                   </thead>
@@ -403,10 +403,10 @@ export default function VendorBookingsManage() {
                             </div>
                             <div className="fs-6 text-muted">{b.customer?.phone || "Khách hàng đặt qua App"}</div>
                           </td>
-                          <td className="fw-bold text-primary">
+                          <td className="fw-bold text-primary text-end">
                             {formatMoney(b.total || 0, b.currency)}
                           </td>
-                          <td>
+                          <td className="text-center">
                             {(() => {
                               const stat = (b.status || "").toLowerCase();
                               return (

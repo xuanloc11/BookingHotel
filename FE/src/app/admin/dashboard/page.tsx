@@ -19,13 +19,44 @@ import {
 export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [period, setPeriod] = useState("all");
+
+  const [customStart, setCustomStart] = useState("");
+  const [customEnd, setCustomEnd] = useState("");
 
   useEffect(() => {
-    getAdminDashboard()
+    if (period === 'custom' && (!customStart || !customEnd)) {
+      return;
+    }
+    
+    setLoading(true);
+    getAdminDashboard(period, customStart, customEnd)
       .then((res) => setData(res))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [period, customStart, customEnd]);
+
+  const periods = [
+    { value: "day", label: "Hôm nay" },
+    { value: "week", label: "7 ngày qua" },
+    { value: "month", label: "30 ngày qua" },
+    { value: "year", label: "1 năm qua" },
+    { value: "custom", label: "Tùy chọn ngày..." },
+    { value: "all", label: "Toàn thời gian" },
+  ];
+
+  const getChartTitleSuffix = () => {
+    switch (period) {
+      case 'day': return 'hôm nay';
+      case 'week': return '7 ngày qua';
+      case 'month': return '30 ngày qua';
+      case 'year': return '1 năm qua';
+      case 'custom': return `tùy chọn (${customStart} - ${customEnd})`;
+      case 'all': 
+      default: 
+        return '6 tháng gần nhất';
+    }
+  };
 
   if (loading) return <div>Đang tải dữ liệu...</div>;
 
@@ -33,8 +64,40 @@ export default function AdminDashboard() {
     <>
       <div className="row mt-4">
         <div className="col-12">
-          <div className="page-title-box">
+          <div className="page-title-box d-flex align-items-center justify-content-between">
             <h4 className="page-title">Tổng quan Hệ thống</h4>
+            <div className="d-flex align-items-center gap-2">
+              <i className="ri-calendar-line text-primary fs-4"></i>
+              <select 
+                className="form-select border shadow-sm bg-white fw-medium text-dark cursor-pointer"
+                value={period}
+                onChange={(e) => setPeriod(e.target.value)}
+                style={{ minWidth: '160px' }}
+              >
+                {periods.map(p => (
+                  <option key={p.value} value={p.value}>{p.label}</option>
+                ))}
+              </select>
+              
+              {period === 'custom' && (
+                <div className="d-flex align-items-center gap-2 ms-2">
+                  <input 
+                    type="date" 
+                    className="form-control form-control-sm border shadow-sm" 
+                    value={customStart}
+                    onChange={e => setCustomStart(e.target.value)}
+                  />
+                  <span>-</span>
+                  <input 
+                    type="date" 
+                    className="form-control form-control-sm border shadow-sm" 
+                    value={customEnd}
+                    onChange={e => setCustomEnd(e.target.value)}
+                    min={customStart}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -89,11 +152,11 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="row">
+      <div className="row g-4 mb-4">
         <div className="col-xl-6">
           <div className="card shadow-sm border-0">
             <div className="card-header bg-white border-bottom pt-4 pb-3">
-              <h5 className="fw-bold m-0">Doanh thu sàn 6 tháng gần nhất</h5>
+              <h5 className="fw-bold m-0">Doanh thu sàn {getChartTitleSuffix()}</h5>
             </div>
             <div className="card-body">
               {data?.chart_data && data.chart_data.length > 0 ? (
@@ -118,7 +181,7 @@ export default function AdminDashboard() {
         <div className="col-xl-6">
           <div className="card shadow-sm border-0">
             <div className="card-header bg-white border-bottom pt-4 pb-3">
-              <h5 className="fw-bold m-0">Đơn đặt phòng toàn hệ thống 6 tháng gần nhất</h5>
+              <h5 className="fw-bold m-0">Đơn đặt phòng toàn hệ thống {getChartTitleSuffix()}</h5>
             </div>
             <div className="card-body">
               {data?.chart_data && data.chart_data.length > 0 ? (
@@ -141,7 +204,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="row">
+      <div className="row g-4">
         <div className="col-12">
           <div className="card border-0 shadow-sm">
             <div className="card-header bg-white border-bottom pt-4 pb-3">
@@ -152,15 +215,15 @@ export default function AdminDashboard() {
                 <p className="text-muted text-center py-4">Chưa có giao dịch nào.</p>
               ) : (
                 <div className="table-responsive">
-                  <table className="table table-centered table-nowrap mb-0">
+                  <table className="table table-centered align-middle table-nowrap mb-0">
                     <thead className="table-light">
                       <tr>
                         <th>Mã đơn</th>
                         <th>Khách sạn</th>
                         <th>Khách hàng</th>
                         <th>Ngày nhận/trả</th>
-                        <th>Tổng tiền</th>
-                        <th>Trạng thái</th>
+                        <th className="text-end">Tổng tiền</th>
+                        <th className="text-center">Trạng thái</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -170,8 +233,8 @@ export default function AdminDashboard() {
                           <td>{b.hotel_name}</td>
                           <td>{b.guests.adults} NL, {b.guests.children} TE</td>
                           <td>{b.check_in} &rarr; {b.check_out}</td>
-                          <td className="fw-medium text-primary">{b.total.toLocaleString('vi-VN')} ₫</td>
-                          <td>
+                          <td className="fw-medium text-primary text-end">{b.total.toLocaleString('vi-VN')} ₫</td>
+                          <td className="text-center">
                             <span className={`badge ${
                               b.status === 'confirmed' ? 'bg-success' : 
                               b.status === 'pending' ? 'bg-warning text-dark' : 

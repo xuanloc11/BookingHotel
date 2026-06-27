@@ -55,22 +55,22 @@ export default function AdminHotelsManage() {
 
   const handleDelete = async (hotelId: number, hotelName: string) => {
     const result = await Swal.fire({
-      title: "Xóa khách sạn này?",
-      html: `Bạn sắp xóa khách sạn <b>"${hotelName.toUpperCase()}"</b> khỏi hệ thống.<br/><br/>Hành động này sẽ <b>XÓA TOÀN BỘ PHÒNG VÀ ĐƠN ĐẶT</b> liên quan và không thể hoàn tác!`,
-      icon: "error",
+      title: "Đình chỉ khách sạn này?",
+      html: `Bạn sắp đình chỉ hoạt động khách sạn <b>"${hotelName.toUpperCase()}"</b> khỏi hệ thống.<br/><br/>Khách sạn này sẽ không thể nhận thêm đơn đặt phòng mới, nhưng lịch sử giao dịch vẫn được giữ lại.`,
+      icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#6c757d",
-      confirmButtonText: "Đúng, xóa ngay!",
+      confirmButtonText: "Đúng, đình chỉ ngay!",
       cancelButtonText: "Hủy bỏ",
     });
 
     if (!result.isConfirmed) return;
 
     try {
-      toast.loading("Đang xóa khách sạn...", { id: `delete-hotel-${hotelId}` });
+      toast.loading("Đang đình chỉ khách sạn...", { id: `delete-hotel-${hotelId}` });
       await deleteAdminHotel(hotelId);
-      toast.success("Đã xóa khách sạn thành công!", { id: `delete-hotel-${hotelId}` });
+      toast.success("Đã đình chỉ khách sạn thành công!", { id: `delete-hotel-${hotelId}` });
       fetchHotels();
     } catch (err: any) {
       toast.error("Lỗi: " + err.message, { id: `delete-hotel-${hotelId}` });
@@ -118,15 +118,15 @@ export default function AdminHotelsManage() {
           <div className="card border-0 shadow-sm">
             <div className="card-body p-0">
               <div className="table-responsive">
-                <table className="table table-hover table-centered mb-0">
+                <table className="table table-hover table-centered align-middle mb-0">
                   <thead className="table-light">
                     <tr>
                       <th className="py-3 px-4">ID</th>
                       <th className="py-3">Tên Khách sạn</th>
                       <th className="py-3">Địa điểm</th>
                       <th className="py-3">Chủ sở hữu (Vendor)</th>
-                      <th className="py-3">Giá từ</th>
-                      <th className="py-3">Đánh giá</th>
+                      <th className="py-3 text-end">Giá từ</th>
+                      <th className="py-3 text-center">Đánh giá</th>
                       <th className="py-3 px-4 text-end">Thao tác</th>
                     </tr>
                   </thead>
@@ -166,11 +166,11 @@ export default function AdminHotelsManage() {
                             <div className="fw-medium">{h.owner_name}</div>
                             <div className="fs-6 text-muted">{h.owner_email}</div>
                           </td>
-                          <td>
+                          <td className="text-end">
                             <div className="fw-medium">{h.price_per_night?.toLocaleString('vi-VN')} ₫</div>
                           </td>
                           <td>
-                            <div className="d-flex align-items-center gap-1 text-warning">
+                            <div className="d-flex align-items-center justify-content-center gap-1 text-warning">
                               <i className="ri-star-fill" />
                               <span className="text-dark fw-medium">{h.rating}</span>
                             </div>
@@ -179,9 +179,9 @@ export default function AdminHotelsManage() {
                             <button 
                               className="btn btn-outline-danger btn-sm"
                               onClick={() => handleDelete(h.id, h.name)}
-                              title="Xóa khách sạn"
+                              title="Đình chỉ khách sạn"
                             >
-                              <i className="ri-delete-bin-line"></i> Xóa
+                              <i className="ri-delete-bin-line"></i> Đình chỉ
                             </button>
                           </td>
                         </tr>

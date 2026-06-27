@@ -85,6 +85,8 @@ urlpatterns = [
     path('system-admin/hotels/<int:hotel_id>', views_admin.manage_hotel),
     path('system-admin/bookings/', views_admin.list_bookings, name='api-admin-bookings'),
     path('system-admin/bookings', views_admin.list_bookings),
+    path('system-admin/bookings/<str:booking_id>/cancel/', views_admin.cancel_booking_admin, name='api-admin-bookings-cancel'),
+    path('system-admin/bookings/<str:booking_id>/cancel', views_admin.cancel_booking_admin),
     path('system-admin/approvals/', views_admin.list_approvals, name='api-admin-approvals'),
     path('system-admin/approvals', views_admin.list_approvals),
     path('system-admin/approvals/<int:hotel_id>/', views_admin.update_approval_status, name='api-admin-approval-status'),

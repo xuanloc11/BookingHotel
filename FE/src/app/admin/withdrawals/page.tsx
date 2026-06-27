@@ -77,16 +77,16 @@ export default function AdminWithdrawals() {
           <div className="card">
             <div className="card-body">
               <div className="table-responsive">
-                <table className="table table-centered mb-0">
+                <table className="table table-centered align-middle mb-0">
                   <thead className="table-light">
                     <tr>
                       <th>ID</th>
                       <th>Chủ khách sạn</th>
                       <th>Ngày yêu cầu</th>
-                      <th>Số tiền rút</th>
+                      <th className="text-end">Số tiền rút</th>
                       <th>Thông tin Ngân hàng</th>
-                      <th>Trạng thái</th>
-                      <th>Hành động</th>
+                      <th className="text-center">Trạng thái</th>
+                      <th className="text-end">Hành động</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -100,12 +100,12 @@ export default function AdminWithdrawals() {
                           <td><b>#{w.id}</b></td>
                           <td>{w.vendor_name}</td>
                           <td>{new Date(w.created_at).toLocaleString("vi-VN")}</td>
-                          <td className="text-danger fw-bold">{formatMoney(w.amount)}</td>
+                          <td className="text-danger fw-bold text-end">{formatMoney(w.amount)}</td>
                           <td>
                             <div><b>{w.bank_name}</b></div>
                             <div className="text-muted small">{w.account_number} - {w.account_name}</div>
                           </td>
-                          <td>
+                          <td className="text-center">
                             <span className={`badge ${
                               w.status === 'approved' ? 'bg-success' :
                               w.status === 'rejected' ? 'bg-danger' : 'bg-warning text-dark'
@@ -114,9 +114,9 @@ export default function AdminWithdrawals() {
                                w.status === 'rejected' ? 'Từ chối' : 'Chờ duyệt'}
                             </span>
                           </td>
-                          <td>
+                          <td className="text-end">
                             {w.status === 'pending' && (
-                              <div className="d-flex gap-1">
+                              <div className="d-flex justify-content-end gap-1">
                                 <button className="btn btn-sm btn-success" onClick={() => handleApprove(w.id)}>
                                   <i className="ri-check-line"></i> Duyệt
                                 </button>

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.db.models import Sum, Count, Q
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncMonth, TruncDay
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 
@@ -35,29 +35,67 @@ def admin_required(view_func):
 @require_http_methods(['GET'])
 @admin_required
 def dashboard_stats(request, user):
+    period = request.GET.get('period', 'all')
+    start_date_param = request.GET.get('start_date')
+    end_date_param = request.GET.get('end_date')
+    now = datetime.now()
+    end_date = now
+
+    if period == 'custom' and start_date_param and end_date_param:
+        start_date = datetime.strptime(start_date_param, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date_param, '%Y-%m-%d') + timedelta(days=1) - timedelta(microseconds=1)
+    elif period == 'day':
+        start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    elif period == 'week':
+        start_date = now - timedelta(days=7)
+    elif period == 'month':
+        start_date = now - timedelta(days=30)
+    elif period == 'year':
+        start_date = now - timedelta(days=365)
+    else:
+        start_date = None
+
+    bookings = Booking.objects.all()
+    filtered_bookings = bookings
+    if start_date:
+        filtered_bookings = filtered_bookings.filter(created_at__gte=start_date)
+    if period == 'custom':
+        filtered_bookings = filtered_bookings.filter(created_at__lte=end_date)
+
     total_users = User.objects.count()
     total_hotels = Hotel.objects.count()
-    total_bookings = Booking.objects.count()
-    total_revenue = Booking.objects.filter(status=Booking.STATUS_COMPLETED).aggregate(Sum('total'))['total__sum'] or 0
+    total_bookings = filtered_bookings.count()
+    total_revenue = filtered_bookings.filter(status=Booking.STATUS_COMPLETED).aggregate(Sum('total'))['total__sum'] or 0
 
-    recent_bookings = [b.to_summary() for b in Booking.objects.order_by('-created_at')[:5]]
+    recent_bookings = [b.to_summary() for b in filtered_bookings.order_by('-created_at')[:5]]
 
-    six_months_ago = datetime.now() - timedelta(days=180)
-    monthly_stats = Booking.objects.filter(created_at__gte=six_months_ago)\
-        .annotate(month=TruncMonth('created_at'))\
-        .values('month')\
+    if period in ['day', 'week', 'month']:
+        trunc_func = TruncDay('created_at')
+        format_str = '%d/%m'
+    else:
+        trunc_func = TruncMonth('created_at')
+        format_str = '%m/%Y'
+
+    stats_qs = filtered_bookings
+    if not start_date:
+        six_months_ago = now - timedelta(days=180)
+        stats_qs = bookings.filter(created_at__gte=six_months_ago)
+
+    period_stats = stats_qs\
+        .annotate(period_group=trunc_func)\
+        .values('period_group')\
         .annotate(
             revenue=Sum('total', filter=Q(status=Booking.STATUS_COMPLETED)),
             bookings_count=Count('id')
         )\
-        .order_by('month')
+        .order_by('period_group')
 
     chart_data = []
-    for stat in monthly_stats:
-        if stat['month']:
+    for stat in period_stats:
+        if stat['period_group']:
             chart_data.append({
-                'name': stat['month'].strftime('%m/%Y'),
-                'revenue': stat['revenue'] or 0,
+                'name': stat['period_group'].strftime(format_str),
+                'revenue': int((stat['revenue'] or 0) * 0.15),
                 'bookings': stat['bookings_count']
             })
 
@@ -65,7 +103,7 @@ def dashboard_stats(request, user):
         'total_users': total_users,
         'total_hotels': total_hotels,
         'total_bookings': total_bookings,
-        'total_revenue': total_revenue,
+        'total_revenue': int(total_revenue * 0.15),
         'recent_bookings': recent_bookings,
         'chart_data': chart_data,
     })
@@ -197,7 +235,8 @@ def manage_user(request, user, user_id: int):
 @admin_required
 def manage_hotel(request, user, hotel_id: int):
     hotel = get_object_or_404(Hotel, id=hotel_id)
-    hotel.delete()
+    hotel.status = Hotel.STATUS_REJECTED
+    hotel.save()
     return JsonResponse({'message': 'Hotel deleted successfully.'})
 
 @require_http_methods(['GET'])
@@ -328,3 +367,14 @@ def reject_withdrawal(request, user, withdrawal_id: int):
     if not success:
         return _json_error(message, status=400)
     return JsonResponse({'message': message})
+
+@require_http_methods(['PUT'])
+@admin_required
+def cancel_booking_admin(request, user, booking_id: str):
+    booking = get_object_or_404(Booking, booking_id=booking_id)
+    if booking.status in [Booking.STATUS_COMPLETED, Booking.STATUS_CANCELLED]:
+        return _json_error('Không thể hủy đơn đã hoàn tất hoặc đã hủy.', status=400)
+        
+    booking.status = Booking.STATUS_CANCELLED
+    booking.save()
+    return JsonResponse({'message': 'Booking cancelled successfully.'})

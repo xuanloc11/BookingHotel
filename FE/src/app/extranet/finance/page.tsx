@@ -239,16 +239,16 @@ export default function ExtranetFinance() {
               </ul>
 
               <div className="table-responsive">
-                <table className="table table-centered mb-0">
+                <table className="table table-centered align-middle mb-0">
                   <thead className="table-light">
                     <tr>
                       <th>Mã đơn</th>
                       <th>Ngày tạo</th>
                       <th>Ngày nhận / trả</th>
-                      <th>Tổng tiền</th>
-                      <th>Hoa hồng (15%)</th>
-                      <th>Thực nhận</th>
-                      <th>Trạng thái</th>
+                      <th className="text-end">Tổng tiền</th>
+                      <th className="text-end">Hoa hồng (15%)</th>
+                      <th className="text-end">Thực nhận</th>
+                      <th className="text-center">Trạng thái</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -269,14 +269,14 @@ export default function ExtranetFinance() {
                             <td><b>#{b.booking_id}</b></td>
                             <td>{new Date(b.created_at).toLocaleDateString("vi-VN")}</td>
                             <td>{b.check_in} → {b.check_out}</td>
-                            <td>{formatMoney(b.total || 0, b.currency)}</td>
-                            <td className="text-danger">
+                            <td className="text-end">{formatMoney(b.total || 0, b.currency)}</td>
+                            <td className="text-danger text-end">
                               {fee > 0 ? `- ${formatMoney(fee, b.currency)}` : "—"}
                             </td>
-                            <td className="text-success fw-bold">
+                            <td className="text-success fw-bold text-end">
                               {net > 0 ? formatMoney(net, b.currency) : "—"}
                             </td>
-                            <td>
+                            <td className="text-center">
                               <span className={`badge ${
                                 completed ? "bg-success" :
                                 isConfirmed(stat) ? "bg-info" :
@@ -298,15 +298,15 @@ export default function ExtranetFinance() {
               </>
               ) : (
               <div className="table-responsive mt-3">
-                <table className="table table-centered mb-0">
+                <table className="table table-centered align-middle mb-0">
                   <thead className="table-light">
                     <tr>
                       <th>Mã giao dịch</th>
                       <th>Thời gian</th>
-                      <th>Số tiền rút</th>
+                      <th className="text-end">Số tiền rút</th>
                       <th>Ngân hàng</th>
                       <th>Số tài khoản</th>
-                      <th>Trạng thái</th>
+                      <th className="text-center">Trạng thái</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -321,10 +321,10 @@ export default function ExtranetFinance() {
                         <tr key={w.id}>
                           <td><b>#{w.id}</b></td>
                           <td>{new Date(w.created_at).toLocaleString("vi-VN")}</td>
-                          <td className="fw-bold">{formatMoney(w.amount, "VND")}</td>
+                          <td className="fw-bold text-end">{formatMoney(w.amount, "VND")}</td>
                           <td>{w.bank_name}</td>
                           <td>{w.account_number}</td>
-                          <td>
+                          <td className="text-center">
                             <span className={`badge ${
                               w.status === 'approved' ? 'bg-success' :
                               w.status === 'rejected' ? 'bg-danger' : 'bg-warning text-dark'

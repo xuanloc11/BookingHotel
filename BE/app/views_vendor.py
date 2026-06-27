@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Count, Q
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncMonth, TruncDay
 
 from app.models import Profile, Hotel, RoomType, Booking, Review, Promotion, Transaction, VendorSetting
 from app.views import _get_authenticated_user, _json_error, _parse_json_body
@@ -45,30 +45,89 @@ def dashboard_stats(request, user):
 
     bookings = Booking.objects.filter(hotel=hotel)
     
-    total_revenue = bookings.filter(status=Booking.STATUS_COMPLETED).aggregate(Sum('total'))['total__sum'] or 0
-    total_bookings = bookings.count()
+    period = request.GET.get('period', 'all')
+    start_date_param = request.GET.get('start_date')
+    end_date_param = request.GET.get('end_date')
+    now = datetime.now()
+    end_date = now
+
+    if period == 'custom' and start_date_param and end_date_param:
+        start_date = datetime.strptime(start_date_param, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date_param, '%Y-%m-%d') + timedelta(days=1) - timedelta(microseconds=1)
+    elif period == 'day':
+        start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    elif period == 'week':
+        start_date = now - timedelta(days=7)
+    elif period == 'month':
+        start_date = now - timedelta(days=30)
+    elif period == 'year':
+        start_date = now - timedelta(days=365)
+    else:
+        start_date = None
+
+    filtered_bookings = bookings
+    if start_date:
+        filtered_bookings = filtered_bookings.filter(created_at__gte=start_date)
+    if period == 'custom':
+        filtered_bookings = filtered_bookings.filter(created_at__lte=end_date)
+    
+    total_revenue = filtered_bookings.filter(status=Booking.STATUS_COMPLETED).aggregate(Sum('total'))['total__sum'] or 0
+    total_bookings = filtered_bookings.count()
     rooms_count = hotel.room_types.count()
     
-    recent_bookings = [b.to_summary() for b in bookings.order_by('-created_at')[:5]]
+    recent_bookings = [b.to_summary() for b in filtered_bookings.order_by('-created_at')[:5]]
     
-    six_months_ago = datetime.now() - timedelta(days=180)
-    monthly_stats = bookings.filter(created_at__gte=six_months_ago)\
-        .annotate(month=TruncMonth('created_at'))\
-        .values('month')\
+    if period in ['day', 'week', 'month']:
+        trunc_func = TruncDay('created_at')
+        format_str = '%d/%m'
+    else:
+        trunc_func = TruncMonth('created_at')
+        format_str = '%m/%Y'
+
+    stats_qs = filtered_bookings
+    if not start_date:
+        six_months_ago = now - timedelta(days=180)
+        stats_qs = bookings.filter(created_at__gte=six_months_ago)
+
+    period_stats = stats_qs\
+        .annotate(period_group=trunc_func)\
+        .values('period_group')\
         .annotate(
             revenue=Sum('total', filter=Q(status=Booking.STATUS_COMPLETED)),
             bookings_count=Count('id')
         )\
-        .order_by('month')
+        .order_by('period_group')
 
     chart_data = []
-    for stat in monthly_stats:
-        if stat['month']:
+    for stat in period_stats:
+        if stat['period_group']:
+            revenue = stat['revenue'] or 0
             chart_data.append({
-                'name': stat['month'].strftime('%m/%Y'),
-                'revenue': stat['revenue'] or 0,
-                'bookings': stat['bookings_count']
+                'name': stat['period_group'].strftime(format_str),
+                'revenue': revenue,
+                'bookings': stat['bookings_count'],
+                'net_revenue': int(revenue * 0.85),
+                'commission': int(revenue * 0.15)
             })
+
+    # Status distribution
+    status_stats = filtered_bookings.values('status').annotate(count=Count('id'))
+    status_distribution = {s['status']: s['count'] for s in status_stats}
+
+    # Room type stats
+    from app.models import BookingRoom
+    room_stats_qs = BookingRoom.objects.filter(booking__in=filtered_bookings).values('room_type_name').annotate(
+        bookings_count=Count('booking', distinct=True),
+        revenue=Sum('price')
+    ).order_by('-bookings_count')
+    
+    room_type_stats = []
+    for r in room_stats_qs:
+        room_type_stats.append({
+            'name': r['room_type_name'],
+            'bookings_count': r['bookings_count'],
+            'revenue': r['revenue'] or 0
+        })
     
     return JsonResponse({
         'has_hotel': True,
@@ -77,7 +136,9 @@ def dashboard_stats(request, user):
         'total_revenue': total_revenue,
         'recent_bookings': recent_bookings,
         'rooms_count': rooms_count,
-        'chart_data': chart_data
+        'chart_data': chart_data,
+        'status_distribution': status_distribution,
+        'room_type_stats': room_type_stats
     })
 
 
@@ -230,6 +291,24 @@ def update_booking_status(request, user, booking_id: str):
     if new_status not in dict(Booking.STATUS_CHOICES):
         return _json_error('Invalid status.', status=400)
         
+    if new_status == Booking.STATUS_COMPLETED and booking.status != Booking.STATUS_COMPLETED:
+        from app.models import Transaction
+        
+        commission_fee = int(booking.total * 0.15)
+        net_amount = booking.total - commission_fee
+        
+        if not Transaction.objects.filter(hotel=hotel, transaction_id=booking.booking_id).exists():
+            Transaction.objects.create(
+                hotel=hotel,
+                transaction_id=booking.booking_id,
+                type=Transaction.TYPE_REVENUE,
+                amount=booking.total,
+                commission_fee=commission_fee,
+                net_amount=net_amount,
+                description=f"Doanh thu từ đặt phòng {booking.booking_id}",
+                status=Transaction.STATUS_COMPLETED
+            )
+
     booking.status = new_status
     booking.save()
     

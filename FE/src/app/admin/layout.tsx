@@ -47,6 +47,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     }
   }, [user, loading, router]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      document.documentElement.setAttribute("data-menu-color", "light");
+    }
+  }, []);
+
 
   if (loading || !user || user.role !== "admin") {
     return (
@@ -63,7 +69,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { label: "Người dùng", href: "/admin/users", icon: "ri-group-line" },
     { label: "Khách sạn", href: "/admin/hotels", icon: "ri-building-4-line" },
     { label: "Đơn đặt phòng", href: "/admin/bookings", icon: "ri-calendar-check-line" },
-    { label: "Kiểm duyệt", href: "/admin/approvals", icon: "ri-shield-check-line" },
+    // { label: "Kiểm duyệt", href: "/admin/approvals", icon: "ri-shield-check-line" },
     { label: "Yêu cầu rút tiền", href: "/admin/withdrawals", icon: "ri-bank-card-line" },
   ];
 
@@ -137,7 +143,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <div className="leftside-menu">
           <Link href="/admin/dashboard" className="logo logo-light">
             <span className="logo-lg">
-              <h3 className="text-white mt-3 text-center">Booking</h3>
+              <h3 className="text-white mt-3 text-center">VPL Booking</h3>
             </span>
             <span className="logo-sm">
               <h3 className="text-white mt-3 text-center">B</h3>
@@ -145,7 +151,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </Link>
           <Link href="/admin/dashboard" className="logo logo-dark">
             <span className="logo-lg">
-              <h3 className="mt-3 text-center">Booking</h3>
+              <h3 className="mt-3 text-center">VPL Booking</h3>
             </span>
             <span className="logo-sm">
               <h3 className="mt-3 text-center">B</h3>

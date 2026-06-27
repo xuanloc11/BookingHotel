@@ -8,8 +8,12 @@ function getAuthOptions() {
   };
 }
 
-export async function getAdminDashboard(): Promise<any> {
-  return fetchBackendJson("/system-admin/dashboard", {
+export async function getAdminDashboard(period: string = 'all', startDate?: string, endDate?: string): Promise<any> {
+  const params = new URLSearchParams({ period });
+  if (startDate) params.append('start_date', startDate);
+  if (endDate) params.append('end_date', endDate);
+  
+  return fetchBackendJson(`/system-admin/dashboard?${params.toString()}`, {
     method: "GET",
     ...getAuthOptions(),
   });
@@ -83,6 +87,13 @@ export async function approveWithdrawal(withdrawalId: number): Promise<any> {
 export async function rejectWithdrawal(withdrawalId: number): Promise<any> {
   return fetchBackendJson(`/system-admin/withdrawals/${withdrawalId}/reject`, {
     method: "POST",
+    ...getAuthOptions(),
+  });
+}
+
+export async function cancelAdminBooking(bookingId: string): Promise<any> {
+  return fetchBackendJson(`/system-admin/bookings/${bookingId}/cancel`, {
+    method: "PUT",
     ...getAuthOptions(),
   });
 }

@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAdminBookings } from "@/lib/api/adminApi";
+import { getAdminBookings, cancelAdminBooking } from "@/lib/api/adminApi";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 export default function AdminBookingsManage() {
   const [bookings, setBookings] = useState<any[]>([]);
@@ -14,13 +15,41 @@ export default function AdminBookingsManage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  useEffect(() => {
+  const fetchBookings = () => {
     setLoading(true);
     getAdminBookings()
       .then((res) => setBookings(res.bookings))
       .catch((err) => toast.error("Lỗi khi tải dữ liệu đơn đặt phòng: " + err.message))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchBookings();
   }, []);
+
+  const handleCancel = async (bookingId: string) => {
+    const result = await Swal.fire({
+      title: "Hủy đơn đặt phòng này?",
+      text: `Hành động này sẽ ép hủy đơn #${bookingId}. Bạn có chắc chắn không?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Đúng, hủy ngay!",
+      cancelButtonText: "Quay lại",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      toast.loading("Đang hủy đơn...", { id: `cancel-${bookingId}` });
+      await cancelAdminBooking(bookingId);
+      toast.success("Đã hủy đơn thành công!", { id: `cancel-${bookingId}` });
+      fetchBookings();
+    } catch (err: any) {
+      toast.error("Lỗi: " + err.message, { id: `cancel-${bookingId}` });
+    }
+  };
 
   // Reset page when filter or search changes
   useEffect(() => {
@@ -89,15 +118,16 @@ export default function AdminBookingsManage() {
           <div className="card border-0 shadow-sm">
             <div className="card-body p-0">
               <div className="table-responsive">
-                <table className="table table-hover table-centered mb-0">
+                <table className="table table-hover table-centered align-middle mb-0">
                   <thead className="table-light">
                     <tr>
                       <th className="py-3 px-4">Mã đơn</th>
                       <th className="py-3">Khách hàng</th>
                       <th className="py-3">Khách sạn</th>
                       <th className="py-3">Ngày nhận - trả</th>
-                      <th className="py-3">Tổng tiền</th>
-                      <th className="py-3">Trạng thái</th>
+                      <th className="py-3 text-end">Tổng tiền</th>
+                      <th className="py-3 text-center">Trạng thái</th>
+                      <th className="py-3 px-4 text-end">Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -137,10 +167,10 @@ export default function AdminBookingsManage() {
                             <div>In: <span className="fw-medium">{b.check_in}</span></div>
                             <div>Out: <span className="fw-medium">{b.check_out}</span></div>
                           </td>
-                          <td>
+                          <td className="text-end">
                             <div className="fw-medium">{b.total?.toLocaleString('vi-VN')} ₫</div>
                           </td>
-                          <td>
+                          <td className="text-center">
                             <span className={`badge ${
                               b.status === 'confirmed' ? 'bg-success' : 
                               b.status === 'pending' ? 'bg-warning text-dark' : 
@@ -151,6 +181,17 @@ export default function AdminBookingsManage() {
                                b.status === 'completed' ? 'HOÀN TẤT' : 
                                b.status === 'cancelled' ? 'ĐÃ HỦY' : b.status.toUpperCase()}
                             </span>
+                          </td>
+                          <td className="px-4 text-end">
+                            {b.status !== 'completed' && b.status !== 'cancelled' && (
+                              <button 
+                                className="btn btn-outline-danger btn-sm"
+                                onClick={() => handleCancel(b.booking_id)}
+                                title="Ép hủy đơn"
+                              >
+                                <i className="ri-close-circle-line"></i> Hủy
+                              </button>
+                            )}
                           </td>
                         </tr>
                       ))

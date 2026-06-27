@@ -211,7 +211,7 @@ export default function AdminUsersManage() {
           <div className="card border-0 shadow-sm">
             <div className="card-body p-0">
               <div className="table-responsive">
-                <table className="table table-hover table-centered mb-0">
+                <table className="table table-hover table-centered align-middle mb-0">
                   <thead className="table-light">
                     <tr>
                       <th className="py-3 px-4">ID</th>

@@ -9,8 +9,12 @@ function getAuthOptions(options: any = {}) {
   };
 }
 
-export async function getExtranetDashboard() {
-  return fetchBackendJson<any>('/vendor/dashboard/', getAuthOptions());
+export async function getExtranetDashboard(period: string = 'all', startDate?: string, endDate?: string) {
+  const params = new URLSearchParams({ period });
+  if (startDate) params.append('start_date', startDate);
+  if (endDate) params.append('end_date', endDate);
+
+  return fetchBackendJson<any>(`/vendor/dashboard/?${params.toString()}`, getAuthOptions());
 }
 
 export async function getVendorFinance() {

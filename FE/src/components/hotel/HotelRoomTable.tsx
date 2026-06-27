@@ -32,8 +32,8 @@ export default function HotelRoomTable({ hotelId, roomTypes, roomAvailabilities,
     paramCheckOut || (firstAvailable ? addDays(firstAvailable.date, 1).toISOString().split('T')[0] : "")
   );
   
-  const [adults, setAdults] = useState(isNaN(paramAdults) ? 2 : paramAdults);
-  const [children, setChildren] = useState(isNaN(paramChildren) ? 0 : paramChildren);
+  const [adults, setAdults] = useState<number | string>(isNaN(paramAdults) ? 2 : paramAdults);
+  const [children, setChildren] = useState<number | string>(isNaN(paramChildren) ? 0 : paramChildren);
 
   // Selected rooms mapping: roomId -> quantity
   const [selections, setSelections] = useState<Record<number, number>>({});
@@ -115,8 +115,8 @@ export default function HotelRoomTable({ hotelId, roomTypes, roomAvailabilities,
       roomSelections: JSON.stringify(roomSelectionsArray),
       checkIn,
       checkOut,
-      adults: adults.toString(),
-      children: children.toString(),
+      adults: (adults || 1).toString(),
+      children: (children || 0).toString(),
       rooms: totalRooms.toString(),
     });
     router.push(`/checkout?${searchParams.toString()}`);
@@ -154,7 +154,10 @@ export default function HotelRoomTable({ hotelId, roomTypes, roomAvailabilities,
             className="form-control" 
             value={adults} 
             min={1}
-            onChange={e => setAdults(parseInt(e.target.value) || 1)} 
+            onChange={e => {
+              const val = e.target.value;
+              setAdults(val === "" ? "" : parseInt(val));
+            }} 
           />
         </div>
         <div>
@@ -164,7 +167,10 @@ export default function HotelRoomTable({ hotelId, roomTypes, roomAvailabilities,
             className="form-control" 
             value={children} 
             min={0}
-            onChange={e => setChildren(parseInt(e.target.value) || 0)} 
+            onChange={e => {
+              const val = e.target.value;
+              setChildren(val === "" ? "" : parseInt(val));
+            }} 
           />
         </div>
         <button 
