@@ -65,25 +65,24 @@ const FeaturedHotelsCarousel: FC<FeaturedHotelsCarouselProps> = ({ title, subtit
                 </Link>
                 
                 <div className='card-body p-3 d-flex flex-column flex-grow-1'>
-                  <Link href={`/hotel/${hotel.slug}`} className='text-decoration-none text-dark'>
-                    <h3 className='tw-text-lg fw-bold tw-mb-1 text-truncate d-flex align-items-center flex-wrap tw-gap-2'>
+                  <Link href={`/hotel/${hotel.slug}`} className='text-decoration-none text-dark d-block tw-mb-1'>
+                    <h3 className='tw-text-lg fw-bold tw-mb-1 text-truncate' title={hotel.name}>
                       {hotel.name}
-                      <span className='d-flex align-items-center tw-gap-1 tw-text-sm' style={{ color: "#fbb03b" }}>
-                        {Array.from({ length: hotel.stars || 0 }).map((_, i) => (
-                          <i key={i} className='ph-fill ph-star' />
-                        ))}
-                      </span>
                     </h3>
+                    <div className='d-flex align-items-center tw-gap-1 tw-text-sm' style={{ color: "#fbb03b" }}>
+                      {Array.from({ length: hotel.stars || 0 }).map((_, i) => (
+                        <i key={i} className='ph-fill ph-star' />
+                      ))}
+                    </div>
                   </Link>
-                  <p className='text-neutral-500 tw-text-sm tw-mb-3'>
+                  <p className='text-neutral-500 tw-text-sm tw-mb-3 text-truncate'>
                     <a href={`/room?location=${encodeURIComponent(hotel.province)}`} className='text-neutral-500 text-decoration-none hover-text-main-600'>
                       {hotel.province}
                     </a>
-                    {hotel.address && <span className="tw-truncate d-inline-block w-100">, {hotel.address}</span>}
                   </p>
 
-                  <div className='d-flex align-items-center tw-gap-2 tw-mb-4'>
-                    <span className='badge bg-main-600 text-white p-2 tw-text-sm tw-rounded-md d-flex align-items-center justify-content-center' style={{ width: 32, height: 32 }}>
+                  <div className='d-flex align-items-center tw-gap-2 tw-mb-4 mt-auto'>
+                    <span className='badge bg-warning text-white p-2 tw-text-sm tw-rounded-md d-flex align-items-center justify-content-center' style={{ width: 32, height: 32 }}>
                       {hotel.rating.toFixed(1)}
                     </span>
                     <div>
@@ -92,7 +91,7 @@ const FeaturedHotelsCarousel: FC<FeaturedHotelsCarouselProps> = ({ title, subtit
                     </div>
                   </div>
 
-                  <div className='mt-auto text-end'>
+                  <div className='text-end'>
                     <span className='text-neutral-500 tw-text-sm d-block'>{t("hotel.startingFrom")}</span>
                     <strong className='tw-text-lg text-dark'>{formatMoney(hotel.price_per_night)}</strong>
                   </div>

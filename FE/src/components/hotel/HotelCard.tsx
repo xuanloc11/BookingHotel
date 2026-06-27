@@ -37,14 +37,17 @@ export default function HotelCard({ hotel }: HotelCardProps) {
       </div>
 
       <div className='service-content tw-px-2 tw-mb-2 d-flex flex-column flex-grow-1'>
-        <span className='service-location'>
-          <i className='ph ph-map-pin' /> {hotel.address}
+        <span className='service-location tw-mb-3 d-block' style={{ display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          <i className='ph ph-map-pin' /> {hotel.province}
         </span>
-        <h3 className='service-title tw-text-8 fw-normal text-capitalize tw-mb-2 d-flex flex-wrap align-items-center tw-gap-2'>
+        <h3 
+          className='service-title tw-text-8 fw-normal text-capitalize tw-mb-2'
+          style={{ minHeight: '60px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+        >
           <Link className='hover-text-secondary' href={href}>
             {hotel.name}
           </Link>
-          <span className='d-flex align-items-center tw-gap-1 tw-text-sm' style={{ color: "#fbb03b" }}>
+          <span className='d-inline-flex align-items-center tw-gap-1 tw-text-sm tw-ms-2' style={{ color: "#fbb03b", verticalAlign: 'middle', position: 'relative', top: '-2px' }}>
             {Array.from({ length: hotel.stars || 0 }).map((_, i) => (
               <i key={i} className='ph-fill ph-star' />
             ))}
@@ -54,9 +57,9 @@ export default function HotelCard({ hotel }: HotelCardProps) {
 
         <div className='service-wrap tw-rounded-xl tw-py-4 tw-px-6 mt-auto d-flex flex-column'>
           <div className='service-star d-flex tw-gap-6 tw-pb-4 tw-mb-6 flex-wrap'>
-            <span className='text-heading fw-normal d-flex tw-gap-2'>
-              <i className='ph ph-star' /> {hotel.rating.toFixed(1)} (
-              {hotel.reviews_count})
+            <span className='text-heading fw-normal d-flex tw-gap-2 fw-medium'>
+              <span className='bg-warning text-white tw-px-2 tw-rounded tw-font-bold'>{hotel.rating.toFixed(1)}</span>
+              Đánh giá · {hotel.reviews_count} đánh giá
             </span>
             <span 
               className='text-heading fw-normal'
