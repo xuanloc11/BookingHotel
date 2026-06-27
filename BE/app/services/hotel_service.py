@@ -1,5 +1,5 @@
 from collections import Counter
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from app.repositories.hotel_repository import HotelRepository
 from app.services.hotel_filters import (
     AndExpression,
@@ -135,7 +135,7 @@ class HotelService:
             ],
         }
 
-    def get_hotel_availability(self, identifier: str | int, room_type_id: int | None = None, start_date: datetime.date | None = None, end_date: datetime.date | None = None) -> list[dict]:
+    def get_hotel_availability(self, identifier: str | int, room_type_id: int | None = None, start_date: date | None = None, end_date: date | None = None) -> list[dict]:
         hotel = self.get_hotel_by_identifier(identifier)
         if not hotel:
             return []
