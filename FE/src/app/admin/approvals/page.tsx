@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth/AuthContext";
+import AdminPagination from "@/components/layout/AdminPagination";
 
 interface ApprovalItem {
   id: number;
@@ -201,23 +202,11 @@ export default function ApprovalsPage() {
               )}
               
               {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="card-footer bg-white border-top mt-3 pt-3">
-                  <ul className="pagination justify-content-end mb-0">
-                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                      <button className="page-link" onClick={() => setCurrentPage(p => Math.max(1, p - 1))}>Trước</button>
-                    </li>
-                    {Array.from({length: totalPages}, (_, i) => i + 1).map(page => (
-                      <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
-                        <button className="page-link" onClick={() => setCurrentPage(page)}>{page}</button>
-                      </li>
-                    ))}
-                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                      <button className="page-link" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}>Sau</button>
-                    </li>
-                  </ul>
-                </div>
-              )}
+              <AdminPagination 
+                currentPage={currentPage} 
+                totalPages={totalPages} 
+                setCurrentPage={setCurrentPage} 
+              />
             </div>
           </div>
         </div>
