@@ -16,9 +16,9 @@ function BookingDetailModal({ booking, onClose, formatMoney }: { booking: any; o
     cancelled: "Đã hủy",
   };
   const statusClass: Record<string, string> = {
-    confirmed: "bg-success",
+    confirmed: "bg-primary",
     pending: "bg-warning text-dark",
-    completed: "bg-info",
+    completed: "bg-success",
     cancelled: "bg-danger",
   };
   return createPortal(
@@ -127,7 +127,7 @@ function BookingDetailModal({ booking, onClose, formatMoney }: { booking: any; o
 }
 
 // Dropdown render qua React Portal - tránh bị clip bởi overflow của parent
-function StatusDropdown({ bookingId, onSelect }: { bookingId: string; onSelect: (id: string, status: string) => void }) {
+function StatusDropdown({ bookingId, currentStatus, onSelect }: { bookingId: string; currentStatus: string; onSelect: (id: string, status: string) => void }) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -194,14 +194,19 @@ function StatusDropdown({ bookingId, onSelect }: { bookingId: string; onSelect: 
           >
             <i className="ri-flag-line text-primary me-2" /> Đánh dấu hoàn tất
           </button>
-          <hr style={{ margin: "4px 0" }} />
-          <button
-            className="dropdown-item text-danger"
-            style={{ padding: "9px 16px" }}
-            onClick={() => { setOpen(false); onSelect(bookingId, "cancelled"); }}
-          >
-            <i className="ri-close-line text-danger me-2" /> Hủy đơn đặt
-          </button>
+          
+          {currentStatus !== "completed" && (
+            <>
+              <hr style={{ margin: "4px 0" }} />
+              <button
+                className="dropdown-item text-danger"
+                style={{ padding: "9px 16px" }}
+                onClick={() => { setOpen(false); onSelect(bookingId, "cancelled"); }}
+              >
+                <i className="ri-close-line text-danger me-2" /> Hủy đơn đặt
+              </button>
+            </>
+          )}
         </div>,
         document.body
       )}
@@ -278,8 +283,8 @@ export default function VendorBookingsManage() {
     let icon: any = "info";
 
     if (newStatus === "cancelled") { actionText = "HỦY"; actionColor = "#d33"; icon = "warning"; }
-    else if (newStatus === "confirmed") { actionText = "XÁC NHẬN"; actionColor = "#28a745"; icon = "question"; }
-    else if (newStatus === "completed") { actionText = "ĐÁNH DẤU HOÀN TẤT"; actionColor = "#17a2b8"; }
+    else if (newStatus === "confirmed") { actionText = "XÁC NHẬN"; actionColor = "#0275d8"; icon = "question"; }
+    else if (newStatus === "completed") { actionText = "ĐÁNH DẤU HOÀN TẤT"; actionColor = "#28a745"; }
 
     const result = await Swal.fire({
       title: `${actionText} ĐƠN ĐẶT PHÒNG?`,
@@ -411,9 +416,9 @@ export default function VendorBookingsManage() {
                               const stat = (b.status || "").toLowerCase();
                               return (
                                 <span className={`badge ${
-                                  stat === "confirmed" ? "bg-success" :
+                                  stat === "confirmed" ? "bg-primary" :
                                   stat === "pending" ? "bg-warning text-dark" :
-                                  stat === "completed" ? "bg-info" : "bg-danger"
+                                  stat === "completed" ? "bg-success" : "bg-danger"
                                 }`}>
                                   {stat === "confirmed" ? "ĐÃ XÁC NHẬN" :
                                    stat === "pending" ? "CHỜ DUYỆT" :
@@ -424,7 +429,7 @@ export default function VendorBookingsManage() {
                             })()}
                           </td>
                           <td className="px-4 text-end" onClick={(e) => e.stopPropagation()}>
-                            <StatusDropdown bookingId={b.booking_id} onSelect={handleStatusChange} />
+                            <StatusDropdown bookingId={b.booking_id} currentStatus={(b.status || "").toLowerCase()} onSelect={handleStatusChange} />
                           </td>
                         </tr>
                       ))

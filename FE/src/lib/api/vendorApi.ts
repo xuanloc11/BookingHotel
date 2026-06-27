@@ -84,3 +84,14 @@ export async function createVendorWithdrawal(amount: number) {
     body: { amount }
   }));
 }
+
+export async function getVendorSettings() {
+  return fetchBackendJson<any>('/vendor/settings/', getAuthOptions());
+}
+
+export async function updateVendorSettings(data: any) {
+  return fetchBackendJson<any>('/vendor/settings/', getAuthOptions({
+    method: 'PUT',
+    body: data
+  }));
+}

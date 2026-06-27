@@ -195,7 +195,7 @@ export default function ExtranetDashboard() {
                       <XAxis dataKey="name" />
                       <YAxis tickFormatter={(value) => new Intl.NumberFormat('vi-VN', { notation: "compact", compactDisplay: "short" }).format(value)} />
                       <Tooltip formatter={(value: any) => value.toLocaleString('vi-VN') + ' ₫'} />
-                      <Area type="monotone" dataKey="revenue" name="Doanh thu" stroke="#0acf97" fill="#0acf97" fillOpacity={0.2} />
+                      <Area type="monotone" dataKey="revenue" name="Doanh thu" stroke="#0acf97" fill="#0acf97" fillOpacity={0.2} isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -220,7 +220,7 @@ export default function ExtranetDashboard() {
                       <XAxis dataKey="name" />
                       <YAxis allowDecimals={false} />
                       <Tooltip />
-                      <Bar dataKey="bookings" name="Đơn đặt phòng" fill="#39afd1" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="bookings" name="Đơn đặt phòng" fill="#39afd1" radius={[4, 4, 0, 0]} isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -249,8 +249,10 @@ export default function ExtranetDashboard() {
                         cy="50%"
                         innerRadius={60}
                         outerRadius={80}
-                        paddingAngle={5}
                         dataKey="value"
+                        isAnimationActive={true}
+                        animationDuration={1500}
+                        animationEasing="ease-out"
                       >
                         {statusData.map((entry: any, index: number) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
@@ -283,8 +285,8 @@ export default function ExtranetDashboard() {
                       <YAxis tickFormatter={(value) => new Intl.NumberFormat('vi-VN', { notation: "compact", compactDisplay: "short" }).format(value)} />
                       <Tooltip formatter={(value: any) => value.toLocaleString('vi-VN') + ' ₫'} />
                       <Legend />
-                      <Bar dataKey="net_revenue" stackId="a" name="Thực nhận" fill="#0acf97" />
-                      <Bar dataKey="commission" stackId="a" name="Hoa hồng" fill="#ffbc00" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="net_revenue" stackId="a" name="Thực nhận" fill="#0acf97" isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
+                      <Bar dataKey="commission" stackId="a" name="Hoa hồng" fill="#ffbc00" radius={[4, 4, 0, 0]} isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -315,6 +317,9 @@ export default function ExtranetDashboard() {
                         dataKey="bookings_count"
                         nameKey="name"
                         label
+                        isAnimationActive={true}
+                        animationDuration={1500}
+                        animationEasing="ease-out"
                       >
                         {roomTypeData.map((entry: any, index: number) => (
                           <Cell key={`cell-${index}`} fill={['#727cf5', '#0acf97', '#fa5c7c', '#ffbc00', '#39afd1'][index % 5]} />
@@ -345,7 +350,7 @@ export default function ExtranetDashboard() {
                       <XAxis type="number" tickFormatter={(value) => new Intl.NumberFormat('vi-VN', { notation: "compact", compactDisplay: "short" }).format(value)} />
                       <YAxis dataKey="name" type="category" width={80} tick={{fontSize: 12}} />
                       <Tooltip formatter={(value: any) => value.toLocaleString('vi-VN') + ' ₫'} />
-                      <Bar dataKey="revenue" name="Doanh thu" fill="#727cf5" radius={[0, 4, 4, 0]} />
+                      <Bar dataKey="revenue" name="Doanh thu" fill="#727cf5" radius={[0, 4, 4, 0]} isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

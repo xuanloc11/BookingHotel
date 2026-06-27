@@ -513,8 +513,11 @@ def manage_withdrawals(request, user):
             if not hotel:
                 return _json_error('Bạn chưa có khách sạn nào.', status=400)
                 
+            from app.models import Booking
+            total_revenue = Booking.objects.filter(hotel=hotel, status=Booking.STATUS_COMPLETED).aggregate(Sum('total'))['total__sum'] or 0
+            balance = int(total_revenue * 0.85)
+            
             transactions = Transaction.objects.filter(hotel=hotel)
-            balance = transactions.filter(type=Transaction.TYPE_REVENUE, status=Transaction.STATUS_COMPLETED).aggregate(Sum('net_amount'))['net_amount__sum'] or 0
             payouts = transactions.filter(type=Transaction.TYPE_PAYOUT).aggregate(Sum('amount'))['amount__sum'] or 0
             
             # Thêm những khoản tiền đang chờ duyệt rút

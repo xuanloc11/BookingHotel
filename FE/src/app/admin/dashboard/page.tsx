@@ -167,7 +167,7 @@ export default function AdminDashboard() {
                       <XAxis dataKey="name" />
                       <YAxis tickFormatter={(value) => new Intl.NumberFormat('vi-VN', { notation: "compact", compactDisplay: "short" }).format(value)} />
                       <Tooltip formatter={(value: any) => value.toLocaleString('vi-VN') + ' ₫'} />
-                      <Area type="monotone" dataKey="revenue" name="Doanh thu" stroke="#0acf97" fill="#0acf97" fillOpacity={0.2} />
+                      <Area type="monotone" dataKey="revenue" name="Doanh thu" stroke="#0acf97" fill="#0acf97" fillOpacity={0.2} isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -192,7 +192,7 @@ export default function AdminDashboard() {
                       <XAxis dataKey="name" />
                       <YAxis allowDecimals={false} />
                       <Tooltip />
-                      <Bar dataKey="bookings" name="Đơn đặt phòng" fill="#727cf5" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="bookings" name="Đơn đặt phòng" fill="#727cf5" radius={[4, 4, 0, 0]} isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -236,9 +236,9 @@ export default function AdminDashboard() {
                           <td className="fw-medium text-primary text-end">{b.total.toLocaleString('vi-VN')} ₫</td>
                           <td className="text-center">
                             <span className={`badge ${
-                              b.status === 'confirmed' ? 'bg-success' : 
+                              b.status === 'confirmed' ? 'bg-primary' : 
                               b.status === 'pending' ? 'bg-warning text-dark' : 
-                              b.status === 'completed' ? 'bg-info' : 'bg-danger'
+                              b.status === 'completed' ? 'bg-success' : 'bg-danger'
                             }`}>
                               {b.status === 'confirmed' ? 'ĐÃ XÁC NHẬN' : 
                                b.status === 'pending' ? 'CHỜ DUYỆT' : 

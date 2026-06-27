@@ -129,6 +129,7 @@ class Booking(models.Model):
 			'check_in': self.check_in,
 			'check_out': self.check_out,
 			'guests': self.guests,
+			'customer': self.customer,
 			'status': self.status,
 			'total': self.total,
 			'currency': self.currency,

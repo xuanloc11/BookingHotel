@@ -172,9 +172,9 @@ export default function AdminBookingsManage() {
                           </td>
                           <td className="text-center">
                             <span className={`badge ${
-                              b.status === 'confirmed' ? 'bg-success' : 
+                              b.status === 'confirmed' ? 'bg-primary' : 
                               b.status === 'pending' ? 'bg-warning text-dark' : 
-                              b.status === 'completed' ? 'bg-info' : 'bg-danger'
+                              b.status === 'completed' ? 'bg-success' : 'bg-danger'
                             }`}>
                               {b.status === 'confirmed' ? 'ĐÃ XÁC NHẬN' : 
                                b.status === 'pending' ? 'CHỜ DUYỆT' : 

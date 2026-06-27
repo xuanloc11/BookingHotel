@@ -54,8 +54,14 @@ export default function ExtranetFinance() {
         const financeData = await getVendorFinance();
         setStats((prev: any) => ({ ...prev, ...financeData }));
       }
-    } catch (err) {
-      toast.error("Có lỗi xảy ra khi gửi yêu cầu.");
+    } catch (err: any) {
+      if (err.details && err.details.detail) {
+        toast.error(err.details.detail);
+      } else if (err.details && err.details.error) {
+        toast.error(err.details.error);
+      } else {
+        toast.error("Có lỗi xảy ra khi gửi yêu cầu.");
+      }
     } finally {
       setIsSubmitting(false);
     }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { getVendorSettings, updateVendorSettings } from "@/lib/api/vendorApi";
 
 export default function ExtranetSettings() {
   const { user } = useAuth();
@@ -17,16 +18,18 @@ export default function ExtranetSettings() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // In real app, fetch from /api/vendor/settings here
-    // For now, we will leave the settings empty so the user can fill them
-    setSettings({
-      company_name: "",
-      tax_id: "",
-      bank_name: "",
-      bank_branch: "",
-      account_name: "",
-      account_number: "",
-    });
+    getVendorSettings().then(res => {
+      if (res.settings) {
+        setSettings({
+          company_name: res.settings.company_name || "",
+          tax_id: res.settings.tax_id || "",
+          bank_name: res.settings.bank_name || "",
+          bank_branch: res.settings.bank_branch || "",
+          account_name: res.settings.account_name || "",
+          account_number: res.settings.account_number || "",
+        });
+      }
+    }).catch(console.error);
   }, []);
 
   const handleChange = (e: any) => {
@@ -36,14 +39,17 @@ export default function ExtranetSettings() {
     });
   };
 
-  const handleSaveSettings = (e: any) => {
+  const handleSaveSettings = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
-    // In real app, call PUT /api/vendor/settings
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await updateVendorSettings(settings);
       alert("Đã cập nhật cài đặt thành công!");
-    }, 1000);
+    } catch (err: any) {
+      alert("Lỗi cập nhật cài đặt: " + err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -69,9 +75,6 @@ export default function ExtranetSettings() {
               )}
 
               <h4 className="mb-0 mt-2">{settings.company_name || "Chưa cập nhật tên công ty"}</h4>
-              <p className="text-muted font-14">Đối tác cấp VIP</p>
-
-              <button type="button" className="btn btn-success btn-sm mb-2">Trạng thái: Đã xác thực KYC</button>
 
               <div className="text-start mt-3">
                 <h4 className="font-13 text-uppercase">Thông tin liên hệ:</h4>

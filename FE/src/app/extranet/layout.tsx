@@ -84,8 +84,8 @@ export default function ExtranetLayout({ children }: { children: ReactNode }) {
     { label: "Tổng quan", href: "/extranet/dashboard", icon: "ri-dashboard-2-line" },
     { label: "Quản lý khách sạn", href: "/extranet/hotels", icon: "ri-building-line" },
     { label: "Quản lý đơn đặt", href: "/extranet/bookings", icon: "ri-calendar-check-line" },
-    { label: "Đánh giá của khách", href: "/extranet/reviews", icon: "ri-star-line" },
-    { label: "Khuyến mãi & Vouchers", href: "/extranet/promotions", icon: "ri-coupon-3-line" },
+    // { label: "Đánh giá của khách", href: "/extranet/reviews", icon: "ri-star-line" },
+    // { label: "Khuyến mãi & Vouchers", href: "/extranet/promotions", icon: "ri-coupon-3-line" },
     { label: "Tài chính & Doanh thu", href: "/extranet/finance", icon: "ri-wallet-3-line" },
     { label: "Cài đặt & Thanh toán", href: "/extranet/settings", icon: "ri-settings-3-line" },
   ];
@@ -122,7 +122,7 @@ export default function ExtranetLayout({ children }: { children: ReactNode }) {
                 <i className="mdi mdi-menu"></i>
               </button>
 
-              <h4 className="page-title d-none d-sm-block">Extranet Đối Tác</h4>
+              <h4 className="page-title d-none d-sm-block">Đối Tác</h4>
             </div>
 
             <ul className="topbar-menu d-flex align-items-center gap-3">

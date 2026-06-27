@@ -44,7 +44,7 @@ def translate_status(data, language='vi'):
     elif isinstance(data, dict):
         new_data = data.copy()
         if 'status' in new_data and new_data['status'] in status_map:
-            new_data['status'] = status_map[new_data['status']]
+            new_data['status_display'] = status_map[new_data['status']]
             
         for key, value in new_data.items():
             if isinstance(value, (dict, list)):
