@@ -227,7 +227,9 @@ export const dictionaries = {
     "success.to": "đến",
     "success.viewBookings": "Xem các đơn đặt phòng",
     "success.searchMore": "Tìm kiếm thêm khách sạn",
-    "success.statusPending": "Đang xử lý"
+    "success.statusPending": "Đang xử lý",
+    "findBooking.title": "Tra cứu đơn hàng",
+    "findBooking.subtitle": "Tra cứu"
   },
   en: {
     "header.currency": "Select currency",
@@ -457,7 +459,9 @@ export const dictionaries = {
     "success.to": "to",
     "success.viewBookings": "View bookings",
     "success.searchMore": "Search more hotels",
-    "success.statusPending": "Pending"
+    "success.statusPending": "Pending",
+    "findBooking.title": "Find Booking",
+    "findBooking.subtitle": "Find Booking"
   }
 };
 
