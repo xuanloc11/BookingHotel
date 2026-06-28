@@ -135,7 +135,9 @@ def hotel_detail(request, hotel_id: str):
 def hotel_availability(request, hotel_id: str):
 	room_type_id = request.GET.get('room_type_id')
 	room_type_id = int(room_type_id) if room_type_id and room_type_id.isdigit() else None
-	availability = hotel_service.get_hotel_availability(hotel_id, room_type_id=room_type_id)
+	user = _get_authenticated_user(request)
+	user_role = 'member' if user and user.is_authenticated else 'guest'
+	availability = hotel_service.get_hotel_availability(hotel_id, room_type_id=room_type_id, user_role=user_role)
 	if not availability and hotel_service.get_hotel_details(hotel_id) is None:
 		return _json_error('Hotel not found.', status=404)
 	return JsonResponse({'results': availability})
@@ -344,6 +346,20 @@ def booking_detail(request, booking_id: str):
 	if not booking:
 		return _json_error('Booking not found.', status=404)
 
+	return JsonResponse(booking)
+
+@require_GET
+def booking_guest_detail(request):
+	booking_id = request.GET.get('booking_id')
+	contact_info = request.GET.get('contact')
+	
+	if not booking_id or not contact_info:
+		return _json_error('Vui lòng cung cấp mã đơn hàng và email hoặc số điện thoại.', status=400)
+		
+	booking = booking_service.get_guest_booking(booking_id, contact_info)
+	if not booking:
+		return _json_error('Không tìm thấy đơn hàng hoặc thông tin liên hệ không khớp.', status=404)
+		
 	return JsonResponse(booking)
 
 @csrf_exempt

@@ -50,6 +50,17 @@ export async function fetchBookingById(
   );
 }
 
+export async function fetchGuestBooking(
+  bookingId: string,
+  contact: string,
+): Promise<BookingSummary> {
+  const params = new URLSearchParams({
+    booking_id: bookingId,
+    contact: contact,
+  });
+  return fetchBackendJson<BookingSummary>(`/bookings/guest-lookup/?${params.toString()}`);
+}
+
 export async function cancelBooking(
   bookingId: string,
   options: BookingApiOptions = {},

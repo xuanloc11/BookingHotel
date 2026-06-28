@@ -242,7 +242,7 @@ def manage_hotel(request, user, hotel_id: int):
 @require_http_methods(['GET'])
 @admin_required
 def list_bookings(request, user):
-    bookings = Booking.objects.all().order_by('-created_at')
+    bookings = Booking.objects.all().prefetch_related('rooms').order_by('-created_at')
     return JsonResponse({'bookings': [b.to_summary() for b in bookings]})
 
 @require_http_methods(['GET'])
@@ -378,3 +378,19 @@ def cancel_booking_admin(request, user, booking_id: str):
     booking.status = Booking.STATUS_CANCELLED
     booking.save()
     return JsonResponse({'message': 'Booking cancelled successfully.'})
+
+@require_http_methods(['PUT'])
+@admin_required
+def update_booking_status_admin(request, user, booking_id: str):
+    data = _parse_json_body(request)
+    if not data:
+        return _json_error('Invalid JSON payload.', status=400)
+        
+    status = data.get('status')
+    if status not in [Booking.STATUS_NO_SHOW, Booking.STATUS_RELOCATED]:
+        return _json_error('Trạng thái không hợp lệ (chỉ hỗ trợ no_show, relocated).', status=400)
+        
+    booking = get_object_or_404(Booking, booking_id=booking_id)
+    booking.status = status
+    booking.save()
+    return JsonResponse({'message': f'Đã cập nhật trạng thái đơn thành {status}.'})

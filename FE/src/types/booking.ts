@@ -2,7 +2,9 @@ export type BookingStatus =
   | "pending"
   | "confirmed"
   | "cancelled"
-  | "completed";
+  | "completed"
+  | "no_show"
+  | "relocated";
 
 export type PaymentMethod = "pay_at_hotel" | "bank_transfer" | "card";
 
@@ -74,10 +76,16 @@ export interface BookingSummary {
   check_in: string;
   check_out: string;
   guests: BookingGuestCounts;
+  customer: BookingCustomerInfo;
   status: BookingStatus;
   total: number;
   currency: string;
+  is_group_booking: boolean;
   created_at: string;
+  price?: BookingPriceBreakdown;
+  deposit_amount?: number;
+  is_deposit_paid?: boolean;
+  is_refundable?: boolean;
 }
 
 export interface BookingListResponse {

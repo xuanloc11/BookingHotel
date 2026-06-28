@@ -47,6 +47,10 @@ class Hotel(models.Model):
 	thumbnail = models.URLField(blank=True, default='')
 	description = models.TextField(blank=True, default='')
 	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+	deposit_percentage = models.PositiveIntegerField(default=0)
+	cancellation_free_days = models.PositiveIntegerField(default=0)
+	is_refundable = models.BooleanField(default=True)
+	cancellation_policy = models.TextField(blank=True, default='')
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 
@@ -82,12 +86,16 @@ class Booking(models.Model):
 	STATUS_CONFIRMED = 'confirmed'
 	STATUS_CANCELLED = 'cancelled'
 	STATUS_COMPLETED = 'completed'
+	STATUS_NO_SHOW = 'no_show'
+	STATUS_RELOCATED = 'relocated'
 
 	STATUS_CHOICES = [
 		(STATUS_PENDING, 'Pending'),
 		(STATUS_CONFIRMED, 'Confirmed'),
 		(STATUS_CANCELLED, 'Cancelled'),
 		(STATUS_COMPLETED, 'Completed'),
+		(STATUS_NO_SHOW, 'No Show'),
+		(STATUS_RELOCATED, 'Relocated'),
 	]
 
 	user = models.ForeignKey(
@@ -116,6 +124,12 @@ class Booking(models.Model):
 	currency = models.CharField(max_length=8, default='VND')
 	total = models.BigIntegerField(default=0)
 	price = models.JSONField(default=dict)
+	deposit_amount = models.BigIntegerField(default=0)
+	is_deposit_paid = models.BooleanField(default=False)
+	cancellation_deadline = models.DateTimeField(null=True, blank=True)
+	cancellation_fee = models.BigIntegerField(default=0)
+	is_refundable = models.BooleanField(default=True)
+	is_group_booking = models.BooleanField(default=False)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 
@@ -133,6 +147,12 @@ class Booking(models.Model):
 			'status': self.status,
 			'total': self.total,
 			'currency': self.currency,
+			'deposit_amount': self.deposit_amount,
+			'is_deposit_paid': self.is_deposit_paid,
+			'cancellation_deadline': self.cancellation_deadline.isoformat() if self.cancellation_deadline else None,
+			'cancellation_fee': self.cancellation_fee,
+			'is_refundable': self.is_refundable,
+			'is_group_booking': self.is_group_booking,
 			'created_at': self.created_at.isoformat(),
 			'rooms': [room.to_dict() for room in self.rooms.all()],
 		}

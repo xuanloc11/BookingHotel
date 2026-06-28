@@ -66,16 +66,16 @@ class HotelService:
                             pass
                     
                     min_available_rooms = float('inf')
-                    today = datetime.utcnow().date()
+                    
+                    from app.models import RoomType
+                    room_types = RoomType.objects.filter(hotel_id=hotel['id'])
+                    real_base_rooms = sum(rt.available_rooms for rt in room_types)
+                    
                     c_date = check_in_date
                     while c_date < check_out_date:
                         date_str = c_date.isoformat()
-                        delta_days = (c_date - today).days
-                        # Same mocked logic as get_hotel_availability
-                        base_available = delta_days % 6 != 5
-                        base_rooms = 4 - (delta_days % 3) if base_available else 0
                         booked = booked_rooms_per_date[date_str]
-                        remaining = max(0, base_rooms - booked)
+                        remaining = max(0, real_base_rooms - booked)
                         
                         if remaining < min_available_rooms:
                             min_available_rooms = remaining
@@ -135,7 +135,7 @@ class HotelService:
             ],
         }
 
-    def get_hotel_availability(self, identifier: str | int, room_type_id: int | None = None, start_date: date | None = None, end_date: date | None = None) -> list[dict]:
+    def get_hotel_availability(self, identifier: str | int, room_type_id: int | None = None, start_date: date | None = None, end_date: date | None = None, user_role: str = 'guest') -> list[dict]:
         hotel = self.get_hotel_by_identifier(identifier)
         if not hotel:
             return []
@@ -206,19 +206,20 @@ class HotelService:
         
         from app.services.pricing_engine import pricing_engine
 
+        from app.models import RoomType
+        total_hotel_rooms = 0
+        if not room_type:
+            total_hotel_rooms = sum(rt.available_rooms for rt in RoomType.objects.filter(hotel_id=hotel_id))
+
         current_date = calc_start
         while current_date < calc_end:
             date_str = current_date.isoformat()
-            index = (current_date - today).days
-            
-            # Base logic
-            base_available = index % 6 != 5
             
             if room_type:
-                base_rooms = room_type.available_rooms if base_available else 0
+                base_rooms = room_type.available_rooms
                 nightly_rate = room_type.price
             else:
-                base_rooms = 4 - (index % 3) if base_available else 0
+                base_rooms = total_hotel_rooms
                 nightly_rate = hotel.get('price_per_night', 0)
             
             # Subtract booked rooms
@@ -231,7 +232,8 @@ class HotelService:
                 base_price=nightly_rate,
                 current_date=current_date,
                 capacity=base_rooms,
-                booked=booked
+                booked=booked,
+                user_role=user_role
             )
 
             availability.append(

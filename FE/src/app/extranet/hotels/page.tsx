@@ -48,7 +48,12 @@ export default function VendorHotelManage() {
     setSaving(true);
     // Parse amenities từ raw string chỉ khi submit
     const parsedAmenities = amenitiesRaw.split(',').map((s: string) => s.trim()).filter(Boolean);
-    const dataToSave = { ...formData, amenities: parsedAmenities };
+    const dataToSave = { 
+      ...formData, 
+      amenities: parsedAmenities,
+      deposit_percentage: Number(formData.deposit_percentage) || 0,
+      cancellation_free_days: Number(formData.cancellation_free_days) || 0,
+    };
     try {
       if (hotel) {
         toast.loading("Đang cập nhật...", { id: "save" });
@@ -107,6 +112,17 @@ export default function VendorHotelManage() {
                   <span className="text-dark fw-medium">{hotel.rating}</span>
                 </div>
                 <h5 className="text-primary fw-bold mb-0">{hotel.price_per_night?.toLocaleString('vi-VN')} ₫ <span className="fs-6 text-muted fw-normal">/ đêm (mặc định)</span></h5>
+                <hr />
+                <div className="d-flex flex-column gap-2 text-sm">
+                  <div className="d-flex justify-content-between">
+                    <span className="text-muted">Tiền cọc yêu cầu:</span>
+                    <span className="fw-medium">{hotel.deposit_percentage || 0}%</span>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    <span className="text-muted">Miễn phí hủy trước:</span>
+                    <span className="fw-medium">{hotel.cancellation_free_days || 0} ngày</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -164,6 +180,14 @@ export default function VendorHotelManage() {
                     <div className="col-12 col-md-6">
                       <label className="form-label fw-medium">Ảnh đại diện (URL)</label>
                       <input type="url" className="form-control" name="thumbnail" value={formData.thumbnail || ''} onChange={handleChange} placeholder="https://..." />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <label className="form-label fw-medium">Phần trăm tiền cọc (%)</label>
+                      <input type="number" className="form-control" name="deposit_percentage" value={formData.deposit_percentage || 0} min={0} max={100} onChange={handleChange} />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <label className="form-label fw-medium">Thời gian hủy miễn phí (ngày)</label>
+                      <input type="number" className="form-control" name="cancellation_free_days" value={formData.cancellation_free_days || 0} min={0} onChange={handleChange} />
                     </div>
                     <div className="col-12">
                       <label className="form-label fw-medium">Tiện ích (Cách nhau bằng dấu phẩy)</label>

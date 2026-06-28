@@ -140,6 +140,7 @@ export default function CheckoutForm({
         hotelName: hotel.name,
         checkIn: response.check_in,
         checkOut: response.check_out,
+        contact: data.email,
       });
 
       router.push(`/booking-success?${params.toString()}`);
@@ -209,6 +210,24 @@ export default function CheckoutForm({
             {/* Price Summary Card */}
             <aside className='bg-white tw-rounded-lg tw-p-8 tw-shadow-sm border border-neutral'>
               <h3 className='tw-text-lg fw-bold tw-mb-4'>{t("checkout.totalAmount")}</h3>
+              
+              {hotel.is_refundable === false ? (
+                <div className="alert alert-danger py-2 px-3 d-flex align-items-center mb-3">
+                  <i className="ri-error-warning-fill fs-5 me-2"></i>
+                  <div>
+                    <strong>Không hoàn tiền</strong>
+                    <div className="small mt-1">{hotel.cancellation_policy || "Bạn sẽ bị thu phí toàn bộ số tiền nếu hủy hoặc thay đổi đặt phòng này."}</div>
+                  </div>
+                </div>
+              ) : (
+                <div className="alert alert-success py-2 px-3 d-flex align-items-center mb-3">
+                  <i className="ri-checkbox-circle-fill fs-5 me-2"></i>
+                  <div>
+                    <strong>Miễn phí hủy phòng</strong>
+                    <div className="small mt-1">{hotel.cancellation_policy || "Bạn có thể hủy miễn phí trước ngày nhận phòng."}</div>
+                  </div>
+                </div>
+              )}
               
               {selectedRoomsDisplay && selectedRoomsDisplay.length > 0 && (
                 <div className='tw-mb-3 border-bottom tw-pb-3'>

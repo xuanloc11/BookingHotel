@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAdminBookings, cancelAdminBooking } from "@/lib/api/adminApi";
+import { getAdminBookings, cancelAdminBooking, updateAdminBookingStatus } from "@/lib/api/adminApi";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import AdminPagination from "@/components/layout/AdminPagination";
@@ -49,6 +49,31 @@ export default function AdminBookingsManage() {
       fetchBookings();
     } catch (err: any) {
       toast.error("Lỗi: " + err.message, { id: `cancel-${bookingId}` });
+    }
+  };
+
+  const handleStatusChange = async (bookingId: string, status: string) => {
+    const statusText = status === 'no_show' ? 'Khách không đến (No-show)' : 'Đổi khách sạn (Relocated)';
+    const result = await Swal.fire({
+      title: "Cập nhật trạng thái?",
+      text: `Chuyển đơn #${bookingId} sang trạng thái: ${statusText}?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Hủy",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      toast.loading("Đang cập nhật...", { id: `status-${bookingId}` });
+      await updateAdminBookingStatus(bookingId, status);
+      toast.success("Cập nhật thành công!", { id: `status-${bookingId}` });
+      fetchBookings();
+    } catch (err: any) {
+      toast.error("Lỗi: " + err.message, { id: `status-${bookingId}` });
     }
   };
 
@@ -110,6 +135,8 @@ export default function AdminBookingsManage() {
             <option value="confirmed">Đã xác nhận</option>
             <option value="completed">Hoàn tất</option>
             <option value="cancelled">Đã hủy</option>
+            <option value="no_show">No Show</option>
+            <option value="relocated">Relocated</option>
           </select>
         </div>
       </div>
@@ -175,24 +202,48 @@ export default function AdminBookingsManage() {
                             <span className={`badge ${
                               b.status === 'confirmed' ? 'bg-primary' : 
                               b.status === 'pending' ? 'bg-warning text-dark' : 
-                              b.status === 'completed' ? 'bg-success' : 'bg-danger'
+                              b.status === 'completed' ? 'bg-success' : 
+                              b.status === 'no_show' ? 'bg-secondary' :
+                              b.status === 'relocated' ? 'bg-info text-dark' : 'bg-danger'
                             }`}>
                               {b.status === 'confirmed' ? 'ĐÃ XÁC NHẬN' : 
                                b.status === 'pending' ? 'CHỜ DUYỆT' : 
                                b.status === 'completed' ? 'HOÀN TẤT' : 
-                               b.status === 'cancelled' ? 'ĐÃ HỦY' : b.status.toUpperCase()}
+                               b.status === 'cancelled' ? 'ĐÃ HỦY' : 
+                               b.status === 'no_show' ? 'KHÔNG ĐẾN' :
+                               b.status === 'relocated' ? 'RELOCATED' : b.status.toUpperCase()}
                             </span>
                           </td>
                           <td className="px-4 text-end">
-                            {b.status !== 'completed' && b.status !== 'cancelled' && (
-                              <button 
-                                className="btn btn-outline-danger btn-sm"
-                                onClick={() => handleCancel(b.booking_id)}
-                                title="Ép hủy đơn"
-                              >
-                                <i className="ri-close-circle-line"></i> Hủy
+                            <div className="dropdown">
+                              <button className="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Thao tác
                               </button>
-                            )}
+                              <ul className="dropdown-menu dropdown-menu-end shadow-sm">
+                                {b.status !== 'completed' && b.status !== 'cancelled' && (
+                                  <>
+                                    <li>
+                                      <button className="dropdown-item text-danger" onClick={() => handleCancel(b.booking_id)}>
+                                        <i className="ri-close-circle-line me-2"></i> Ép hủy đơn
+                                      </button>
+                                    </li>
+                                    <li>
+                                      <button className="dropdown-item text-warning" onClick={() => handleStatusChange(b.booking_id, 'no_show')}>
+                                        <i className="ri-user-unfollow-line me-2"></i> Đánh dấu No-show
+                                      </button>
+                                    </li>
+                                    <li>
+                                      <button className="dropdown-item text-info" onClick={() => handleStatusChange(b.booking_id, 'relocated')}>
+                                        <i className="ri-hotel-line me-2"></i> Đánh dấu Relocated
+                                      </button>
+                                    </li>
+                                  </>
+                                )}
+                                {(b.status === 'completed' || b.status === 'cancelled') && (
+                                  <li><span className="dropdown-item text-muted">Không có thao tác</span></li>
+                                )}
+                              </ul>
+                            </div>
                           </td>
                         </tr>
                       ))

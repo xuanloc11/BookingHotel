@@ -81,6 +81,28 @@ const Header: FC = () => {
           scroll ? "fixed-header" : ""
         }`}
       >
+        {/* Top Bar */}
+        <div className="top-bar tw-bg-neutral-900 tw-py-2 d-none d-lg-block border-bottom border-neutral-800" style={{ backgroundColor: 'rgba(15, 23, 42, 0.95)' }}>
+          <div className="container tw-container-1750-px d-flex justify-content-end align-items-center tw-gap-6">
+            <Link
+              href='/find-booking'
+              className='text-neutral-300 hover-text-white tw-text-sm d-flex align-items-center tw-gap-1'
+            >
+              <i className='ph ph-magnifying-glass' />
+              Tra cứu đơn
+            </Link>
+            
+            <button onClick={toggleCurrency} className='text-neutral-300 hover-text-white tw-text-sm bg-transparent border-0 d-flex align-items-center tw-gap-1' title="Chọn tiền tệ">
+              <span className='tw-text-base'><i className='ph ph-currency-circle-dollar' /></span>
+              {currency}
+            </button>
+            
+            <button onClick={toggleLanguage} className='text-neutral-300 hover-text-white tw-text-sm bg-transparent border-0 d-flex align-items-center tw-gap-1' title="Chọn ngôn ngữ">
+              <img src={language === 'vi' ? "https://flagcdn.com/w40/vn.png" : "https://flagcdn.com/w40/us.png"} width="20" height="14" alt={language.toUpperCase()} className="tw-rounded-sm object-fit-cover" style={{ boxShadow: '0 0 2px rgba(0,0,0,0.3)' }} />
+            </button>
+          </div>
+        </div>
+
         <div className='container tw-container-1750-px'>
           <nav className='d-flex align-items-center justify-content-between position-relative tw-py-5'>
             {/* Logo Start */}
@@ -97,16 +119,7 @@ const Header: FC = () => {
             {/* Header Right start */}
             <div className='header-right d-flex tw-gap-28'>
               <div className='header-btn-wrap d-flex align-items-center tw-gap-5'>
-                {/* Currency & Language */}
-                <div className='d-none d-lg-flex align-items-center tw-gap-4 tw-me-2'>
-                  <button onClick={toggleCurrency} className='text-white fw-medium bg-transparent border-0 d-flex align-items-center tw-gap-1 hover-text-main-600' title="Chọn tiền tệ">
-                    <span className='tw-text-xl'><i className='ph ph-currency-circle-dollar' /></span>
-                    {currency}
-                  </button>
-                  <button onClick={toggleLanguage} className='text-white fw-medium bg-transparent border-0 d-flex align-items-center tw-gap-1 hover-text-main-600' title="Chọn ngôn ngữ">
-                    <img src={language === 'vi' ? "https://flagcdn.com/w40/vn.png" : "https://flagcdn.com/w40/us.png"} width="24" height="16" alt={language.toUpperCase()} className="tw-rounded-sm object-fit-cover" style={{ boxShadow: '0 0 2px rgba(0,0,0,0.3)' }} />
-                  </button>
-                </div>
+                {/* Currency & Language moved to Top Bar */}
 
                 <div>
                   <button
@@ -124,6 +137,7 @@ const Header: FC = () => {
 
               {/* Auth Section */}
               <div className='header-button header-two-button d-flex align-items-center tw-gap-4'>
+
                 <Link
                   className='tw-btn-hover-white bg-main-600 tw-py-5 tw-px-7 text-capitalize text-heading font-heading d-lg-inline-flex d-none align-items-center justify-content-center tw-gap-2 tw-rounded-lg'
                   style={{ minWidth: "230px" }}
@@ -297,6 +311,15 @@ const Header: FC = () => {
 
           {/* Mobile Auth */}
           <div className='tw-mt-8 tw-border-t tw-border-neutral-200 tw-pt-6'>
+            <Link
+              href='/find-booking'
+              onClick={() => setActive(false)}
+              className='d-flex align-items-center tw-gap-2 tw-py-2 tw-mb-4 text-heading fw-medium hover-text-main-600'
+            >
+              <i className='ph ph-magnifying-glass text-main-600' />
+              Tra cứu đơn hàng
+            </Link>
+            
             {authLoading ? null : user ? (
               <>
                 <div className='d-flex align-items-center tw-gap-3 tw-mb-4'>

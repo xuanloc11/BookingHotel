@@ -26,7 +26,7 @@ class WithdrawalEventSubject:
 
 class WithdrawalNotificationObserver:
     def update(self, context: WithdrawalEventContext) -> None:
-        if context.event_name != \'withdrawal.processed\':
+        if context.event_name != 'withdrawal.processed':
             return
         from app.services.email_service import EmailService
         EmailService.send_withdrawal_notification(context.payload)

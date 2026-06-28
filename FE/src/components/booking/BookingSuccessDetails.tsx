@@ -1,7 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { useCurrency } from "@/lib/currency/CurrencyContext";
+import { fetchGuestBooking } from "@/lib/api/bookingApi";
+import type { BookingSummary } from "@/types/booking";
+import InvoiceGenerator from "./InvoiceGenerator";
 
 interface BookingSuccessDetailsProps {
   bookingId?: string;
@@ -9,6 +14,7 @@ interface BookingSuccessDetailsProps {
   hotelName?: string;
   checkIn?: string;
   checkOut?: string;
+  contact?: string;
 }
 
 export default function BookingSuccessDetails({
@@ -17,8 +23,20 @@ export default function BookingSuccessDetails({
   hotelName,
   checkIn,
   checkOut,
+  contact,
 }: BookingSuccessDetailsProps) {
   const { t } = useLanguage();
+  const { formatMoney } = useCurrency();
+  const [booking, setBooking] = useState<BookingSummary | null>(null);
+
+  useEffect(() => {
+    if (bookingId && contact) {
+      fetchGuestBooking(bookingId, contact)
+        .then(setBooking)
+        .catch(console.error);
+    }
+  }, [bookingId, contact]);
+
   return (
     <section className='bg_2 pt-120 pb-120'>
       <div className='container'>
@@ -58,9 +76,46 @@ export default function BookingSuccessDetails({
                     </strong>
                   </div>
                 ) : null}
+
+                {booking && (
+                  <div className='border-top tw-pt-4 tw-mt-4'>
+                    <h3 className='tw-text-base fw-bold tw-mb-3'>Thông tin chi tiết</h3>
+                    <div className='d-flex justify-content-between tw-mb-3'>
+                      <span>Khách hàng</span>
+                      <strong>
+                        {booking.customer.first_name} {booking.customer.last_name}
+                      </strong>
+                    </div>
+                    <div className='d-flex justify-content-between tw-mb-3'>
+                      <span>Email / SĐT</span>
+                      <strong>
+                        {booking.customer.email} / {booking.customer.phone}
+                      </strong>
+                    </div>
+                    {booking.rooms && booking.rooms.length > 0 && (
+                      <div className='d-flex justify-content-between tw-mb-3'>
+                        <span>Loại phòng</span>
+                        <div className='text-end'>
+                          {booking.rooms.map((room, idx) => (
+                            <div key={idx}>
+                              <strong>{room.quantity}x {room.room_type_name}</strong>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <div className='d-flex justify-content-between tw-mb-3'>
+                      <span>Tổng thanh toán</span>
+                      <strong className='text-main-600 tw-text-lg'>
+                        {formatMoney(booking.total)}
+                      </strong>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className='d-flex justify-content-center flex-wrap tw-gap-3'>
+                {booking && <InvoiceGenerator booking={booking} />}
                 <Link
                   className='tw-btn-hover-black bg-main-600 tw-py-4 tw-px-8 text-heading font-heading tw-rounded-lg'
                   href='/profile/?tab=bookings'

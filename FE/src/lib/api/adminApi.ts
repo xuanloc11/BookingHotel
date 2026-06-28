@@ -97,3 +97,11 @@ export async function cancelAdminBooking(bookingId: string): Promise<any> {
     ...getAuthOptions(),
   });
 }
+
+export async function updateAdminBookingStatus(bookingId: string, status: string): Promise<any> {
+  return fetchBackendJson(`/system-admin/bookings/${bookingId}/status`, {
+    method: "PUT",
+    body: { status },
+    ...getAuthOptions(),
+  });
+}

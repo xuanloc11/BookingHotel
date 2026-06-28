@@ -12,6 +12,8 @@ export interface Hotel {
   thumbnail: string;
   description: string;
   available_rooms?: number;
+  is_refundable?: boolean;
+  cancellation_policy?: string;
 }
 
 export interface RoomType {

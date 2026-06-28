@@ -269,7 +269,7 @@ def list_bookings(request, user):
     if not hotel:
         return JsonResponse({'bookings': []})
         
-    bookings = Booking.objects.filter(hotel=hotel).order_by('-created_at')
+    bookings = Booking.objects.filter(hotel=hotel).prefetch_related('rooms').order_by('-created_at')
     return JsonResponse({'bookings': [b.to_summary() for b in bookings]})
 
 

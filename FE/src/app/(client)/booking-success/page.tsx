@@ -41,6 +41,7 @@ export default async function BookingSuccessPage({
         checkOut={firstValue(params, "checkOut")}
         hotelName={firstValue(params, "hotelName")}
         status={firstValue(params, "status")}
+        contact={firstValue(params, "contact")}
       />
       <Footer />
     </AOSWrap>
