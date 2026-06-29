@@ -4,15 +4,17 @@ import { getMenuData } from "@/data/menuData";
 import { getDesktopMenuData } from "@/data/menuDataDesktop";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useCurrency } from "@/lib/currency/CurrencyContext";
 
 const Header: FC = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, loading: authLoading, handleLogout } = useAuth();
   const [searchActive, setSearchActive] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [active, setActive] = useState<boolean>(false);
@@ -68,6 +70,16 @@ const Header: FC = () => {
     if (!isMobile) return;
 
     setActiveIndex(activeIndex === index ? null : index);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchActive(false);
+    if (searchQuery.trim()) {
+      router.push(`/room?location=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push('/room');
+    }
   };
 
   return (
@@ -436,12 +448,14 @@ const Header: FC = () => {
                     </div>
                   </div>
                   <div className='search_form'>
-                    <form action='#'>
+                    <form onSubmit={handleSearch}>
                       <div className='search_input'>
                         <input
                           className='search-input-field'
                           type='text'
-                          placeholder='Nhập nội dung tìm kiếm...'
+                          placeholder='Nhập địa điểm khách sạn...'
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
                         />
                         <span className='search-focus-border' />
                         <button type='submit'>
