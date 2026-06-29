@@ -49,41 +49,59 @@ class HotelService:
                     check_out_date = check_in_date + timedelta(days=1)
                 
                 available_hotels = []
+                from app.models import RoomAvailability, RoomType, RoomHold
+                from django.utils.timezone import now
+                
                 for hotel in hotels:
-                    # Get base availability using the same logic as get_hotel_availability
-                    booked_rooms_per_date = Counter()
-                    bookings = Booking.objects.filter(hotel_id=hotel['id']).exclude(status='cancelled')
-                    for booking in bookings:
+                    room_types = RoomType.objects.filter(hotel_id=hotel['id'])
+                    has_available_room_type = False
+                    max_hotel_available = 0
+                    
+                    # Compute Soft Holds
+                    active_holds = RoomHold.objects.filter(hotel_id=hotel['id'], is_active=True, expires_at__gt=now())
+                    held_rooms_per_date_per_rt = {}
+                    for hold in active_holds:
                         try:
-                            b_check_in = datetime.strptime(booking.check_in, '%Y-%m-%d').date()
-                            b_check_out = datetime.strptime(booking.check_out, '%Y-%m-%d').date()
-                            b_rooms = int(booking.guests.get('rooms', 1))
-                            c_date = b_check_in
-                            while c_date < b_check_out:
-                                booked_rooms_per_date[c_date.isoformat()] += b_rooms
+                            h_in = datetime.strptime(hold.check_in, '%Y-%m-%d').date()
+                            h_out = datetime.strptime(hold.check_out, '%Y-%m-%d').date()
+                            rt_id = hold.room_type_id
+                            if rt_id not in held_rooms_per_date_per_rt:
+                                held_rooms_per_date_per_rt[rt_id] = Counter()
+                            
+                            c_date = h_in
+                            while c_date < h_out:
+                                held_rooms_per_date_per_rt[rt_id][c_date] += hold.rooms
                                 c_date += timedelta(days=1)
                         except Exception:
                             pass
                     
-                    min_available_rooms = float('inf')
-                    
-                    from app.models import RoomType
-                    room_types = RoomType.objects.filter(hotel_id=hotel['id'])
-                    real_base_rooms = sum(rt.available_rooms for rt in room_types)
-                    
-                    c_date = check_in_date
-                    while c_date < check_out_date:
-                        date_str = c_date.isoformat()
-                        booked = booked_rooms_per_date[date_str]
-                        remaining = max(0, real_base_rooms - booked)
+                    for rt in room_types:
+                        days_count = (check_out_date - check_in_date).days
+                        availabilities = RoomAvailability.objects.filter(
+                            room_type=rt,
+                            date__gte=check_in_date,
+                            date__lt=check_out_date
+                        )
                         
-                        if remaining < min_available_rooms:
-                            min_available_rooms = remaining
-                            
-                        c_date += timedelta(days=1)
-                        
-                    if min_available_rooms >= rooms_needed:
-                        hotel['available_rooms'] = min_available_rooms
+                        if availabilities.count() == days_count:
+                            valid_rt = True
+                            rt_min_avail = float('inf')
+                            for a in availabilities:
+                                held = held_rooms_per_date_per_rt.get(rt.id, Counter())[a.date]
+                                remaining = a.available_rooms - held
+                                if remaining < rooms_needed:
+                                    valid_rt = False
+                                    break
+                                if remaining < rt_min_avail:
+                                    rt_min_avail = remaining
+                                    
+                            if valid_rt:
+                                has_available_room_type = True
+                                if rt_min_avail > max_hotel_available:
+                                    max_hotel_available = rt_min_avail
+                                
+                    if has_available_room_type:
+                        hotel['available_rooms'] = max_hotel_available
                         available_hotels.append(hotel)
                 
                 hotels = available_hotels
@@ -143,7 +161,7 @@ class HotelService:
         hotel_id = hotel['id']
         room_type = None
 
-        from app.models import RoomType
+        from app.models import RoomType, RoomAvailability
         if room_type_id:
             try:
                 room_type = RoomType.objects.get(id=room_type_id, hotel_id=hotel_id)
@@ -151,101 +169,110 @@ class HotelService:
                 return []
 
         today = datetime.utcnow().date()
-        availability: list[dict] = []
-        
+        calc_start = start_date if start_date else today
+        calc_end = end_date if end_date else today + timedelta(days=21)
+
         from django.utils.timezone import now
         from app.models import RoomHold
-        
-        # Calculate booked rooms per date
-        booked_rooms_per_date = Counter()
-        bookings_qs = Booking.objects.prefetch_related('rooms').filter(hotel_id=hotel_id).exclude(status='cancelled')
-        if room_type:
-            bookings_qs = bookings_qs.filter(rooms__room_type_id=room_type.id)
 
-        for booking in bookings_qs:
-            try:
-                check_in_date = datetime.strptime(booking.check_in, '%Y-%m-%d').date()
-                check_out_date = datetime.strptime(booking.check_out, '%Y-%m-%d').date()
-                
-                rooms_count = 0
-                if room_type:
-                    # Get quantity for specific room type
-                    for r in booking.rooms.all():
-                        if r.room_type_id == room_type.id:
-                            rooms_count += r.quantity
-                else:
-                    rooms_count = sum(r.quantity for r in booking.rooms.all())
-                
-                # Iterate through each night of the stay
-                current_date = check_in_date
-                while current_date < check_out_date:
-                    booked_rooms_per_date[current_date.isoformat()] += rooms_count
-                    current_date += timedelta(days=1)
-            except Exception:
-                pass # Ignore malformed bookings
-
-        # Add active holds to booked rooms
+        # Add active holds to booked rooms (Soft Locks)
+        held_rooms_per_date = Counter()
         active_holds = RoomHold.objects.filter(hotel_id=hotel_id, is_active=True, expires_at__gt=now())
+        if room_type:
+            active_holds = active_holds.filter(room_type=room_type)
+
         for hold in active_holds:
             try:
-                check_in_date = datetime.strptime(hold.check_in, '%Y-%m-%d').date()
-                check_out_date = datetime.strptime(hold.check_out, '%Y-%m-%d').date()
-                rooms = hold.rooms
+                h_check_in = datetime.strptime(hold.check_in, '%Y-%m-%d').date()
+                h_check_out = datetime.strptime(hold.check_out, '%Y-%m-%d').date()
+                h_rooms = hold.rooms
 
-                current_date = check_in_date
-                while current_date < check_out_date:
-                    booked_rooms_per_date[current_date.isoformat()] += rooms
+                current_date = h_check_in
+                while current_date < h_check_out:
+                    held_rooms_per_date[current_date.isoformat()] += h_rooms
                     current_date += timedelta(days=1)
             except Exception:
                 pass
 
-        today = datetime.utcnow().date()
-        
-        calc_start = start_date if start_date else today
-        calc_end = end_date if end_date else today + timedelta(days=21)
-        
-        from app.services.pricing_engine import pricing_engine
+        availability: list[dict] = []
 
-        from app.models import RoomType
-        total_hotel_rooms = 0
-        if not room_type:
-            total_hotel_rooms = sum(rt.available_rooms for rt in RoomType.objects.filter(hotel_id=hotel_id))
-
-        current_date = calc_start
-        while current_date < calc_end:
-            date_str = current_date.isoformat()
-            
-            if room_type:
-                base_rooms = room_type.available_rooms
-                nightly_rate = room_type.price
-            else:
-                base_rooms = total_hotel_rooms
-                nightly_rate = hotel.get('price_per_night', 0)
-            
-            # Subtract booked rooms
-            booked = booked_rooms_per_date[date_str]
-            remaining_rooms = max(0, base_rooms - booked)
-            is_available = remaining_rooms > 0
-
-            # Dynamic pricing
-            adjusted_rate = pricing_engine.calculate_price(
-                base_price=nightly_rate,
-                current_date=current_date,
-                capacity=base_rooms,
-                booked=booked,
-                user_role=user_role
+        if room_type:
+            availabilities = RoomAvailability.objects.filter(
+                room_type=room_type,
+                date__gte=calc_start,
+                date__lt=calc_end
             )
-
-            availability.append(
-                {
+            avail_dict = {a.date.isoformat(): a for a in availabilities}
+            
+            current_date = calc_start
+            while current_date < calc_end:
+                date_str = current_date.isoformat()
+                a_record = avail_dict.get(date_str)
+                
+                if a_record:
+                    held = held_rooms_per_date[date_str]
+                    remaining = max(0, a_record.available_rooms - held)
+                    availability.append({
+                        'date': date_str,
+                        'available_rooms': remaining,
+                        'nightly_rate': a_record.price,
+                        'is_available': remaining > 0,
+                    })
+                else:
+                    availability.append({
+                        'date': date_str,
+                        'available_rooms': 0,
+                        'nightly_rate': room_type.base_price,
+                        'is_available': False,
+                    })
+                current_date += timedelta(days=1)
+        else:
+            room_types = RoomType.objects.filter(hotel_id=hotel_id)
+            availabilities = RoomAvailability.objects.filter(
+                room_type__in=room_types,
+                date__gte=calc_start,
+                date__lt=calc_end
+            )
+            
+            from collections import defaultdict
+            date_agg = defaultdict(lambda: {'rooms': 0, 'min_price': float('inf')})
+            
+            # Group soft holds per room type
+            all_holds = RoomHold.objects.filter(hotel_id=hotel_id, is_active=True, expires_at__gt=now())
+            held_rt_date = defaultdict(Counter)
+            for h in all_holds:
+                try:
+                    h_in = datetime.strptime(h.check_in, '%Y-%m-%d').date()
+                    h_out = datetime.strptime(h.check_out, '%Y-%m-%d').date()
+                    c_date = h_in
+                    while c_date < h_out:
+                        held_rt_date[h.room_type_id][c_date.isoformat()] += h.rooms
+                        c_date += timedelta(days=1)
+                except Exception: pass
+            
+            for a in availabilities:
+                date_str = a.date.isoformat()
+                held = held_rt_date[a.room_type_id][date_str]
+                real_avail = max(0, a.available_rooms - held)
+                date_agg[date_str]['rooms'] += real_avail
+                if a.price < date_agg[date_str]['min_price']:
+                    date_agg[date_str]['min_price'] = a.price
+            
+            current_date = calc_start
+            while current_date < calc_end:
+                date_str = current_date.isoformat()
+                agg = date_agg[date_str]
+                
+                remaining = agg['rooms']
+                price = agg['min_price'] if agg['min_price'] != float('inf') else hotel.get('price_per_night', 0)
+                
+                availability.append({
                     'date': date_str,
-                    'available_rooms': remaining_rooms,
-                    'nightly_rate': adjusted_rate,
-                    'is_available': is_available,
-                }
-            )
-            
-            current_date += timedelta(days=1)
+                    'available_rooms': remaining,
+                    'nightly_rate': price,
+                    'is_available': remaining > 0,
+                })
+                current_date += timedelta(days=1)
 
         return availability
 

@@ -60,15 +60,28 @@ class Hotel(models.Model):
 class RoomType(models.Model):
 	hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='room_types')
 	name = models.CharField(max_length=255)
-	price = models.PositiveIntegerField(default=0)
+	base_price = models.PositiveIntegerField(default=0)
 	capacity = models.PositiveIntegerField(default=2)
-	available_rooms = models.PositiveIntegerField(default=1)
+	total_rooms = models.PositiveIntegerField(default=1)
 	features = models.JSONField(default=list)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 
 	def __str__(self) -> str:
 		return f"{self.hotel.name} - {self.name}"
+
+class RoomAvailability(models.Model):
+	room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE, related_name='availabilities')
+	date = models.DateField()
+	price = models.PositiveIntegerField()
+	available_rooms = models.PositiveIntegerField()
+	version = models.IntegerField(default=0)
+
+	class Meta:
+		unique_together = ('room_type', 'date')
+
+	def __str__(self) -> str:
+		return f"{self.room_type.name} - {self.date} - {self.available_rooms} rooms"
 
 class AuthToken(models.Model):
 	user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='auth_token')
@@ -156,6 +169,22 @@ class Booking(models.Model):
 			'created_at': self.created_at.isoformat(),
 			'rooms': [room.to_dict() for room in self.rooms.all()],
 		}
+
+class PaymentInstallment(models.Model):
+	STATUS_UNPAID = 'unpaid'
+	STATUS_PAID = 'paid'
+	STATUS_CHOICES = [(STATUS_UNPAID, 'Unpaid'), (STATUS_PAID, 'Paid')]
+
+	booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='installments')
+	installment_name = models.CharField(max_length=255)
+	amount = models.BigIntegerField()
+	due_date = models.DateField()
+	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_UNPAID)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+
+	def __str__(self) -> str:
+		return f"{self.installment_name} - {self.booking.booking_id} - {self.status}"
 
 class BookingRoom(models.Model):
 	booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='rooms')
@@ -248,6 +277,7 @@ class VendorSetting(models.Model):
 class RoomHold(models.Model):
 	hold_id = models.CharField(max_length=50, unique=True)
 	hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='holds')
+	room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE, related_name='holds', null=True, blank=True)
 	session_id = models.CharField(max_length=255)
 	check_in = models.CharField(max_length=10)
 	check_out = models.CharField(max_length=10)
