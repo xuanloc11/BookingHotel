@@ -311,6 +311,9 @@ def create_booking(request):
 		result = booking_service.create_booking(payload, user=_get_authenticated_user(request))
 	except ValueError as error:
 		return _json_error(str(error))
+	except Exception as e:
+		import traceback
+		return _json_error(f"Internal Error: {str(e)}\n{traceback.format_exc()}", status=500)
 
 	return JsonResponse(result.payload, status=201)
 

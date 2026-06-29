@@ -211,9 +211,9 @@ def manage_rooms(request, user):
         return JsonResponse({'rooms': [{
             'id': r.id,
             'name': r.name,
-            'price': r.price,
+            'price': r.base_price,
             'capacity': r.capacity,
-            'available_rooms': r.available_rooms,
+            'available_rooms': r.total_rooms,
             'features': r.features
         } for r in rooms]})
         
@@ -226,9 +226,9 @@ def manage_rooms(request, user):
     room = RoomType.objects.create(
         hotel=hotel,
         name=payload.get('name', 'New Room'),
-        price=payload.get('price', 0),
+        base_price=payload.get('price', 0),
         capacity=payload.get('capacity', 2),
-        available_rooms=payload.get('available_rooms', 1),
+        total_rooms=payload.get('available_rooms', 1),
         features=payload.get('features', [])
     )
     return JsonResponse({'message': 'Room created.', 'id': room.id})
@@ -253,9 +253,9 @@ def manage_room_detail(request, user, room_id: int):
         return _json_error(str(e))
         
     room.name = payload.get('name', room.name)
-    room.price = payload.get('price', room.price)
+    room.base_price = payload.get('price', room.base_price)
     room.capacity = payload.get('capacity', room.capacity)
-    room.available_rooms = payload.get('available_rooms', room.available_rooms)
+    room.total_rooms = payload.get('available_rooms', room.total_rooms)
     room.features = payload.get('features', room.features)
     room.save()
     

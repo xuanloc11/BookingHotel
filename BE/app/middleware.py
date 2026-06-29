@@ -10,7 +10,7 @@ class AntiScrapingMiddleware:
     Middleware to block common scraping bots based on User-Agent.
     """
     BLOCKED_USER_AGENTS = [
-        'python-requests', 'scrapy', 'curl', 'wget', 'postman', 'httpclient', 'libwww-perl'
+        'python-requests', 'scrapy', 'curl', 'wget', 'httpclient', 'libwww-perl'
     ]
 
     def __init__(self, get_response):

@@ -23,9 +23,9 @@ class HotelRepository:
                 {
                     'id': r.id,
                     'name': r.name,
-                    'price': r.price,
+                    'price': r.base_price,
                     'capacity': r.capacity,
-                    'available_rooms': r.available_rooms,
+                    'available_rooms': r.total_rooms,
                     'features': r.features,
                 }
                 for r in hotel.room_types.all()
