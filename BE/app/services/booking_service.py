@@ -223,6 +223,7 @@ class BookingService:
                 'price': booking.price,
                 'deposit_amount': booking.deposit_amount,
                 'is_group_booking': booking.is_group_booking,
+                'is_guest': user is None or not user.is_authenticated,
                 'rooms': [
                     {
                         'room_type_name': r['room_type_name'],

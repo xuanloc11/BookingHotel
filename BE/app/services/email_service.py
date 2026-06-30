@@ -92,11 +92,26 @@ class EmailService:
 
         rooms = payload.get('rooms', [])
         rooms_html = "".join([f"<li>{r['quantity']}x {r['room_type_name']}</li>" for r in rooms])
+        is_guest = payload.get('is_guest', False)
+
+        contract_html = ""
+        if is_guest:
+            contract_html = """
+                <hr style="border: 1px solid #eee; margin: 20px 0;">
+                <h3>Hợp đồng lưu trú (Dành cho khách không có tài khoản)</h3>
+                <p>Vì bạn đặt phòng dưới tư cách Khách, email này đồng thời đóng vai trò là <strong>Hợp đồng lưu trú điện tử</strong> giữa bạn và khách sạn.</p>
+                <ol style="color: #555;">
+                    <li><strong>Quyền lợi:</strong> Bạn được sử dụng phòng và các dịch vụ đi kèm đúng như thông tin đơn đặt.</li>
+                    <li><strong>Nghĩa vụ:</strong> Bạn có trách nhiệm thanh toán đủ tiền, tuân thủ nội quy khách sạn và bồi thường nếu làm hỏng tài sản.</li>
+                    <li><strong>Chính sách hủy:</strong> Áp dụng theo quy định của khách sạn được thông báo tại thời điểm đặt phòng.</li>
+                    <li><strong>Giá trị:</strong> Xác nhận này có giá trị như một thỏa thuận ràng buộc ngay sau khi đơn được tiếp nhận (và đã cọc nếu có).</li>
+                </ol>
+            """
 
         html_content = f"""
         <html>
-            <body>
-                <h2>Xác nhận đặt phòng thành công!</h2>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <h2 style="color: #0056b3;">Xác nhận đặt phòng thành công!</h2>
                 <p>Cảm ơn bạn đã lựa chọn dịch vụ của chúng tôi.</p>
                 <h3>Chi tiết đơn đặt phòng:</h3>
                 <ul>
@@ -110,7 +125,9 @@ class EmailService:
                     <li><strong>Tổng tiền:</strong> {price:,.0f} VND</li>
                 </ul>
                 <p>Chúc bạn có một kỳ nghỉ thật vui vẻ!</p>
-                <p>Cảm ơn,<br>Đội ngũ VPL Hotel</p>
+                {contract_html}
+                <hr style="border: 1px solid #eee; margin: 20px 0;">
+                <p>Cảm ơn,<br><strong>Đội ngũ VPL Hotel</strong></p>
             </body>
         </html>
         """
