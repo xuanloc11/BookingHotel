@@ -175,7 +175,7 @@ export default function VendorHotelManage() {
                     </div>
                     <div className="col-12 col-md-6">
                       <label className="form-label fw-medium">Giá thấp nhất / đêm (VNĐ)</label>
-                      <input type="number" className="form-control" name="price_per_night" value={formData.price_per_night || 0} onChange={handleChange} />
+                      <input type="number" className="form-control" name="price_per_night" value={formData.price_per_night ?? ''} onChange={handleChange} />
                     </div>
                     <div className="col-12 col-md-6">
                       <label className="form-label fw-medium">Ảnh đại diện (URL)</label>
@@ -183,11 +183,11 @@ export default function VendorHotelManage() {
                     </div>
                     <div className="col-12 col-md-6">
                       <label className="form-label fw-medium">Phần trăm tiền cọc (%)</label>
-                      <input type="number" className="form-control" name="deposit_percentage" value={formData.deposit_percentage || 0} min={0} max={100} onChange={handleChange} />
+                      <input type="number" className="form-control" name="deposit_percentage" value={formData.deposit_percentage ?? ''} min={0} max={100} onChange={handleChange} />
                     </div>
                     <div className="col-12 col-md-6">
                       <label className="form-label fw-medium">Thời gian hủy miễn phí (ngày)</label>
-                      <input type="number" className="form-control" name="cancellation_free_days" value={formData.cancellation_free_days || 0} min={0} onChange={handleChange} />
+                      <input type="number" className="form-control" name="cancellation_free_days" value={formData.cancellation_free_days ?? ''} min={0} onChange={handleChange} />
                     </div>
                     <div className="col-12">
                       <label className="form-label fw-medium">Tiện ích (Cách nhau bằng dấu phẩy)</label>

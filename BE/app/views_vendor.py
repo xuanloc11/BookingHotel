@@ -161,6 +161,8 @@ def manage_hotel(request, user):
             'amenities': hotel.amenities,
             'thumbnail': hotel.thumbnail,
             'description': hotel.description,
+            'deposit_percentage': hotel.deposit_percentage,
+            'cancellation_free_days': hotel.cancellation_free_days,
         }})
         
     try:
@@ -181,6 +183,8 @@ def manage_hotel(request, user):
             amenities=payload.get('amenities', []),
             thumbnail=payload.get('thumbnail', ''),
             description=payload.get('description', ''),
+            deposit_percentage=payload.get('deposit_percentage', 0),
+            cancellation_free_days=payload.get('cancellation_free_days', 0),
         )
         return JsonResponse({'message': 'Hotel created.', 'id': hotel.id})
         
@@ -195,6 +199,8 @@ def manage_hotel(request, user):
         hotel.amenities = payload.get('amenities', hotel.amenities)
         hotel.thumbnail = payload.get('thumbnail', hotel.thumbnail)
         hotel.description = payload.get('description', hotel.description)
+        hotel.deposit_percentage = payload.get('deposit_percentage', hotel.deposit_percentage)
+        hotel.cancellation_free_days = payload.get('cancellation_free_days', hotel.cancellation_free_days)
         hotel.save()
         return JsonResponse({'message': 'Hotel updated.'})
 
