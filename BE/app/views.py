@@ -333,9 +333,13 @@ def current_user(request):
 	return JsonResponse(_serialize_user(user))
 
 
+@ratelimit(key='ip', rate='5/m', block=False)
 @csrf_exempt
 @require_http_methods(['POST'])
 def create_booking(request):
+	limit_resp = check_ratelimit(request)
+	if limit_resp: return limit_resp
+
 	try:
 		payload = _parse_json_body(request)
 		result = booking_service.create_booking(payload, user=_get_authenticated_user(request))
@@ -348,9 +352,13 @@ def create_booking(request):
 	return JsonResponse(result.payload, status=201)
 
 
+@ratelimit(key='ip', rate='10/m', block=False)
 @csrf_exempt
 @require_http_methods(['POST'])
 def create_room_hold(request):
+	limit_resp = check_ratelimit(request)
+	if limit_resp: return limit_resp
+
 	try:
 		payload = _parse_json_body(request)
 		result = booking_service.create_room_hold(payload)
