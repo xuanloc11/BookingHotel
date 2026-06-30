@@ -288,17 +288,47 @@ def current_user(request):
 	except ValueError as error:
 		return _json_error(str(error))
 
+	import re
+	from django.utils.html import escape
+
 	full_name = payload.get('full_name')
 	phone = payload.get('phone')
+	email = payload.get('email')
 	updated_fields = []
+	
 	if full_name is not None:
-		profile.full_name = full_name.strip()
+		full_name = full_name.strip()
+		profile.full_name = escape(full_name)
 		updated_fields.append('full_name')
+		
 	if phone is not None:
-		profile.phone = phone.strip()
+		phone = phone.strip()
+		if phone and not re.match(r'^\+?[\d\s\-()]{8,20}$', phone):
+			return _json_error('Số điện thoại không hợp lệ.', status=400)
+		profile.phone = escape(phone)
 		updated_fields.append('phone')
+		
 	if updated_fields:
 		profile.save(update_fields=updated_fields)
+
+	if email is not None:
+		email = email.strip()
+		if email:
+			if not re.match(r'^[\w\.\+\-]+@[\w\-]+\.[\w\.\-]+$', email):
+				return _json_error('Định dạng email không hợp lệ.', status=400)
+			
+			if email != user.email:
+				from django.contrib.auth import get_user_model
+				User = get_user_model()
+				if User.objects.filter(email=email).exists():
+					return _json_error('Email này đã được sử dụng bởi tài khoản khác.', status=400)
+				user.email = email
+				# Also update username if they are the same (usually true in custom user models)
+				if hasattr(user, 'username'):
+					user.username = email
+					user.save(update_fields=['email', 'username'])
+				else:
+					user.save(update_fields=['email'])
 
 	return JsonResponse(_serialize_user(user))
 

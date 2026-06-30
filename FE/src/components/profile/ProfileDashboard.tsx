@@ -61,6 +61,7 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
   const [formData, setFormData] = useState({
     full_name: user.full_name || "",
     phone: user.phone || "",
+    email: user.email || "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -71,6 +72,7 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
       const updatedUser = await updateCurrentUser({
         full_name: formData.full_name,
         phone: formData.phone,
+        email: formData.email,
       });
       setUser(updatedUser); // Update AuthContext state
       toast.success(t("profile.updateSuccess"));
@@ -145,7 +147,13 @@ export default function ProfileDashboard({ user, bookings = [] }: ProfileDashboa
                   <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                       <label className="form-label fw-semibold">{t("profile.emailLocked")}</label>
-                      <input type="email" className="form-control bg-light" value={user.email} disabled />
+                      <input 
+                        type="email" 
+                        className="form-control" 
+                        value={formData.email} 
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        required 
+                      />
                     </div>
                     
                     <div className="mb-4">
